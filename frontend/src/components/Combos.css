@@ -1,0 +1,112 @@
+.combos {
+    padding: 110px 64px;
+    background-color: #efe6db;
+    text-align: center;
+  }
+  
+  .combos h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 44px;
+    margin-top: -60px;
+    margin-bottom: 80px;
+    color: var(--marrom-escuro);
+  }
+  
+  /* Área da imagem + setas */
+  .combo-stage {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Imagem grande */
+  .combo-image {
+    width: 100%;
+    max-width: 700px;
+    border-radius: 20px;
+  
+  }
+  
+  /* Setas */
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 108px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--marrom-madeira);
+    z-index: 2;
+  }
+  
+  .arrow.left {
+    left: 290px;
+  }
+  
+  .arrow.right {
+    right: 290px;
+  }
+  
+  /* Texto abaixo da imagem */
+  .combo-info {
+    margin-top: 80px;
+  }
+  
+  .combo-info h4 {
+    font-size: 42px;
+    margin-bottom: 8px;
+    color: var(--marrom-escuro);
+  }
+  
+  .combo-info p {
+    font-size: 19px;
+    margin-bottom: 12px;
+  }
+  
+  .combo-info .price {
+    margin-bottom: -50px;
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--marrom-madeira);
+  }
+  
+
+  /* Container do slide */
+.combo-slide {
+    animation: slideIn 0.35s ease;
+  }
+  
+  /* Direção direita */
+  .combo-slide.right {
+    animation-name: slideFromRight;
+  }
+  
+  /* Direção esquerda */
+  .combo-slide.left {
+    animation-name: slideFromLeft;
+  }
+  
+  @keyframes slideFromRight {
+    from {
+      opacity: 0;
+      transform: translateX(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideFromLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  

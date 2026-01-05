@@ -1,0 +1,76 @@
+.depoimentos {
+    padding: 140px 0;
+    background-color: var(--bege-claro);
+    overflow: hidden;
+    text-align: center;
+  }
+  
+  .depoimentos h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    margin-bottom: 80px;
+    color: var(--marrom-escuro);
+  }
+
+  
+  /* Área visível */
+  .depoimentos-wrapper {
+    overflow: hidden;
+  }
+  
+  /* Trilha animada */
+  .depoimentos-track {
+    display: flex;
+    gap: 32px;
+    width: max-content;
+    animation: scroll 30s linear infinite;
+  }
+  
+  /* Card */
+  .depoimento-card {
+    display: flex;
+    align-items: center;
+    gap: 29px;
+    min-width: 260px;
+    background: white;
+    padding: 32px;
+    border-radius: 18px;
+    border: 1px solid #E8B7C8;
+    
+  }
+  
+  /* Avatar */
+  .avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  /* Texto */
+ 
+  .depoimento-texto p {
+    max-width: 400px;
+    line-height: 1.6;
+    text-align: left;
+    white-space: normal;
+    word-break: break-word;
+    font-size: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .nome {
+    font-weight: bold;
+    color: var(--marrom-madeira);
+  }
+  
+  /* Animação */
+  @keyframes scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-20%);
+    }
+  }
+  

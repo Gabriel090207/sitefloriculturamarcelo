@@ -1,0 +1,44 @@
+.header {
+  position: relative; /* ESSENCIAL */
+  height: 90px;
+  background-color: var(--marrom-madeira);
+  padding: 0 64px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Wrapper da logo */
+.logo-wrapper {
+  position: absolute;
+  left: 4px;
+  bottom: -47px; /* controla quanto sai do header */
+  z-index: 10;
+}
+
+/* Logo */
+.logo {
+ 
+  height: 130px;
+  width: auto;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,0.25));
+}
+
+/* Navegação */
+.nav a {
+  color: var(--bege-claro);
+  margin-left: 24px;
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-block; /* necessário para o transform */
+  transition: 
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.nav a:hover {
+  color: #8a8883; /* tom mais escuro e elegante */
+  transform: translateY(2px); /* efeito de afundar */
+}
+
+  

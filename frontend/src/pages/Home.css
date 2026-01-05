@@ -1,0 +1,68 @@
+.hero {
+    background:
+      linear-gradient(
+        rgba(74, 47, 36, 0.35),
+        rgba(74, 47, 36, 0.35)
+      ),
+      url('../assets/hero.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  
+    padding: 170px 64px;
+    color: var(--bege-claro);
+  }
+  
+  .hero h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+  
+  .hero p {
+    font-size: 18px;
+    margin-bottom: 32px;
+    max-width: 500px;
+  }
+  
+  .hero-buttons button {
+    padding: 14px 38px;
+    margin-right: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 18px;
+    transition: 
+      transform 0.25s ease,
+      box-shadow 0.25s ease,
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+  
+  /* Botão principal */
+  .btn-primary {
+    background-color: var(--rosa-suave);
+    color: white;
+    border: none;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+  }
+  
+  .btn-primary:hover {
+    background-color: #d9a6b6; /* rosa levemente mais escuro */
+    transform: translateY(2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Botão secundário */
+  .btn-secondary {
+    background-color: transparent;
+    border: 2px solid var(--rosa-suave);
+    color: var(--bege-claro);
+  }
+  
+  .btn-secondary:hover {
+    background-color: rgba(232, 183, 200, 0.15);
+    color: #ffffff;
+    transform: translateY(2px);
+  }
+  

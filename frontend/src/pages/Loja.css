@@ -1,0 +1,212 @@
+.loja-banner {
+  height: 360px;
+  background-image: url('/hero.jpg'); /* pode usar outra imagem depois */
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  margin-top: -140px; /* compensa o padding da página */
+}
+
+.loja-banner-overlay {
+  height: 100%;
+  width: 100%;
+  background: rgba(239, 230, 219, 0.82); /* bege translúcido */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 64px;
+}
+
+.loja-banner h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  color: var(--marrom-escuro);
+  margin-bottom: 12px;
+}
+
+.loja-banner p {
+  font-size: 20px;
+  max-width: 520px;
+}
+
+.loja {
+  padding: 140px 64px;
+  background-color: var(--bege-claro);
+}
+
+
+
+.loja-subtitle {
+  font-size: 18px;
+  
+}
+
+/* LAYOUT */
+.loja-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 48px;
+  margin-top: -160px;
+
+}
+
+/* SIDEBAR */
+.loja-sidebar {
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 18px;
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.06);
+  height: fit-content;
+}
+
+.loja-sidebar h4 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: var(--marrom-escuro);
+}
+
+.loja-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 32px;
+}
+
+.loja-sidebar li {
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: color 0.3s;
+}
+
+.loja-sidebar li:hover {
+  color: var(--rosa-suave);
+}
+
+/* GRID DE PRODUTOS */
+.produtos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 32px;
+}
+
+/* CARD */
+.produto-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.produto-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.produto-card img {
+  width: 100%;
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
+
+.produto-card h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: var(--marrom-escuro);
+}
+
+.produto-card p {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.produto-card strong {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 24px;
+  color: var(--marrom-madeira);
+}
+
+
+
+/* RESPONSIVO */
+@media (max-width: 900px) {
+  .loja-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .loja-sidebar {
+    order: 2;
+  }
+}
+
+
+.produto-actions {
+  display: flex;
+  gap: 8px;
+  
+  margin-bottom: -10px;
+}
+
+.btn-comprar {
+  padding: 10px 34px;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  border: none;
+  background: var(--rosa-suave);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-comprar:hover {
+  background: var(--rosa-escuro);
+}
+
+.btn-detalhes {
+  padding: 10px 26px;
+  border-radius: 24px;
+  border: 2px solid var(--rosa-suave);
+  background: transparent;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-detalhes:hover {
+  background: var(--rosa-suave);
+}
+
+.logo-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-flor {
+  font-size: 26px;
+}
+
+.logo-nome {
+  font-family: 'Great Vibes', cursive;
+  font-size: 74px;
+  color: var(--marrom-pastel);
+  letter-spacing: 1px;
+  margin-top: 60px;
+
+}
+
+
+.cart-button {
+  padding: 6px;
+  border-radius: 50%;
+}
+
+.cart-button:hover {
+  background: rgba(107, 74, 58, 0.08);
+}
+
+
+.cart-button { background: none; border: none; cursor: pointer; color: var(--marrom-escuro); font-size: 30px; display: flex; align-items: center; transition: transform 0.25s ease, color 0.25s ease; margin-top: 45px; margin-left: 70%; } /* Hover elegante */ .cart-button:hover { color: #6b4a3a; /* marrom um pouco mais escuro */ transform: translateY(2px); }
