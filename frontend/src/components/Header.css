@@ -27,7 +27,7 @@
 /* Navegação */
 .nav a {
   color: var(--bege-claro);
-  margin-left: 24px;
+  margin-left: 34px;
   text-decoration: none;
   font-weight: 500;
   display: inline-block; /* necessário para o transform */

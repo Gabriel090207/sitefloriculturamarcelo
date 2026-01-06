@@ -11,8 +11,8 @@ function Home() {
     <>
      <section className="hero">
   <div className="hero-content">
-    <h2>Transformamos sentimentos em flores</h2>
-    <p>Entregamos carinho em cada detalhe 🌸</p>
+    <h2>Transformamos Sentimentos em Flores</h2>
+    <p>Entregamos carinho em cada detalhe </p>
 
     <div className="hero-buttons">
       <button className="btn-primary">Comprar Agora</button>

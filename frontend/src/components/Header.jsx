@@ -17,7 +17,6 @@ function Header() {
       <nav className="nav">
         <NavLink to="/" end>Home</NavLink>
         <NavLink to="/loja">Loja</NavLink>
-        <NavLink to="/combos">Combos</NavLink>
         <NavLink to="/sobre">Sobre</NavLink>
         <NavLink to="/contato">Contato</NavLink>
       </nav>

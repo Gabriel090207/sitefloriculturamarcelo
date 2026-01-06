@@ -9,7 +9,8 @@
   font-size: 35px;
   color: #fff;
   margin-top: 20px;
-  margin-bottom: 80px;
+  margin-bottom: 110px;
+  text-align: center; 
 }
 
 /* Carousel */
@@ -45,12 +46,15 @@
 /* Item */
 .arranjo-item img {
   width: 100%;
+  max-width: 330px; /* 👈 controla o tamanho */
+  margin: 0 auto;   /* 👈 mantém centralizado */
+  display: block;
   border-radius: 18px;
-  margin-bottom: 14px;
 }
 
+
 .arranjo-item p {
-    margin-top: 15px;
+    margin-top: 47px;
     font-weight: bold;
     font-size: 20px;
     color: #fff;
@@ -66,7 +70,19 @@
   cursor: pointer;
     color: #fff;
   transition: transform 0.25s ease, color 0.25s ease;
+
 }
+
+.arranjos-arrow.left {
+ margin-left: 150px;
+
+}
+
+
+.arranjos-arrow.right {
+  margin-right: 150px;
+ 
+ }
 
 .arranjos-arrow:hover {
   transform: translateY(2px);
@@ -75,7 +91,9 @@
 
 /* CTA */
 .arranjos-cta {
-  margin-top: 48px;
+  margin-top: 98px;
+  display: flex;
+  justify-content: flex-end; /* 👉 joga pra direita */
 }
 
 .arranjos-cta a {

@@ -79,18 +79,7 @@ function Loja() {
   return (
     <section className="loja">
 
-<section className="loja-banner">
-<div className="logo-text">
 
-  <span className="logo-nome">Valle das Flores</span>
-
-
-  <button className="cart-button">
-  <FiShoppingCart size={38} />
-</button>
-</div>
-
-</section>
 
       
 
@@ -124,8 +113,8 @@ function Loja() {
               <p>{produto.description}</p>
               <strong>{produto.price}</strong>
               <div className="produto-actions">
-  <button className="btn-comprar">Comprar</button>
-  <button className="btn-detalhes">Ver detalhes</button>
+  <button className="btn-comprar">Por no Carrinho</button>
+  <button className="btn-detalhes">Detalhes</button>
 </div>
 
             </div>
