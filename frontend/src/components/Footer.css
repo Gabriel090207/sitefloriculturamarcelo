@@ -1,0 +1,73 @@
+.footer {
+  background-color: var(--marrom-madeira);
+  color: var(--bege-claro);
+  padding: 64px;
+  width: 100%;
+}
+
+/* GRID */
+.footer-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* TÍTULOS */
+.footer h4 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: var(--bege-claro);
+}
+
+/* TEXTO */
+.footer p,
+.footer li {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--bege-claro);
+}
+
+/* LISTAS */
+.footer ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer li {
+  margin-bottom: 10px;
+}
+
+/* LINKS */
+.footer a {
+  color: var(--bege-claro);
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.footer a:hover {
+  color: var(--rosa-suave);
+}
+
+/* CONTATO */
+.footer-contact i {
+  margin-right: 8px;
+  color: var(--rosa-suave);
+}
+
+/* COPYRIGHT */
+.footer-bottom {
+  margin-top: 48px;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* RESPONSIVO */
+@media (max-width: 900px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}

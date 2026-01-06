@@ -1,7 +1,9 @@
 import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Loja from './pages/Loja'
+import Sobre from './pages/Sobre'
 import Header from './components/Header'
+import Footer from './components/Footer'
 
 function App() {
   return (
@@ -11,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/loja" element={<Loja />} />
+        <Route path="/sobre" element={<Sobre />} />
       </Routes>
 
 
@@ -23,6 +26,8 @@ function App() {
   <i className="fab fa-whatsapp"></i>
 </a>
 
+
+ <Footer />
     </>
 
     
