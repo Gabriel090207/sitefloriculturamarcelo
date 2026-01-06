@@ -7,7 +7,7 @@ function Destaques() {
 
       <div className="cards">
         <div className="card">
-          <img src="/placeholder.jpg" alt="Buquê Romântico" />
+          <img src="/buque1.png" alt="Buquê Romântico" />
           <div className="card-content">
             <h4>Buquê Romântico</h4>
             <p>Um gesto delicado para quem você ama.</p>
@@ -17,7 +17,7 @@ function Destaques() {
         </div>
 
         <div className="card">
-          <img src="/placeholder.jpg" alt="Cesta Especial" />
+          <img src="/cesta1.png" alt="Cesta Especial" />
           <div className="card-content">
             <h4>Cesta Especial</h4>
             <p>Surpreenda com carinho e elegância.</p>
@@ -27,7 +27,7 @@ function Destaques() {
         </div>
 
         <div className="card">
-          <img src="/placeholder.jpg" alt="Arranjo Floral" />
+          <img src="/arranjo1.png" alt="Arranjo Floral" />
           <div className="card-content">
             <h4>Arranjo Floral</h4>
             <p>Beleza natural para qualquer ocasião.</p>

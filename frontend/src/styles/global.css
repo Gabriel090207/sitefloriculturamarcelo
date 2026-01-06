@@ -10,9 +10,9 @@
   /* Paleta baseada na logo (bege, rosa, marrom) */
   :root {
     --bege-claro: #F5F1E8;
-    --rosa-suave: #E8B7C8;
-    --marrom-madeira: #4A2F24;
-    --marrom-escuro: #4A2F24;
+    --rosa-suave: #e3a4ba;
+    --marrom-madeira: #93654d;
+    --marrom-escuro:  #4c372c;
   }
   
   /* Estilo global */
