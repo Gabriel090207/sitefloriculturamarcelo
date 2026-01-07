@@ -11,6 +11,9 @@ import { useCart } from './context/CartContext'
 import CartToast from './components/CartToast'
 import CartDrawer from './components/CartDrawer'
 
+import ScrollToTop from './components/ScrollToTop'
+
+
 function App() {
   const routerLocation = useLocation()
   const { clearCart, totalItems } = useCart()
@@ -36,6 +39,8 @@ function App() {
 
   return (
     <>
+
+     <ScrollToTop />
       <Header />
       <CartToast />
 

@@ -49,34 +49,35 @@ const [phrase, setPhrase] = useState('')
 
 
 const handleCheckoutWhatsApp = (customPhrase = '') => {
+  const phoneNumber = '5516994287026'
 
-  const phoneNumber = '5516994287026' // coloque seu número com DDI + DDD
-
-  let message = 'Olá! Gostaria de fazer um pedido 🌸\n\n'
-  message += '🛒 *Meu pedido:*\n\n'
+  let message = `Olá! Gostaria de fazer um pedido.\n\n`
+  message += `Pedido via site – Valle das Flores\n\n`
 
   cartItems.forEach((item) => {
     message += `• ${item.name}\n`
     message += `  Quantidade: ${item.quantity}\n`
-    message += `  Preço: ${item.price}\n`
+    message += `  Valor: ${item.price}\n`
     message += `  Foto: ${window.location.origin}${item.image}\n\n`
   })
 
-if (customPhrase) {
-  message += `🕊️ *Mensagem para a homenagem:*\n"${customPhrase}"\n\n`
-}
+  if (customPhrase) {
+    message += `Mensagem para a homenagem:\n`
+    message += `"${customPhrase}"\n\n`
+  }
 
-  message += `💰 *Total do pedido:* R$ ${totalPrice
-  .toFixed(2)
-  .replace('.', ',')}\n\n`
+  message += `Total do pedido: R$ ${totalPrice
+    .toFixed(2)
+    .replace('.', ',')}\n\n`
 
+  message += `Aguardo orientações para finalizar.\nObrigado(a)!`
 
   const encodedMessage = encodeURIComponent(message)
-
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
 
   window.open(whatsappUrl, '_blank')
 }
+
 
 
   if (!visible) return null
