@@ -61,7 +61,7 @@ const handleCheckoutWhatsApp = (customPhrase = '') => {
     message += `  Preço: ${item.price}\n`
     message += `  Foto: ${window.location.origin}${item.image}\n\n`
   })
-  
+
 if (customPhrase) {
   message += `🕊️ *Mensagem para a homenagem:*\n"${customPhrase}"\n\n`
 }
@@ -163,12 +163,13 @@ if (customPhrase) {
 
       </aside>
 
-      {showPhraseModal && (
+     {showPhraseModal && (
   <div className="phrase-overlay">
-    <div className="phrase-modal">
+    <div className="phrase-card">
       <h4>Mensagem de Homenagem</h4>
-      <p>
-        Deseja adicionar uma frase para acompanhar a coroa?
+
+      <p className="phrase-subtitle">
+        Se desejar, escreva uma frase para acompanhar a coroa.
       </p>
 
       <textarea
@@ -179,25 +180,26 @@ if (customPhrase) {
 
       <div className="phrase-actions">
         <button
-          className="btn-cancel"
+          className="phrase-cancel"
           onClick={() => setShowPhraseModal(false)}
         >
-          Cancelar
+          Agora não
         </button>
 
         <button
-          className="btn-confirm"
+          className="phrase-confirm"
           onClick={() => {
             setShowPhraseModal(false)
             handleCheckoutWhatsApp(phrase)
           }}
         >
-          Confirmar
+          Confirmar mensagem
         </button>
       </div>
     </div>
   </div>
 )}
+
 
     </>
   )

@@ -26,8 +26,10 @@ function App() {
     const toAnotherPage = routerLocation.pathname !== '/loja'
 
     if (fromLoja && toAnotherPage) {
-      clearCart()
-    }
+  clearCart()
+  localStorage.removeItem('categoriaAtiva')
+}
+
 
     previousPath.current = routerLocation.pathname
   }, [routerLocation.pathname, clearCart])

@@ -84,6 +84,7 @@
 
 .loja-sidebar li:hover {
   color: var(--marrom-madeira);
+    font-weight: 600;
 }
 
 /* GRID DE PRODUTOS */
@@ -238,4 +239,22 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.loja-sidebar li {
+ margin-right: -13px;
+  padding: 8px 11px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.loja-sidebar li:hover {
+  background: rgba(227, 164, 186, 0.15);
+}
+
+.loja-sidebar li.active {
+  background: rgba(227, 164, 186, 0.25);
+  color: var(--marrom-madeira);
+  font-weight: 600;
 }

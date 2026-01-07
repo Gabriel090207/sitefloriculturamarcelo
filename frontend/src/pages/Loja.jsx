@@ -243,7 +243,13 @@ const produtos = [
 
 function Loja() {
 
-  const [categoriaAtiva, setCategoriaAtiva] = useState('Todos')
+  const [categoriaAtiva, setCategoriaAtiva] = useState(() => {
+  return localStorage.getItem('categoriaAtiva') || 'Todos'
+})
+
+useEffect(() => {
+  localStorage.setItem('categoriaAtiva', categoriaAtiva)
+}, [categoriaAtiva])
 
 
   const location = useLocation()
@@ -275,14 +281,56 @@ function Loja() {
         <aside className="loja-sidebar">
           <h4>Categorias</h4>
          <ul>
-  <li onClick={() => setCategoriaAtiva('Todos')}>Todos</li>
-  <li onClick={() => setCategoriaAtiva('Buquês')}>Buquês</li>
-  <li onClick={() => setCategoriaAtiva('Arranjos')}>Arranjos</li>
-  <li onClick={() => setCategoriaAtiva('Cestas & Combos')}>Cestas & Combos</li>
-  <li onClick={() => setCategoriaAtiva('CoroasdeRosas')}>Coroas de Rosas</li>
-   <li onClick={() => setCategoriaAtiva('CoroasdeCampo')}>Coroas Flores do Campo</li>
-  <li onClick={() => setCategoriaAtiva('Datas Especiais')}>Datas Especiais</li>
+  <li
+    className={categoriaAtiva === 'Todos' ? 'active' : ''}
+    onClick={() => setCategoriaAtiva('Todos')}
+  >
+    Todos
+  </li>
+
+  <li
+    className={categoriaAtiva === 'Buquês' ? 'active' : ''}
+    onClick={() => setCategoriaAtiva('Buquês')}
+  >
+    Buquês
+  </li>
+
+  <li
+    className={categoriaAtiva === 'Arranjos' ? 'active' : ''}
+    onClick={() => setCategoriaAtiva('Arranjos')}
+  >
+    Arranjos
+  </li>
+
+  <li
+    className={categoriaAtiva === 'Cestas & Combos' ? 'active' : ''}
+    onClick={() => setCategoriaAtiva('Cestas & Combos')}
+  >
+    Cestas & Combos
+  </li>
+
+  <li
+    className={categoriaAtiva === 'CoroasdeRosas' ? 'active' : ''}
+    onClick={() => setCategoriaAtiva('CoroasdeRosas')}
+  >
+    Coroas de Rosas
+  </li>
+
+  <li
+    className={categoriaAtiva === 'CoroasdeCampo' ? 'active' : ''}
+    onClick={() => setCategoriaAtiva('CoroasdeCampo')}
+  >
+    Coroas Flores do Campo
+  </li>
+
+  <li
+    className={categoriaAtiva === 'Datas Especiais' ? 'active' : ''}
+    onClick={() => setCategoriaAtiva('Datas Especiais')}
+  >
+    Datas Especiais
+  </li>
 </ul>
+
 
 
           <h4>Ocasiões</h4>
@@ -291,6 +339,7 @@ function Loja() {
             <li>Romântico</li>
             <li>Agradecimento</li>
             <li>Condolências</li>
+             <li onClick={() => setCategoriaAtiva('Datas Especiais')}>Datas Especiais</li>
           </ul>
         </aside>
 
