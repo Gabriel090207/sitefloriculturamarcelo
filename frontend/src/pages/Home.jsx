@@ -3,6 +3,7 @@ import Destaques from '../components/Destaques'
 import Combos from '../components/Combos'
 import Depoimentos from '../components/Depoimentos'
 import ArranjosHome from '../components/ArranjosHome'
+import Divider from '../components/Divider'
 
 
 
@@ -30,6 +31,8 @@ function Home() {
 
       {/* Próximas seções (ainda vazias) */}
       <Combos />
+
+      <Divider />
 
       <Depoimentos />
     </>

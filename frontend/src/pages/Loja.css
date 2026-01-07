@@ -258,3 +258,99 @@
   color: var(--marrom-madeira);
   font-weight: 600;
 }
+
+/* OVERLAY */
+.produto-detalhe-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 3000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  animation: fadeOverlay 0.3s ease forwards;
+}
+
+/* CARD */
+.produto-detalhe-card {
+  background: #fff;
+  width: 90%;
+  max-width: 420px;
+  padding: 26px;
+  border-radius: 22px;
+
+  text-align: left;
+
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+
+  animation: detalheEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes detalheEnter {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* FECHAR */
+.produto-detalhe-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* IMAGEM */
+.produto-detalhe-img {
+  width: 100%;
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
+
+.produto-detalhe-card h3 {
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+/* DESCRIÇÃO */
+.produto-detalhe-desc {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+/* INFOS */
+.produto-detalhe-info {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  
+}
+
+.produto-detalhe-info div {
+  background: var(--bege-claro);
+  padding: 12px;
+  border-radius: 14px;
+  flex: 1;
+}
+
+.produto-detalhe-info strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.produto-detalhe-info span {
+  font-size: 14px;
+}

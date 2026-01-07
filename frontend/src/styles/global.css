@@ -95,3 +95,16 @@
   font-size: 12px;
   font-weight: bold;
 }
+
+
+@media (max-width: 768px) {
+  .whatsapp-float {
+   
+    right: 24px;
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+
+  }
+  
+}

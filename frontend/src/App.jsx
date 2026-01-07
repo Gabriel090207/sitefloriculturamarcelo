@@ -14,6 +14,7 @@ import CartDrawer from './components/CartDrawer'
 import ScrollToTop from './components/ScrollToTop'
 
 
+
 function App() {
   const routerLocation = useLocation()
   const { clearCart, totalItems } = useCart()

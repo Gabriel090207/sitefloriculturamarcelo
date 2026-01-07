@@ -1,0 +1,23 @@
+.divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  
+    width: 100%;
+    margin: 38px 0;
+    margin-bottom: -40px;
+  }
+  
+  .divider-line {
+    width: 820px; /* controla o tamanho da linha */
+    height: 2px;
+    background: var(--marrom-madeira);
+  }
+  
+  .divider-logo {
+    height: 92px;
+    width: auto;
+    opacity: 0.85;
+  }
+  

@@ -46,4 +46,111 @@
   transform: translateY(2px); /* efeito de afundar */
 }
 
+/* BOTÃO MENU MOBILE */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--bege-claro);
+  font-size: 32px;
+  cursor: pointer;
+  margin-right: -40px;
+  margin-top: 10px;
+}
+
+/* OVERLAY */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1500;
+}
+
+/* SIDEBAR */
+.menu-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 260px;
+  height: 100vh;
+  background: var(--marrom-madeira);
+  z-index: 1600;
+
+  padding: 32px 20px;
+
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+
+  display: flex;
+flex-direction: column;
+align-items: center;
+
+}
+
+
+.menu-sidebar.open {
+  transform: translateX(0);
+}
+
+/* FECHAR */
+.menu-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+ 
+  background: none;
+  border: none;
+  color: var(--bege-claro);
+  font-size: 21px;
+  cursor: pointer;
+}
+
+
+/* NAV MOBILE */
+.menu-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  margin-top: 50px;
+}
+
+
+.menu-nav a {
+  color: var(--bege-claro);
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 500;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.menu-nav a:hover {
+  transform: translateY(2px);
+  opacity: 0.85;
+}
+
+
+
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .logo-wrapper {
+    position: absolute;
+    left: -25px;
+    bottom: -29px; /* controla quanto sai do header */
+    z-index: 10;
+  }
   
+  /* Logo */
+  .logo {
+   
+    height: 110px;
+    width: auto;
+  }
+}

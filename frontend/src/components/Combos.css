@@ -1,6 +1,6 @@
 .combos {
     padding: 110px 64px;
-    background-color: #efe6db;
+    background-color: var(--bege-claro);
     text-align: center;
   }
   

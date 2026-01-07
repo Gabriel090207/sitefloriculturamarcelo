@@ -12,9 +12,13 @@ const produtos = [
     id: 1,
     name: 'Buquê Romântico',
     description: 'Um gesto delicado para quem você ama.',
+    details: 'Buquê confeccionado com flores frescas e selecionadas, ideal para presentear em momentos especiais.',
+    flowersQty: '20 a 25 flores',
+    productionTime: 'Até 2 horas',
     price: 'R$ 129,90',
     image: '/buque1.png',
-  },
+  }
+  ,
   {
     id: 2,
     name: 'Buquê Romântico',
@@ -243,6 +247,9 @@ const produtos = [
 
 function Loja() {
 
+  const [produtoSelecionado, setProdutoSelecionado] = useState(null)
+
+
   const [categoriaAtiva, setCategoriaAtiva] = useState(() => {
   return localStorage.getItem('categoriaAtiva') || 'Todos'
 })
@@ -370,13 +377,57 @@ useEffect(() => {
   Por no Carrinho
 </button>
 
-  <button className="btn-detalhes">Detalhes</button>
+<button
+  className="btn-detalhes"
+  onClick={() => setProdutoSelecionado(produto)}
+>
+  Detalhes
+</button>
+
 </div>
 
             </div>
           ))}
         </div>
       </div>
+
+      {produtoSelecionado && (
+  <div className="produto-detalhe-overlay">
+    <div className="produto-detalhe-card">
+      <button
+        className="produto-detalhe-close"
+        onClick={() => setProdutoSelecionado(null)}
+      >
+        ✕
+      </button>
+
+      <img
+        src={produtoSelecionado.image}
+        alt={produtoSelecionado.name}
+        className="produto-detalhe-img"
+      />
+
+      <h3>{produtoSelecionado.name}</h3>
+
+      <p className="produto-detalhe-desc">
+        {produtoSelecionado.details}
+      </p>
+
+      <div className="produto-detalhe-info">
+        <div>
+          <strong>Quantidade de flores</strong>
+          <span>{produtoSelecionado.flowersQty}</span>
+        </div>
+
+        <div>
+          <strong>Tempo de produção</strong>
+          <span>{produtoSelecionado.productionTime}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
     </section>
   )
 }
