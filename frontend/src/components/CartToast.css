@@ -1,0 +1,27 @@
+.cart-toast {
+  position: fixed;
+  top: 98px;
+  right: -400px; /* começa fora da tela */
+  z-index: 2000;
+
+  background: var(--marrom-escuro);
+  color: white;
+
+  padding: 14px 26px;
+  border-radius: 32px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+  opacity: 0;
+  transition:
+    right 0.45s ease,
+    opacity 0.3s ease;
+}
+
+.cart-toast.show {
+  right: 24px; /* entra da direita para a esquerda */
+  opacity: 1;
+}

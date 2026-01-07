@@ -46,7 +46,7 @@
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 48px;
-  margin-top: -60px;
+  margin-top: 20px;
 
 }
 
@@ -57,7 +57,11 @@
   border-radius: 18px;
   box-shadow: 0 16px 30px rgba(0, 0, 0, 0.06);
   height: fit-content;
+
+  position: sticky;
+  top: 160px;
 }
+
 
 .loja-sidebar h4 {
   font-size: 18px;
@@ -79,7 +83,7 @@
 }
 
 .loja-sidebar li:hover {
-  color: var(--rosa-suave);
+  color: var(--marrom-madeira);
 }
 
 /* GRID DE PRODUTOS */
@@ -218,3 +222,20 @@
 
 
 .cart-button { background: none; border: none; cursor: pointer; color: var(--marrom-escuro); font-size: 30px; display: flex; align-items: center; transition: transform 0.25s ease, color 0.25s ease; margin-top: 45px; margin-left: 60%; } /* Hover elegante */ .cart-button:hover { color: #6b4a3a; /* marrom um pouco mais escuro */ transform: translateY(2px); }
+
+.produto-card {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.4s ease forwards;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

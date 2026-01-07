@@ -1,19 +1,41 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+
 import Home from './pages/Home'
 import Loja from './pages/Loja'
 import Sobre from './pages/Sobre'
 import Header from './components/Header'
 import Footer from './components/Footer'
 
+import { useCart } from './context/CartContext'
+import CartToast from './components/CartToast'
+import CartDrawer from './components/CartDrawer'
 
 function App() {
-  const location = useLocation()
+  const routerLocation = useLocation()
+  const { clearCart, totalItems } = useCart()
 
-  const isLoja = location.pathname === '/loja'
+  const [cartOpen, setCartOpen] = useState(false)
+
+  const previousPath = useRef(routerLocation.pathname)
+
+  const isLoja = routerLocation.pathname === '/loja'
+
+  useEffect(() => {
+    const fromLoja = previousPath.current === '/loja'
+    const toAnotherPage = routerLocation.pathname !== '/loja'
+
+    if (fromLoja && toAnotherPage) {
+      clearCart()
+    }
+
+    previousPath.current = routerLocation.pathname
+  }, [routerLocation.pathname, clearCart])
 
   return (
     <>
       <Header />
+      <CartToast />
 
       <Routes>
         <Route path="/" element={<Home />} />
@@ -23,8 +45,15 @@ function App() {
 
       {/* BOTÃO FLUTUANTE */}
       {isLoja ? (
-        <button className="cart-float">
+        <button
+          className="cart-float"
+          onClick={() => setCartOpen(true)}
+        >
           <i className="fa-solid fa-cart-shopping"></i>
+
+          {totalItems > 0 && (
+            <span className="cart-badge">{totalItems}</span>
+          )}
         </button>
       ) : (
         <a
@@ -37,10 +66,14 @@ function App() {
         </a>
       )}
 
+      <CartDrawer
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+      />
+
       <Footer />
     </>
   )
 }
-
 
 export default App

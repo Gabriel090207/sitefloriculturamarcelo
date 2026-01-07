@@ -1,76 +1,110 @@
 .depoimentos {
-    padding: 140px 0;
-    background-color: var(--bege-claro);
-    overflow: hidden;
-    text-align: center;
-  }
-  
-  .depoimentos h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 36px;
-    margin-bottom: 80px;
-    color: var(--marrom-escuro);
-  }
+  padding: 140px 0;
+  background-color: var(--bege-claro);
+  overflow: hidden;
+  text-align: center;
+}
 
-  
-  /* Área visível */
-  .depoimentos-wrapper {
-    overflow: hidden;
-  }
-  
-  /* Trilha animada */
-  .depoimentos-track {
-    display: flex;
-    gap: 32px;
-    width: max-content;
-    animation: scroll 30s linear infinite;
-  }
-  
-  /* Card */
-  .depoimento-card {
-    display: flex;
-    align-items: center;
-    gap: 29px;
-    min-width: 260px;
-    background: white;
-    padding: 32px;
-    border-radius: 18px;
-    border: 1px solid #E8B7C8;
-    
-  }
-  
-  /* Avatar */
-  .avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  
-  /* Texto */
+/* Título */
+.depoimentos h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  margin-bottom: 80px;
+  color: var(--marrom-escuro);
+}
+
+/* Área visível */
+.depoimentos-wrapper {
+overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+/* Trilha animada */
+.depoimentos-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+
+
+.depoimentos-track-inner {
+  display: flex;
+}
+
+
+/* Card */
+.depoimento-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+
+  width: 650px;
+  min-width: 280px;
+  flex-shrink: 0;
+  margin-right: 32px;
+
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 18px;
+  border: 1px solid #E8B7C8;
+
+  position: relative;
+
+}
+
+
+
+/* Avatar */
+.avatar {
  
-  .depoimento-texto p {
-    max-width: 400px;
-    line-height: 1.6;
-    text-align: left;
-    white-space: normal;
-    word-break: break-word;
-    font-size: 15px;
-    margin-bottom: 30px;
+  margin-top: 20px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* Texto */
+.depoimento-texto {
+  margin-top: 20px;
+  text-align: left;
+  padding-right: 40px; /* espaço para o nome no canto */
+}
+
+
+.depoimento-texto p {
+  line-height: 1.6;
+  font-size: 15px;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.nome {
+  position: absolute;
+  bottom: 26px;
+  right: 40px;
+
+  font-weight: bold;
+  color: var(--marrom-madeira);
+  font-size: 16px;
+}
+
+
+/* Animação correta para loop infinito */
+
+
+/* Pausa ao passar o mouse (opcional, elegante) */
+.depoimentos-wrapper:hover .depoimentos-track {
+  animation-play-state: paused;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .depoimento-card {
+    width: 300px;
+    min-width: 300px;
   }
-  
-  .nome {
-    font-weight: bold;
-    color: var(--marrom-madeira);
-  }
-  
-  /* Animação */
-  @keyframes scroll {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-20%);
-    }
-  }
-  
+}

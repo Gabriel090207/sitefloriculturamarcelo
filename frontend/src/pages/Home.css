@@ -21,7 +21,8 @@
 
 /* 🔑 aqui é onde você controla a altura do texto */
 .hero-content {
-  margin-top: -80px; /* ajuste fino */
+  margin-top: 0;
+
 }
 
 /* opcional */
