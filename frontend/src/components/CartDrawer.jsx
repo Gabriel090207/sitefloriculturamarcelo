@@ -75,6 +75,20 @@ const handleCheckoutWhatsApp = (customPhrase = '') => {
   const encodedMessage = encodeURIComponent(message)
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
 
+  const registerSale = () => {
+  const sales =
+    JSON.parse(localStorage.getItem('salesCount')) || {}
+
+  cartItems.forEach((item) => {
+    sales[item.id] = (sales[item.id] || 0) + item.quantity
+  })
+
+  localStorage.setItem('salesCount', JSON.stringify(sales))
+}
+
+
+
+  registerSale()
   window.open(whatsappUrl, '_blank')
 }
 

@@ -20,4 +20,83 @@
     width: auto;
     opacity: 0.85;
   }
+
+
+  @media (max-width: 1920px) {
+  .divider-line {
+    width: 660px;
+  }
+
+  .divider-logo {
+    height: 78px;
+  }
+}
+  /* =========================
+   NOTEBOOK / TABLET GRANDE
+   até 1024px
+========================= */
+@media (max-width: 1024px) {
+  .divider-line {
+    width: 560px;
+  }
+
+  .divider-logo {
+    height: 78px;
+  }
+}
+
+/* =========================
+   TABLET
+   até 768px
+========================= */
+@media (max-width: 768px) {
+  .divider {
+    gap: 12px;
+    margin: 32px 0;
+  }
+
+  .divider-line {
+    width: 360px;
+    height: 2px;
+  }
+
+  .divider-logo {
+    height: 64px;
+  }
+}
+
+/* =========================
+   MOBILE MÉDIO
+   até 480px
+========================= */
+@media (max-width: 480px) {
+  .divider {
+    gap: 10px;
+    margin: 28px 0;
+  }
+
+  .divider-line {
+    width: 180px;
+    height: 1.5px;
+  }
+
+  .divider-logo {
+    height: 52px;
+  }
+}
+
+/* =========================
+   MOBILE PEQUENO
+   até 360px
+========================= */
+@media (max-width: 360px) {
+  .divider-line {
+    width: 140px;
+  }
+
+  .divider-logo {
+    height: 44px;
+  }
+}
+
   
