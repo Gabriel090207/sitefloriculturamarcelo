@@ -148,66 +148,52 @@
 ========================= */
 @media (max-width: 768px) {
   .footer {
-    padding: 56px 28px 32px;
+    padding: 56px 20px 32px;
   }
 
+  /* 🔥 DESLIGA GRID COMPLETAMENTE */
   .footer-container {
-    grid-template-columns: 1fr;
-    gap: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+
+    margin: 0 !important;
+    max-width: 100%;
     text-align: center;
   }
 
+  /* VALLE DAS FLORES */
   .footer-about {
     max-width: 100%;
+  }
+
+  /* INSTITUCIONAL */
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* CONTATO */
+  .footer-contact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .footer-contact p {
     justify-content: center;
   }
 
+  /* REDES SOCIAIS */
+  .footer-social-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   .footer-social {
     justify-content: center;
-  }
-}
-
-/* =========================
-   MOBILE MÉDIO
-   até 480px
-========================= */
-@media (max-width: 480px) {
-  .footer {
-    padding: 48px 20px 28px;
-  }
-
-  .footer h4 {
-    font-size: 17px;
-  }
-
-  .footer p,
-  .footer li {
-    font-size: 14px;
-  }
-
-  .footer-social a {
-    font-size: 20px;
-  }
-
-  .footer-bottom {
-    margin-top: 48px;
-    font-size: 13px;
-  }
-}
-
-/* =========================
-   MOBILE PEQUENO
-   até 360px
-========================= */
-@media (max-width: 360px) {
-  .footer {
-    padding: 40px 16px 24px;
-  }
-
-  .footer-bottom {
-    font-size: 12px;
   }
 }
