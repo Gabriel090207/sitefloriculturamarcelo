@@ -52,7 +52,7 @@
   background: none;
   border: none;
   color: var(--bege-claro);
-  font-size: 32px;
+  font-size: 26px;
   cursor: pointer;
   margin-right: -40px;
   margin-top: 10px;
@@ -132,6 +132,10 @@ align-items: center;
 
 
 @media (max-width: 768px) {
+
+  .header { 
+    height: 60px;
+  }
   .nav {
     display: none;
   }
@@ -142,15 +146,15 @@ align-items: center;
 
   .logo-wrapper {
     position: absolute;
-    left: -25px;
-    bottom: -29px; /* controla quanto sai do header */
+    left: -18px;
+    bottom: -36px; /* controla quanto sai do header */
     z-index: 10;
   }
   
   /* Logo */
   .logo {
    
-    height: 110px;
+    height: 90px;
     width: auto;
   }
 }
