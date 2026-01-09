@@ -32,15 +32,26 @@ useEffect(() => {
 
 useEffect(() => {
   const sidebar = sidebarRef.current
+
+  if (!sidebar || !sidebar.updatePosition) return
+
+  // força recalcular depois que os produtos renderizam
+  requestAnimationFrame(() => {
+    sidebar.updatePosition()
+  })
+}, [categoriaAtiva])
+
+
+useEffect(() => {
+  const sidebar = sidebarRef.current
   const produtos = produtosRef.current
 
   if (!sidebar || !produtos) return
 
-  const onScroll = () => {
-    const sidebarRect = sidebar.getBoundingClientRect()
-    const produtosRect = produtos.getBoundingClientRect()
+  const offsetTop = 160
 
-    const offsetTop = 160
+  const updateSidebarPosition = () => {
+    const produtosRect = produtos.getBoundingClientRect()
     const limiteInferior =
       produtosRect.bottom - sidebar.offsetHeight - offsetTop
 
@@ -52,11 +63,18 @@ useEffect(() => {
       sidebar.style.top = `${produtos.offsetHeight - sidebar.offsetHeight}px`
     } else {
       sidebar.style.position = 'static'
+      sidebar.style.top = 'auto'
     }
   }
 
-  window.addEventListener('scroll', onScroll)
-  return () => window.removeEventListener('scroll', onScroll)
+  window.addEventListener('scroll', updateSidebarPosition)
+
+  // 👇 guarda a função para usar depois
+  sidebar.updatePosition = updateSidebarPosition
+
+  return () => {
+    window.removeEventListener('scroll', updateSidebarPosition)
+  }
 }, [])
 
 

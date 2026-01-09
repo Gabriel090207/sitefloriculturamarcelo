@@ -1,24 +1,29 @@
 import './Destaques.css'
 import { useEffect, useState } from 'react'
-import { produtos } from '../data/produtos'
+import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore'
+import { db } from '../firebase/firebase'
 
 function Destaques() {
   const [destaques, setDestaques] = useState([])
 
   useEffect(() => {
-    const sales =
-      JSON.parse(localStorage.getItem('salesCount')) || {}
+    async function fetchDestaques() {
+      const q = query(
+        collection(db, 'products'),
+        orderBy('sold', 'desc'),
+        limit(3)
+      )
 
-    const top3 = produtos
-      .map((produto) => ({
-        ...produto,
-        sold: sales[produto.id] || 0,
-      }))
-      .filter((p) => p.sold > 0)
-      .sort((a, b) => b.sold - a.sold)
-      .slice(0, 3)
+      const snapshot = await getDocs(q)
 
-    setDestaques(top3)
+      const produtos = snapshot.docs
+        .map((doc) => doc.data())
+        .filter((p) => p.sold > 0)
+
+      setDestaques(produtos)
+    }
+
+    fetchDestaques()
   }, [])
 
   if (destaques.length === 0) return null

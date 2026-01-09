@@ -45,10 +45,26 @@ const grupos = [
 ]
 
 function ArranjosHome() {
+
+  const isMobile = window.innerWidth <= 768
+
+  const itemsPerSlide = isMobile ? 1 : 3
+
+const slides = grupos.flatMap((grupo) => {
+  if (!isMobile) return [grupo]
+
+  // MOBILE: quebra cada item em um slide
+  return grupo.items.map((item) => ({
+    bg: grupo.bg,
+    items: [item],
+  }))
+})
+
+
   const [index, setIndex] = useState(0)
 
   const next = () => {
-    setIndex((prev) => (prev + 1) % grupos.length)
+    setIndex((prev) => (prev + 1) % slides.length )
   }
 
   const prev = () => {
@@ -58,7 +74,8 @@ function ArranjosHome() {
   return (
     <section
       className="arranjos-home"
-      style={{ backgroundColor: grupos[index].bg }}
+      style={{ backgroundColor: slides[index].bg }}
+
     >
       <div className="arranjos-header">
         <h2>Arranjos que transformam momentos</h2>
@@ -72,7 +89,8 @@ function ArranjosHome() {
             className="arranjos-track"
             style={{ transform: `translateX(-${index * 100}%)` }}
           >
-            {grupos.map((grupo, i) => (
+            {slides.map((grupo, i) => (
+
               <div className="arranjos-slide" key={i}>
                 {grupo.items.map((item) => (
                   <div className="arranjo-item" key={item.id}>

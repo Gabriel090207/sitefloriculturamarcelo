@@ -30,6 +30,7 @@
   width: 100%;
   height: 300px;        /* diminui a altura */
   object-fit: contain;
+  
   /* mostra a imagem inteira */
   /* cor de fundo elegante */
 }

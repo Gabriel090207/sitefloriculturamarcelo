@@ -107,3 +107,133 @@
   transform: translateY(2px);
   color: #5c4033;
 }
+
+
+/* =========================
+   NOTEBOOK / DESKTOP MENOR
+   até 1200px
+========================= */
+@media (max-width: 1200px) {
+  .arranjos-arrow.left {
+    margin-left: 60px;
+  }
+
+  .arranjos-arrow.right {
+    margin-right: 60px;
+  }
+
+  .arranjo-item img {
+    max-width: 300px;
+  }
+}
+
+/* =========================
+   TABLET
+   até 992px
+========================= */
+@media (max-width: 992px) {
+  .arranjos-home {
+    padding: 60px 40px;
+  }
+
+  .arranjos-header h2 {
+    font-size: 30px;
+    margin-bottom: 80px;
+  }
+
+  /* 2 itens por slide */
+  .arranjos-slide {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .arranjo-item img {
+    max-width: 280px;
+  }
+
+  .arranjos-arrow {
+    font-size: 40px;
+  }
+
+  .arranjos-arrow.left {
+    margin-left: 20px;
+  }
+
+  .arranjos-arrow.right {
+    margin-right: 20px;
+  }
+
+  .arranjos-cta {
+    justify-content: center;
+    margin-top: 70px;
+  }
+}
+
+/* =========================
+   MOBILE
+   até 768px
+========================= */
+@media (max-width: 768px) {
+  .arranjos-home {
+    padding: 50px 24px;
+  }
+
+  .arranjos-header h2 {
+    font-size: 26px;
+    margin-bottom: 60px;
+  }
+
+  /* 🔑 1 item por slide */
+  .arranjos-slide {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .arranjo-item img {
+    max-width: 260px;
+  }
+
+  .arranjo-item p {
+    font-size: 18px;
+    margin-top: 32px;
+  }
+
+  .arranjos-arrow {
+    font-size: 34px;
+  }
+
+  .arranjos-arrow.left,
+  .arranjos-arrow.right {
+    margin: 0;
+  }
+
+  .arranjos-carousel {
+    gap: 12px;
+  }
+
+  .arranjos-cta {
+    justify-content: center;
+    margin-top: 60px;
+  }
+}
+
+/* =========================
+   MOBILE PEQUENO
+   até 480px
+========================= */
+@media (max-width: 480px) {
+  .arranjos-header h2 {
+    font-size: 22px;
+  }
+
+  .arranjo-item img {
+    max-width: 230px;
+  }
+
+  .arranjo-item p {
+    font-size: 16px;
+  }
+
+  .arranjos-arrow {
+    font-size: 28px;
+  }
+}

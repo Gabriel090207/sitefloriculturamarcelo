@@ -1,6 +1,11 @@
 import { useCart } from '../context/CartContext'
 import { useEffect, useState } from 'react'
 import './CartDrawer.css'
+import { db } from '../firebase/firebase'
+import { doc, updateDoc, increment } from 'firebase/firestore'
+import { registerSale } from '../firebase/updateSales'
+
+
 
 function CartDrawer({ open, onClose }) {
 const {
@@ -48,7 +53,8 @@ const [phrase, setPhrase] = useState('')
 }, [open])
 
 
-const handleCheckoutWhatsApp = (customPhrase = '') => {
+const handleCheckoutWhatsApp = async (customPhrase = '') => {
+
   const phoneNumber = '5516994287026'
 
   let message = `Olá! Gostaria de fazer um pedido.\n\n`
@@ -75,21 +81,13 @@ const handleCheckoutWhatsApp = (customPhrase = '') => {
   const encodedMessage = encodeURIComponent(message)
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
 
-  const registerSale = () => {
-  const sales =
-    JSON.parse(localStorage.getItem('salesCount')) || {}
-
-  cartItems.forEach((item) => {
-    sales[item.id] = (sales[item.id] || 0) + item.quantity
-  })
-
-  localStorage.setItem('salesCount', JSON.stringify(sales))
-}
+  
 
 
+await registerSale(cartItems)
+window.open(whatsappUrl, '_blank')
 
-  registerSale()
-  window.open(whatsappUrl, '_blank')
+
 }
 
 

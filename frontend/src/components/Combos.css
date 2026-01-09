@@ -138,3 +138,171 @@
     }
   }
   
+
+  /* =========================
+   NOTEBOOK / DESKTOP MENOR
+   até 1200px
+========================= */
+@media (max-width: 1200px) {
+  .combos {
+    padding: 100px 48px;
+  }
+
+  .combos h3 {
+    font-size: 40px;
+    margin-bottom: 70px;
+  }
+
+  .arrow.left {
+    left: 180px;
+  }
+
+  .arrow.right {
+    right: 180px;
+  }
+}
+
+/* =========================
+   TABLET
+   até 992px
+========================= */
+@media (max-width: 992px) {
+  .combos {
+    padding: 90px 40px;
+  }
+
+  .combos h3 {
+    font-size: 36px;
+    margin-bottom: 60px;
+  }
+
+  .combo-stage {
+    height: 380px;
+  }
+
+  .combo-image {
+    max-width: 360px;
+    margin-top: -80px;
+  }
+
+  .arrow {
+    font-size: 80px;
+  }
+
+  .arrow.left {
+    left: 80px;
+  }
+
+  .arrow.right {
+    right: 80px;
+  }
+
+  .combo-info h4 {
+    font-size: 32px;
+  }
+
+  .combo-info .price {
+    font-size: 24px;
+  }
+}
+
+/* =========================
+   MOBILE GRANDE
+   até 768px
+========================= */
+@media (max-width: 768px) {
+  .combos {
+    padding: 80px 24px;
+  }
+
+  .combos h3 {
+    font-size: 30px;
+    margin-bottom: 50px;
+  }
+
+  .combo-stage {
+    height: 320px;
+  }
+
+  .combo-image {
+    width: 90%;
+    max-width: 300px;
+    margin-top: -60px;
+  }
+
+  .arrow {
+    font-size: 60px;
+  }
+
+  .arrow.left {
+    left: 16px;
+  }
+
+  .arrow.right {
+    right: 16px;
+  }
+
+  .combo-info {
+    margin-top: 10px;
+  }
+
+  .combo-info h4 {
+    font-size: 26px;
+  }
+
+  .combo-info p {
+    font-size: 14px;
+  }
+
+  .combo-info .price {
+    font-size: 22px;
+  }
+}
+
+/* =========================
+   MOBILE PEQUENO
+   até 480px
+========================= */
+@media (max-width: 480px) {
+  .combos {
+    padding: 70px 16px;
+  }
+
+  .combos h3 {
+    font-size: 26px;
+    margin-bottom: 40px;
+  }
+
+  .combo-stage {
+    height: 280px;
+  }
+
+  .combo-image {
+    max-width: 260px;
+    margin-top: -40px;
+  }
+
+  .arrow {
+    font-size: 46px;
+  }
+
+  .arrow.left {
+    left: 8px;
+  }
+
+  .arrow.right {
+    right: 8px;
+  }
+
+  .combo-info h4 {
+    font-size: 22px;
+  }
+
+  .combo-info p {
+    font-size: 13px;
+  }
+
+  .combo-info .price {
+    font-size: 20px;
+  }
+}
