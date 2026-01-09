@@ -30,7 +30,7 @@ const vasos = [
   { id: 'vaso-vidro', nome: 'Vaso de vidro' }
 ]
 
-const quantidades = [1, 3, 6]
+const quantidades = [1, 3, 6, 8, 10, 12]
 
 
 const posicoesFlores = {
@@ -43,6 +43,33 @@ const posicoesFlores = {
     { top: '26%', left: '50%', scale: 2 }
   ],
   6: [
+    { top: '14%', left: '25%', scale: 2 },
+    { top: '11%', left: '55%', scale: 2 },
+    { top: '14%', left: '85%', scale: 2 },
+    { top: '26%', left: '40%', scale: 2 },
+    { top: '26%', left: '70%', scale: 2 },
+    { top: '39%', left: '55%', scale: 2 }
+  ],
+  8: [
+    { top: '14%', left: '25%', scale: 2 },
+    { top: '11%', left: '55%', scale: 2 },
+    { top: '14%', left: '85%', scale: 2 },
+    { top: '26%', left: '46%', scale: 2 },
+    { top: '26%', left: '64%', scale: 2 },
+    { top: '39%', left: '55%', scale: 2 },
+    { top: '19%', left: '74%', scale: 2 },
+    { top: '19%', left: '37%', scale: 2 }
+  ],
+   10: [
+    { top: '14%', left: '25%', scale: 2 },
+    { top: '11%', left: '55%', scale: 2 },
+    { top: '14%', left: '85%', scale: 2 },
+    { top: '26%', left: '40%', scale: 2 },
+    { top: '26%', left: '70%', scale: 2 },
+    { top: '39%', left: '55%', scale: 2 },
+    
+  ],
+    12: [
     { top: '14%', left: '25%', scale: 2 },
     { top: '11%', left: '55%', scale: 2 },
     { top: '14%', left: '85%', scale: 2 },

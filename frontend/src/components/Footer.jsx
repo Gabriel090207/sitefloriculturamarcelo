@@ -30,17 +30,17 @@ function Footer() {
 
           <p>
             <i className="fa-solid fa-location-dot"></i>
-            Rua das Flores, 123 – Centro
+            Rua Major Gabriel, 1833 - Centro, Manaus - AM, 692020-060, Brasil.
           </p>
 
           <p>
             <i className="fa-solid fa-phone"></i>
-            (99) 99999-9999
+            (92) 98123-0907
           </p>
 
           <p>
             <i className="fa-solid fa-envelope"></i>
-            contato@valledasflores.com
+            floriculturavalledasflores@gmail.com
           </p>
         </div>
 
@@ -49,7 +49,7 @@ function Footer() {
           <h4>Redes sociais</h4>
 
           <div className="footer-social">
-            <a href="#" aria-label="Instagram">
+            <a href="https://www.instagram.com/floriculturavalledasflores/" aria-label="Instagram">
               <i className="fa-brands fa-instagram"></i>
             </a>
             <a href="#" aria-label="Facebook">

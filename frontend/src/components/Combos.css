@@ -87,8 +87,8 @@
   }
   
   .combo-info .price {
-    margin-bottom: -50px;
-    font-size: 28px;
+    margin-bottom: -30px;
+    font-size: 14px;
     font-weight: bold;
     color: var(--marrom-madeira);
   }
@@ -114,6 +114,42 @@
 .combo-slide.left {
   animation-name: slideFromLeft;
 }
+
+.combo-buy {
+  margin-top: 21px;
+  padding: 15px 32px;
+  border-radius: 26px;
+  border: none;
+  background: var(--rosa-suave);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.combo-buy:hover {
+  transform: translateY(2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+.combo-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 🔑 centraliza */
+  gap: 16px;
+
+  
+
+}
+
+
+.combo-actions .price {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--marrom-madeira);
+}
+
 
   
   @keyframes slideFromRight {

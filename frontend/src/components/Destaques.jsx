@@ -4,6 +4,25 @@ import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore'
 import { db } from '../firebase/firebase'
 
 function Destaques() {
+
+  const handleComprarWhatsApp = (produto) => {
+  const phoneNumber = '5516994287026'
+
+  let message = `Olá! Gostaria de fazer um pedido.\n\n`
+  message += `Produto em destaque – Valle das Flores\n\n`
+  message += `• Produto: ${produto.name}\n`
+  message += `• Descrição: ${produto.description}\n`
+  message += `• Valor: ${produto.price}\n`
+  message += `• Foto: ${produto.image}\n\n`
+  message += `Aguardo orientações para finalizar.\nObrigado(a)!`
+
+  const encodedMessage = encodeURIComponent(message)
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
+
+  window.open(whatsappUrl, '_blank')
+}
+
+
   const [destaques, setDestaques] = useState([])
 
   useEffect(() => {
@@ -41,7 +60,10 @@ function Destaques() {
               <h4>{item.name}</h4>
               <p>{item.description}</p>
               <span className="price">{item.price}</span>
-              <button>Comprar</button>
+              <button onClick={() => handleComprarWhatsApp(item)}>
+  Comprar
+</button>
+
             </div>
           </div>
         ))}

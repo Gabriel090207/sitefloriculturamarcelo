@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import './ArranjosHome.css'
 
 const grupos = [
@@ -30,6 +32,8 @@ const grupos = [
 ]
 
 function ArranjosHome() {
+
+  const navigate = useNavigate()
 
   const isMobile = window.innerWidth <= 768
 
@@ -92,8 +96,17 @@ const slides = grupos.flatMap((grupo) => {
       </div>
 
       <div className="arranjos-cta">
-        <a href="/loja">Ver mais arranjos →</a>
-      </div>
+  <button
+    onClick={() => {
+      localStorage.setItem('categoriaAtiva', 'Arranjos')
+      navigate('/loja')
+    }}
+    className="arranjos-link"
+  >
+    Ver mais arranjos →
+  </button>
+</div>
+
     </section>
   )
 }

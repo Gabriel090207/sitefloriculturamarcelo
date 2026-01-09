@@ -12,22 +12,22 @@ function Contato() {
         <div className="contato-card info">
           <div className="contato-item">
             <h4>Telefone</h4>
-            <span>(16) 99999-9999</span>
+            <span>(92) 98123-0907</span>
           </div>
 
           <div className="contato-item">
             <h4>E-mail</h4>
-            <span>contato@valledasflores.com</span>
+            <span>floriculturavalledasflores@gmail.com</span>
           </div>
 
           <div className="contato-item">
             <h4>Instagram</h4>
-            <span>@valledasflores</span>
+            <span> @floriculturavalledasflores</span>
           </div>
 
           <div className="contato-item">
             <h4>Endereço</h4>
-            <span>Rua das Flores, 123 – Centro</span>
+            <span>Rua Major Gabriel, 1833 - Centro, Manaus - AM, 692020-060, Brasil.</span>
           </div>
           </div>
         </div>
@@ -36,7 +36,7 @@ function Contato() {
         <div className="contato-card mapa">
           <iframe
             title="Mapa Valle das Flores"
-            src="https://www.google.com/maps?q=Rua%20das%20Flores%20123&output=embed"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.910672781734!2d-60.0170444!3d-3.1183292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x926c055cfe2fffff%3A0xe20c1eb995da6a12!2sR.%20Maj.%20Gabriel%2C%201833%20-%20Sala%201%20-%20Centro%2C%20Manaus%20-%20AM%2C%2069020-060!5e0!3m2!1spt-BR!2sbr!4v1767971616268!5m2!1spt-BR!2sbr"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           />
@@ -47,3 +47,5 @@ function Contato() {
 }
 
 export default Contato
+
+

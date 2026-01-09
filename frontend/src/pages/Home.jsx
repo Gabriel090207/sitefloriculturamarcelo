@@ -1,4 +1,6 @@
 import './Home.css'
+import { useNavigate } from 'react-router-dom'
+
 import Destaques from '../components/Destaques'
 import Combos from '../components/Combos'
 import Depoimentos from '../components/Depoimentos'
@@ -8,6 +10,8 @@ import Divider from '../components/Divider'
 
 
 function Home() {
+  const navigate = useNavigate()
+
   return (
     <>
      <section className="hero">
@@ -16,8 +20,23 @@ function Home() {
     <p>Entregamos carinho em cada detalhe </p>
 
     <div className="hero-buttons">
-      <button className="btn-primary">Comprar Agora</button>
-      <button className="btn-secondary">Conhecer a Loja</button>
+      <button
+  className="btn-primary"
+  onClick={() => navigate('/loja')}
+>
+  Comprar Agora
+</button>
+
+      <button
+  className="btn-secondary"
+  onClick={() => {
+    const section = document.getElementById('combos')
+    section?.scrollIntoView({ behavior: 'smooth' })
+  }}
+>
+  Ver Combos
+</button>
+
     </div>
   </div>
 </section>

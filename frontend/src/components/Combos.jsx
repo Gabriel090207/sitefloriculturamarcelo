@@ -75,6 +75,26 @@ const combosData = [
 ]
 
 function Combos() {
+
+  const handleComprarWhatsApp = (combo) => {
+  const phoneNumber = '5516994287026'
+
+  let message = `Olá! Gostaria de fazer um pedido.\n\n`
+  message += `Pedido via site – Valle das Flores\n\n`
+  message += `• Combo Especial\n`
+  message += `• Produto: ${combo.title}\n`
+  message += `• Descrição: ${combo.description}\n`
+  message += `• Valor: ${combo.price}\n`
+  message += `• Foto: ${combo.image}\n\n`
+  message += `Aguardo orientações para finalizar.\nObrigado(a)!`
+
+  const encodedMessage = encodeURIComponent(message)
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
+
+  window.open(whatsappUrl, '_blank')
+}
+
+
   const [currentIndex, setCurrentIndex] = useState(0)
   const [direction, setDirection] = useState('right')
 
@@ -98,7 +118,8 @@ function Combos() {
   
 
   return (
-    <section className="combos">
+    <section className="combos" id="combos">
+
       <h3>Combos Especiais</h3>
 
     <div className="combo-stage">
@@ -126,11 +147,22 @@ function Combos() {
 </div>
 
 
-      <div className="combo-info">
-        <h4>{combo.title}</h4>
-        <p>{combo.description}</p>
-        <span className="price">{combo.price}</span>
-      </div>
+     <div className="combo-info">
+  <h4>{combo.title}</h4>
+  <p>{combo.description}</p>
+
+  <div className="combo-actions">
+    <span className="price">{combo.price}</span>
+
+    <button
+      className="combo-buy"
+      onClick={() => handleComprarWhatsApp(combo)}
+    >
+      Comprar
+    </button>
+  </div>
+</div>
+
     </section>
   )
 }

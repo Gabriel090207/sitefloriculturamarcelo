@@ -109,6 +109,17 @@
 }
 
 
+.arranjos-link {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+
 /* =========================
    NOTEBOOK / DESKTOP MENOR
    até 1200px
