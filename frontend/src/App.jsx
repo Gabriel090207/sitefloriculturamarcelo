@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import Home from './pages/Home'
 import Loja from './pages/Loja'
 import Sobre from './pages/Sobre'
+import Contato from './pages/Contato'
 import Header from './components/Header'
 import Footer from './components/Footer'
 
@@ -55,6 +56,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/loja" element={<Loja />} />
         <Route path="/sobre" element={<Sobre />} />
+        <Route path="/contato" element={<Contato />} />
       </Routes>
 
       {/* BOTÃO FLUTUANTE */}
