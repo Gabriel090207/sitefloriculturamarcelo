@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { useRef } from 'react'
 import { produtos } from '../data/produtos'
+import MonteSeuBuque from './MonteSeuBuque'
 
 
 
@@ -13,6 +14,12 @@ import { produtos } from '../data/produtos'
 
 
 function Loja() {
+
+  const [modo, setModo] = useState('produtos') 
+  const [sidebarAberta, setSidebarAberta] = useState(false)
+
+// 'produtos' | 'buque'
+
 
 
   const sidebarRef = useRef(null)
@@ -27,8 +34,13 @@ const produtosRef = useRef(null)
 })
 
 useEffect(() => {
-  localStorage.setItem('categoriaAtiva', categoriaAtiva)
+  if (categoriaAtiva) {
+    localStorage.setItem('categoriaAtiva', categoriaAtiva)
+  } else {
+    localStorage.removeItem('categoriaAtiva')
+  }
 }, [categoriaAtiva])
+
 
 useEffect(() => {
   const sidebar = sidebarRef.current
@@ -78,6 +90,22 @@ useEffect(() => {
       )
 
 
+     const irParaCategoria = (categoria) => {
+  setModo('produtos')
+  setCategoriaAtiva(categoria)
+  setSidebarAberta(false)
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const irParaMonteBuque = () => {
+  setModo('buque')
+  setCategoriaAtiva(null)
+  setSidebarAberta(false)
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+
+
   return (
     <section className="loja">
 
@@ -87,105 +115,140 @@ useEffect(() => {
 
       <div className="loja-layout">
           <div className="loja-sidebar-wrapper">
+
+           
+
         {/* SIDEBAR */}
-        <aside ref={sidebarRef} className="loja-sidebar">
+<aside
+  ref={sidebarRef}
+  className={`loja-sidebar ${sidebarAberta ? 'aberta' : ''}`}
+>
+
+  <button
+  className="mobile-sidebar-close"
+  onClick={() => setSidebarAberta(false)}
+>
+ ‹
+</button>
+
+
           <h4>Categorias</h4>
-         <ul>
+        
+
+        <ul>
   <li
-    className={categoriaAtiva === 'Todos' ? 'active' : ''}
-    onClick={() => setCategoriaAtiva('Todos')}
+    className={categoriaAtiva === 'Todos' && modo === 'produtos' ? 'active' : ''}
+    onClick={() => irParaCategoria('Todos')}
   >
     Todos
   </li>
 
   <li
-    className={categoriaAtiva === 'Buquês' ? 'active' : ''}
-    onClick={() => setCategoriaAtiva('Buquês')}
+    className={categoriaAtiva === 'Buquês' && modo === 'produtos' ? 'active' : ''}
+    onClick={() => irParaCategoria('Buquês')}
   >
     Buquês
   </li>
 
   <li
-    className={categoriaAtiva === 'Arranjos' ? 'active' : ''}
-    onClick={() => setCategoriaAtiva('Arranjos')}
+    className={categoriaAtiva === 'Arranjos' && modo === 'produtos' ? 'active' : ''}
+    onClick={() => irParaCategoria('Arranjos')}
   >
     Arranjos
   </li>
 
   <li
-    className={categoriaAtiva === 'Cestas & Combos' ? 'active' : ''}
-    onClick={() => setCategoriaAtiva('Cestas & Combos')}
+    className={categoriaAtiva === 'Cestas & Combos' && modo === 'produtos' ? 'active' : ''}
+    onClick={() => irParaCategoria('Cestas & Combos')}
   >
     Combos Especiais
   </li>
 
   <li
-    className={categoriaAtiva === 'CoroasdeRosas' ? 'active' : ''}
-    onClick={() => setCategoriaAtiva('CoroasdeRosas')}
+    className={categoriaAtiva === 'CoroasdeRosas' && modo === 'produtos' ? 'active' : ''}
+    onClick={() => irParaCategoria('CoroasdeRosas')}
   >
     Coroas de Rosas
   </li>
 
   <li
-    className={categoriaAtiva === 'CoroasdeCampo' ? 'active' : ''}
-    onClick={() => setCategoriaAtiva('CoroasdeCampo')}
+    className={categoriaAtiva === 'CoroasdeCampo' && modo === 'produtos' ? 'active' : ''}
+    onClick={() => irParaCategoria('CoroasdeCampo')}
   >
     Coroas Flores do Campo
   </li>
 
   <li
-    className={categoriaAtiva === 'Datas Especiais' ? 'active' : ''}
-    onClick={() => setCategoriaAtiva('Datas Especiais')}
+    className={categoriaAtiva === 'Datas Especiais' && modo === 'produtos' ? 'active' : ''}
+    onClick={() => irParaCategoria('Datas Especiais')}
   >
     Datas Especiais
+  </li>
+
+  <li
+     className={`monte-buque-item ${modo === 'buque' ? 'active' : ''}`}
+    onClick={irParaMonteBuque}
+  >
+    Monte seu buquê →
   </li>
 </ul>
 
 
 
+
         </aside>
+
+     {!sidebarAberta && (
+  <button
+    className="mobile-sidebar-toggle"
+    onClick={() => setSidebarAberta(true)}
+  >
+    ›
+  </button>
+)}
+
+
         </div>
 
         {/* PRODUTOS */}
+      <div ref={produtosRef}>
+  {modo === 'buque' ? (
+    <MonteSeuBuque />
+  ) : (
+    <div className="produtos-grid" key={categoriaAtiva}>
+      {produtosFiltrados.map((produto, index) => (
         <div
-        ref={produtosRef}
-  className="produtos-grid"
-  key={categoriaAtiva}
->
+          className="produto-card"
+          key={produto.id}
+          style={{ animationDelay: `${index * 60}ms` }}
+        >
+          <img src={produto.image} alt={produto.name} />
+          <h3>{produto.name}</h3>
+          <p>{produto.description}</p>
+          <strong>{produto.price}</strong>
 
-          {produtosFiltrados.map((produto, index) => (
+          <div className="produto-actions">
+            <button
+              className="btn-comprar"
+              onClick={() => addToCart(produto)}
+            >
+              Por no Carrinho
+            </button>
 
-
-           <div
-  className="produto-card"
-  key={produto.id}
-  style={{ animationDelay: `${index * 60}ms` }}
->
-
-              <img src={produto.image} alt={produto.name} />
-              <h3>{produto.name}</h3>
-              <p>{produto.description}</p>
-              <strong>{produto.price}</strong>
-              <div className="produto-actions">
- <button
-  className="btn-comprar"
-  onClick={() => addToCart(produto)}
->
-  Por no Carrinho
-</button>
-
-<button
-  className="btn-detalhes"
-  onClick={() => setProdutoSelecionado(produto)}
->
-  Detalhes
-</button>
-
+            <button
+              className="btn-detalhes"
+              onClick={() => setProdutoSelecionado(produto)}
+            >
+              Detalhes
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
 </div>
 
-            </div>
-          ))}
-        </div>
+     
       </div>
 
       {produtoSelecionado && (

@@ -1,0 +1,224 @@
+.monte-buque {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 80px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+/* GRID DAS OPÇÕES */
+.grid-opcoes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+
+
+
+/* IMAGEM */
+.buque-preview {
+  position: relative;
+  width: 360px;
+  height: 360px;
+  margin: 0 auto 48px;
+  overflow: hidden;
+}
+
+
+.buque-preview img {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  object-fit: contain;
+}
+
+
+/* TAMANHOS BASE */
+.camada-vaso {
+  bottom: -60px;
+  width: 190%;
+  height: auto;
+  z-index: 1;
+  margin-left: 25px;
+}
+
+.camada-plantinha {
+  bottom: -27px;
+
+  width: 175%;
+  z-index: 2;
+  margin-left: -4px;
+}
+
+.camada-flor {
+  bottom: 200px;
+
+  z-index: 3;
+}
+
+
+/* QUANTIDADE DE FLORES */
+.quantidade-1 {
+  width: 50%;
+}
+
+.quantidade-3 {
+  width: 85%;
+}
+
+.quantidade-6 {
+  width: 100%;
+}
+
+
+/* LINHA DE CORTE DO VASO */
+.camada-plantinha,
+.camada-flor {
+  overflow: hidden;
+}
+
+/* CORTAR CAULE DENTRO DO VASO */
+.camada-plantinha {
+  clip-path: inset(0 0 42% 0);
+}
+
+.camada-flor {
+  clip-path: inset(0 0 0% 0);
+}
+
+/* FLOR INDIVIDUAL */
+.flor-item {
+  position: absolute;
+  z-index: 3;
+  width: 80px;
+}
+
+
+/* CAMADAS */
+
+
+.buque-preview {
+  position: relative;
+  overflow: hidden;
+}
+
+
+
+/* OPÇÕES */
+/* ===== BOTÕES ===== */
+.option-group {
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.option-group h4 {
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--marrom-escuro);
+}
+
+.option-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  color: var(--marrom-escuro);
+}
+
+.option-buttons.vertical {
+  flex-direction: column;
+}
+
+.option-buttons.vertical button {
+  width: 100%;
+}
+
+
+.option-group h4 {
+  margin-bottom: 16px;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+
+.option-buttons button {
+  padding: 10px 18px;
+  border-radius: 22px;
+  border: 2px solid var(--rosa-suave);
+  color: var(--rosa-suave);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.option-buttons button:hover {
+  background: var(--rosa-suave);
+  color: #fff;
+}
+
+.option-buttons button.active {
+background: var(--rosa-suave);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(232, 183, 200, 0.4);
+}
+
+
+.btn-whatsapp {
+  background: #e8b7c8;
+  color: #fff;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 28px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.btn-whatsapp:hover {
+  transform: scale(1.05);
+}
+
+
+/* HEADER DO MONTE SEU BUQUÊ */
+.monte-buque-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1100px;
+  margin: 0 auto 32px;
+  padding: 0 24px;
+}
+
+.monte-buque-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+
+/* ANIMAÇÃO ENTRADA MONTE SEU BUQUÊ */
+@keyframes buqueEnter {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.monte-buque-enter {
+  animation: buqueEnter 0.45s ease forwards;
+}

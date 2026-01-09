@@ -132,6 +132,101 @@ export const produtos = [
     price: 'R$ 129,90',
     image: '/buque10.png',
   },
+  {
+    id: 49,
+    name: 'Arranjo Floral',
+    description: 'Arranjos florais cuidadosamente montados para encantar em qualquer ocasião.',
+    price: 'R$ 129,90',
+    image: '/arranjo3.png',
+    category: 'Arranjos',
+  },
+  {
+    id: 50,
+    name: 'Arranjo Floral',
+    description: 'Arranjos florais cuidadosamente montados para encantar em qualquer ocasião.',
+    price: 'R$ 129,90',
+    image: '/arranjo4.png',
+    category: 'Arranjos',
+  },
+  {
+    id: 51,
+    name: 'Arranjo Floral',
+    description: 'Arranjos florais cuidadosamente montados para encantar em qualquer ocasião.',
+    price: 'R$ 129,90',
+    image: '/arranjo5.png',
+    category: 'Arranjos',
+  },
+  {
+    id: 52,
+    name: 'Arranjo Floral',
+    description: 'Arranjos florais cuidadosamente montados para encantar em qualquer ocasião.',
+    price: 'R$ 129,90',
+    image: '/arranjo6.png',
+    category: 'Arranjos',
+  },
+  {
+    id: 53,
+    name: 'Arranjo Floral',
+    description: 'Arranjos florais cuidadosamente montados para encantar em qualquer ocasião.',
+    price: 'R$ 129,90',
+    image: '/arranjo1.png',
+    category: 'Arranjos',
+  },
+  {
+    id: 54,
+    name: 'Arranjo Floral',
+    description: 'Arranjos florais cuidadosamente montados para encantar em qualquer ocasião.',
+    price: 'R$ 129,90',
+    image: '/arranjo2.png',
+    category: 'Arranjos',
+  },
+   {
+    id: 55,
+    name: 'Arranjo Floral',
+    description: 'Arranjos florais cuidadosamente montados para encantar em qualquer ocasião.',
+    price: 'R$ 129,90',
+    image: '/arranjo7.png',
+    category: 'Arranjos',
+  },
+  {
+    id: 56,
+    name: 'Arranjo Floral',
+    description: 'Arranjos florais cuidadosamente montados para encantar em qualquer ocasião.',
+    price: 'R$ 129,90',
+    image: '/arranjo8.png',
+    category: 'Arranjos',
+  },
+ 
+  {
+    id: 57,
+    name: 'Arranjo Floral',
+    description: 'Arranjos florais cuidadosamente montados para encantar em qualquer ocasião.',
+    price: 'R$ 129,90',
+    image: '/arranjo9.png',
+    category: 'Arranjos',
+  },
+ 
+  {
+    id: 58,
+    name: 'Arranjo Floral',
+    description: 'Arranjos florais cuidadosamente montados para encantar em qualquer ocasião.',
+    price: 'R$ 129,90',
+    image: '/arranjo10.png',
+    category: 'Arranjos',
+  },
+ 
+  {
+    id: 59,
+    name: 'Arranjo Floral',
+    description: 'Arranjos florais cuidadosamente montados para encantar em qualquer ocasião.',
+    price: 'R$ 129,90',
+    image: '/arranjo11.png',
+    category: 'Arranjos',
+  },
+ 
+ 
+ 
+
    {
     id: 11,
     name: 'Coroa de Rosas',

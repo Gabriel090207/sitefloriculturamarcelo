@@ -6,42 +6,27 @@ const grupos = [
     bg: '#B89A86',
     items: [
       { id: 1, name: 'Arranjo Rosas Nobres', image: '/arranjo1semfundo.png' },
-      { id: 2, name: 'Arranjo Elegância', image: '/arranjo1semfundo.png' },
-      { id: 3, name: 'Arranjo Delicado', image: '/arranjo1semfundo.png' },
-    ],
-  },
-  {
-    bg: '#AFC4D6',
-    items: [
-      { id: 4, name: 'Arranjo Clássico', image: '/arranjo2semfundo.png' },
-      { id: 5, name: 'Arranjo Suave', image: '/arranjo2semfundo.png' },
-      { id: 6, name: 'Arranjo Contemporâneo', image: '/arranjo2semfundo.png' },
+      { id: 2, name: 'Arranjo Elegância', image: '/arranjo10semfundo.png' },
+      { id: 3, name: 'Arranjo Delicado', image: '/arranjo3semfundo.png' },
     ],
   },
   {
     bg: '#D8A0A0',
     items: [
-      { id: 4, name: 'Arranjo Clássico', image: '/arranjo2semfundo.png' },
-      { id: 5, name: 'Arranjo Suave', image: '/arranjo2semfundo.png' },
-      { id: 6, name: 'Arranjo Contemporâneo', image: '/arranjo2semfundo.png' },
+      { id: 4, name: 'Arranjo Clássico', image: '/arranjo5semfundo.png' },
+      { id: 5, name: 'Arranjo Suave', image: '/arranjo7semfundo.png' },
+      { id: 6, name: 'Arranjo Contemporâneo', image: '/arranjo8semfundo.png' },
     ],
   },
   {
     bg: '#C98A8A',
     items: [
-      { id: 4, name: 'Arranjo Clássico', image: '/arranjo2semfundo.png' },
-      { id: 5, name: 'Arranjo Suave', image: '/arranjo2semfundo.png' },
-      { id: 6, name: 'Arranjo Contemporâneo', image: '/arranjo2semfundo.png' },
+      { id: 4, name: 'Arranjo Clássico', image: '/arranjo11semfundo.png' },
+      { id: 5, name: 'Arranjo Suave', image: '/arranjo4semfundo.png' },
+      { id: 6, name: 'Arranjo Contemporâneo', image: '/arranjo9semfundo.png' },
     ],
   },
-  {
-    bg: '#E6D3A3',
-    items: [
-      { id: 4, name: 'Arranjo Clássico', image: '/arranjo2semfundo.png' },
-      { id: 5, name: 'Arranjo Suave', image: '/arranjo2semfundo.png' },
-      { id: 6, name: 'Arranjo Contemporâneo', image: '/arranjo2semfundo.png' },
-    ],
-  },
+  
 ]
 
 function ArranjosHome() {

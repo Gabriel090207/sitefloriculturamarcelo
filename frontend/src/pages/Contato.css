@@ -52,11 +52,12 @@
     font-size: 18px;
     color: var(--marrom-escuro);
     margin-bottom: 6px;
+    font-weight: 600;
   }
   
   .contato-item span {
-    font-size: 16px;
-    color: #6b4a3a;
+    font-size: 17px;
+    color: #3d2b1f;
     opacity: 0.85;
   }
   
@@ -90,7 +91,7 @@
     }
   
     .contato-title {
-      font-size: 28px;
+      font-size: 30px;
       margin-bottom: 40px;
     }
   

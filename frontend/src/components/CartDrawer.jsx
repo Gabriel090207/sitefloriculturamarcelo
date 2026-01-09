@@ -1,5 +1,5 @@
 import { useCart } from '../context/CartContext'
-import { useEffect, useState } from 'react'
+import { useEffect, useState,} from 'react'
 import './CartDrawer.css'
 import { db } from '../firebase/firebase'
 import { doc, updateDoc, increment } from 'firebase/firestore'

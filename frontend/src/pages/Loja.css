@@ -112,7 +112,6 @@
   width: 100%;
   border-radius: 4px;
   margin-bottom: 16px;
-  background-color: #fbf7f7; 
 }
 
 .produto-card h3 {
@@ -353,4 +352,101 @@
 
 .produto-detalhe-info span {
   font-size: 14px;
+}
+
+
+/* MONTE SEU BUQUÊ - ESTILO EXCLUSIVO */
+.loja-sidebar li.monte-buque-item {
+  font-weight: 600; /* sempre negrito */
+  color: var(--marrom-escuro);
+}
+
+/* Quando ativo */
+.loja-sidebar li.monte-buque-item.active {
+  background: rgba(227, 164, 186, 0.25);
+  color: var(--marrom-madeira);
+}
+
+
+/* ===== SIDEBAR MOBILE ===== */
+.mobile-sidebar-toggle {
+  display: none;
+}
+
+ .mobile-sidebar-close {
+     display: none;
+  }
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .mobile-sidebar-toggle {
+    display: block;
+    position: fixed;
+    left: 12px;
+    top: 120px;
+    z-index: 2001;
+
+    background: #fff;
+    border: none;
+    padding: 12px 14px;
+    border-radius: 12px;
+
+    font-size: 20px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+  }
+
+  .loja-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .loja-sidebar {
+    position: fixed !important;
+    top: 0;
+    left: -100%;
+    width: 280px;
+    height: 100vh;
+    z-index: 2000;
+
+    transition: left 0.35s ease;
+    border-radius: 0 18px 18px 0;
+  }
+
+  .loja-sidebar.aberta {
+    left: 0;
+  }
+}
+
+
+@media (max-width: 900px) {
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1999;
+  }
+}
+
+@media (max-width: 900px) {
+  .mobile-sidebar-toggle {
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+
+@media (max-width: 900px) {
+  .mobile-sidebar-close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    color: var(--marrom-escuro);
+  }
 }
