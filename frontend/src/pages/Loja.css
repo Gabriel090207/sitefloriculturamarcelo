@@ -442,6 +442,7 @@
 
 @media (max-width: 900px) {
   .mobile-sidebar-close {
+    display: block;
     background: none;
     border: none;
     font-size: 22px;
@@ -449,4 +450,10 @@
     cursor: pointer;
     color: var(--marrom-escuro);
   }
+}
+
+@media (max-width: 400px) {
+ .produto-card {
+  margin-right: 40px;
+}
 }

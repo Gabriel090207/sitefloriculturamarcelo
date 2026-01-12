@@ -84,8 +84,13 @@ const handleCheckoutWhatsApp = async (customPhrase = '') => {
   
 
 
-await registerSale(cartItems)
-window.open(whatsappUrl, '_blank')
+// abre o WhatsApp IMEDIATAMENTE (necessário para mobile)
+window.location.href = whatsappUrl
+
+// registra a venda em segundo plano
+registerSale(cartItems).catch((err) => {
+  console.error('Erro ao registrar venda:', err)
+})
 
 
 }
