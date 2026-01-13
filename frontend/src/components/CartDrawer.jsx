@@ -7,7 +7,6 @@ import { registerSale } from '../firebase/updateSales'
 import { api } from '../services/api'
 
 
-const MP_PUBLIC_KEY = import.meta.env.VITE_MP_PUBLIC_KEY
 
 
 const parsePrice = (price) => {
@@ -62,56 +61,17 @@ const formatCVV = (value) => {
   return value.replace(/\D/g, '').slice(0, 4)
 }
 
+console.log('PUBLIC KEY:', import.meta.env.VITE_MP_PUBLIC_KEY)
 
 
-
-
+const mp = new window.MercadoPago(
+  import.meta.env.VITE_MP_PUBLIC_KEY,
+  { locale: 'pt-BR' }
+)
 
 
 
 function CartDrawer({ open, onClose }) {
-
-  useEffect(() => {
-    if (!showCardFormModal) return
-  
-    const mp = new window.MercadoPago(
-      import.meta.env.VITE_MP_PUBLIC_KEY,
-      { locale: 'pt-BR' }
-    )
-  
-    mp.cardForm({
-      amount: finalTotal.toString(),
-      iframe: true,
-      form: {
-        id: 'card-form',
-        cardNumber: { id: 'cardNumber' },
-        expirationDate: { id: 'expirationDate' },
-        securityCode: { id: 'securityCode' },
-        cardholderName: { id: 'cardholderName' },
-        issuer: { id: 'issuer' },
-        installments: { id: 'installments' },
-        identificationType: { id: 'identificationType' },
-        identificationNumber: { id: 'identificationNumber' },
-        email: { id: 'email' },
-      },
-      callbacks: {
-        onSubmit: (event) => {
-          event.preventDefault()
-          const data = cardForm.getCardFormData()
-  
-          api.post('/pay/card', {
-            token: data.token,
-            installments: data.installments,
-            total: finalTotal,
-            email: data.email,
-          })
-        }
-      }
-    })
-  }, [showCardFormModal])
-  
-
-  
 const {
   cartItems,
   removeFromCart,
@@ -843,44 +803,124 @@ const gerarPix = async () => {
           : 'Cartão de débito'}
       </h4>
 
-      <form id="card-form">
-  <div className="form-group">
-    <label>Número do cartão</label>
-    <div id="cardNumber" className="mp-input"></div>
-  </div>
+      <div className="form-group">
+        <label>Número do cartão</label>
+        <input
+          type="text"
+          inputMode="numeric"
+          placeholder="0000 0000 0000 0000"
+          value={cardData.number}
+          onChange={(e) =>
+            setCardData({ ...cardData, number: formatCardNumber(e.target.value) })
+          }
+        />
+      </div>
 
-  <div className="form-group">
-    <label>Nome no cartão</label>
-    <input id="cardholderName" type="text" />
-  </div>
+      <div className="form-group">
+        <label>Nome no cartão</label>
+        <input
+          type="text"
+          placeholder="Como está impresso"
+          value={cardData.name}
+          onChange={(e) =>
+            setCardData({ ...cardData, name: e.target.value.toUpperCase() })
+          }
+        />
+      </div>
 
-  <div className="form-row">
-    <div className="form-group">
-      <label>Validade</label>
-      <div id="expirationDate" className="mp-input"></div>
-    </div>
+      <div className="form-row">
+        <div className="form-group">
+          <label>Validade</label>
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="MM/AA"
+            value={cardData.expiry}
+            onChange={(e) =>
+              setCardData({ ...cardData, expiry: formatExpiry(e.target.value) })
+            }
+          />
+        </div>
 
-    <div className="form-group">
-      <label>CVV</label>
-      <div id="securityCode" className="mp-input"></div>
-    </div>
-  </div>
+        <div className="form-group">
+          <label>CVV</label>
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="CVV"
+            value={cardData.cvv}
+            onChange={(e) =>
+              setCardData({ ...cardData, cvv: formatCVV(e.target.value) })
+            }
+          />
+        </div>
+      </div>
 
-  <div className="form-group">
-    <label>Parcelamento</label>
-    <select id="installments"></select>
-  </div>
+      {showCardFormModal === 'credit' && (
+        <div className="form-group">
+          <label>Parcelamento</label>
+          <select
+            value={cardData.installments}
+            onChange={(e) =>
+              setCardData({ ...cardData, installments: e.target.value })
+            }
+          >
+            <option value="1">1x sem juros</option>
+            <option value="2">2x sem juros</option>
+            <option value="3">3x sem juros</option>
+          </select>
+        </div>
+      )}
 
-  <input type="hidden" id="issuer" />
-  <input type="hidden" id="identificationType" />
-  <input type="hidden" id="identificationNumber" />
-  <input type="hidden" id="email" value="cliente@valledasflores.com" />
+     <button
+  className="delivery-confirm"
+  onClick={async () => {
+    try {
+      // 1️⃣ separar validade
+      const [month, year] = cardData.expiry.split('/')
 
-  <button className="delivery-confirm" type="submit">
-    Pagar
-  </button>
-</form>
+      // 2️⃣ criar token do cartão
+      const tokenResponse = await mp.createCardToken({
+        cardNumber: cardData.number.replace(/\s/g, ''),
+        cardholderName: cardData.name,
+        securityCode: cardData.cvv,
+        expirationMonth: month,
+        expirationYear: `20${year}`,
+      })
 
+      // 3️⃣ validar token
+      if (tokenResponse.error) {
+        console.error(tokenResponse.error)
+        alert('Dados do cartão inválidos')
+        return
+      }
+
+      const token = tokenResponse.id
+
+      // 4️⃣ enviar token pro backend
+      const response = await api.post('/pay/card', {
+        token,
+        total: finalTotal,
+        installments: cardData.installments,
+        email: 'cliente@valledasflores.com',
+      })
+
+      // 5️⃣ tratar resposta REAL
+      if (response.data.status === 'approved') {
+        setShowCardFormModal(null)
+        setShowSuccessModal(true)
+      } else {
+        alert('Pagamento recusado')
+      }
+
+    } catch (err) {
+      console.error(err)
+      alert('Erro ao processar pagamento')
+    }
+  }}
+>
+  Pagar
+</button>
 
 
     </div>

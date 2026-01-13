@@ -46,7 +46,7 @@ export const produtos = [
   },
 
   {
-    id: 46,
+    id: 49,
     name: 'Eterno Amor',
     description: 'Um gesto delicado para quem você ama.',
     details: 'Um buquê com 10 rosas personalizáveis decoradas com belíssimas flores do campo.',
@@ -133,7 +133,7 @@ export const produtos = [
     image: '/buque10.png',
   },
   {
-    id: 49,
+    id: 60,
     name: 'Arranjo Floral',
     description: 'Arranjos florais cuidadosamente montados para encantar em qualquer ocasião.',
     price: 'R$ 129,90',
