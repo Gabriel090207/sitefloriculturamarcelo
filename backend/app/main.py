@@ -8,7 +8,7 @@ from app.services.mercado_pago import create_card_payment
 
 app = FastAPI(title="Valle das Flores API", version="1.0.0")
 
-app.include_router(router)
+
 
 
 # Libera o frontend acessar o backend (CORS)
