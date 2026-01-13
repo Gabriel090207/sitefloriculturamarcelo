@@ -71,52 +71,46 @@ const formatCVV = (value) => {
 
 function CartDrawer({ open, onClose }) {
 
-  const createCardToken = async () => {
-    const mp = new window.MercadoPago(MP_PUBLIC_KEY, { locale: 'pt-BR' })
+  useEffect(() => {
+    if (!showCardFormModal) return
   
-    const [expMonth, expYear] = cardData.expiry.split('/')
+    const mp = new window.MercadoPago(
+      import.meta.env.VITE_MP_PUBLIC_KEY,
+      { locale: 'pt-BR' }
+    )
   
-    const tokenResponse = await mp.createCardToken({
-      cardNumber: cardData.number.replace(/\s/g, ''),
-      cardholderName: cardData.name,
-      expirationMonth: expMonth,
-      expirationYear: `20${expYear}`,
-      securityCode: cardData.cvv,
-      identificationType: 'CPF',
-      identificationNumber: '49546332810', // depois podemos pedir no formulário
+    mp.cardForm({
+      amount: finalTotal.toString(),
+      iframe: true,
+      form: {
+        id: 'card-form',
+        cardNumber: { id: 'cardNumber' },
+        expirationDate: { id: 'expirationDate' },
+        securityCode: { id: 'securityCode' },
+        cardholderName: { id: 'cardholderName' },
+        issuer: { id: 'issuer' },
+        installments: { id: 'installments' },
+        identificationType: { id: 'identificationType' },
+        identificationNumber: { id: 'identificationNumber' },
+        email: { id: 'email' },
+      },
+      callbacks: {
+        onSubmit: (event) => {
+          event.preventDefault()
+          const data = cardForm.getCardFormData()
+  
+          api.post('/pay/card', {
+            token: data.token,
+            installments: data.installments,
+            total: finalTotal,
+            email: data.email,
+          })
+        }
+      }
     })
-  
-    if (!tokenResponse?.id) {
-      throw new Error('Erro ao gerar token do cartão')
-    }
-  
-    return tokenResponse.id
-  }
+  }, [showCardFormModal])
   
 
-  const handleCardPayment = async () => {
-    try {
-      const token = await createCardToken()
-  
-      const response = await api.post('/pay/card', {
-        token,
-        total: finalTotal,
-        installments: Number(cardData.installments),
-        email: 'cliente@valledasflores.com',
-      })
-  
-      if (response.data.status === 'approved') {
-        // 👉 AQUI VAI A TELA DE SUCESSO
-        setShowCardFormModal(null)
-        setShowSuccessModal(true)
-      } else {
-        alert('Pagamento recusado')
-      }
-    } catch (err) {
-      console.error(err)
-      alert('Erro ao processar pagamento')
-    }
-  }
   
 const {
   cartItems,
@@ -849,78 +843,43 @@ const gerarPix = async () => {
           : 'Cartão de débito'}
       </h4>
 
-      <div className="form-group">
-        <label>Número do cartão</label>
-        <input
-          type="text"
-          inputMode="numeric"
-          placeholder="0000 0000 0000 0000"
-          value={cardData.number}
-          onChange={(e) =>
-            setCardData({ ...cardData, number: formatCardNumber(e.target.value) })
-          }
-        />
-      </div>
+      <form id="card-form">
+  <div className="form-group">
+    <label>Número do cartão</label>
+    <div id="cardNumber" className="mp-input"></div>
+  </div>
 
-      <div className="form-group">
-        <label>Nome no cartão</label>
-        <input
-          type="text"
-          placeholder="Como está impresso"
-          value={cardData.name}
-          onChange={(e) =>
-            setCardData({ ...cardData, name: e.target.value.toUpperCase() })
-          }
-        />
-      </div>
+  <div className="form-group">
+    <label>Nome no cartão</label>
+    <input id="cardholderName" type="text" />
+  </div>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label>Validade</label>
-          <input
-            type="text"
-            inputMode="numeric"
-            placeholder="MM/AA"
-            value={cardData.expiry}
-            onChange={(e) =>
-              setCardData({ ...cardData, expiry: formatExpiry(e.target.value) })
-            }
-          />
-        </div>
+  <div className="form-row">
+    <div className="form-group">
+      <label>Validade</label>
+      <div id="expirationDate" className="mp-input"></div>
+    </div>
 
-        <div className="form-group">
-          <label>CVV</label>
-          <input
-            type="text"
-            inputMode="numeric"
-            placeholder="CVV"
-            value={cardData.cvv}
-            onChange={(e) =>
-              setCardData({ ...cardData, cvv: formatCVV(e.target.value) })
-            }
-          />
-        </div>
-      </div>
+    <div className="form-group">
+      <label>CVV</label>
+      <div id="securityCode" className="mp-input"></div>
+    </div>
+  </div>
 
-      {showCardFormModal === 'credit' && (
-        <div className="form-group">
-          <label>Parcelamento</label>
-          <select
-            value={cardData.installments}
-            onChange={(e) =>
-              setCardData({ ...cardData, installments: e.target.value })
-            }
-          >
-            <option value="1">1x sem juros</option>
-            <option value="2">2x sem juros</option>
-            <option value="3">3x sem juros</option>
-          </select>
-        </div>
-      )}
+  <div className="form-group">
+    <label>Parcelamento</label>
+    <select id="installments"></select>
+  </div>
 
-<button className="delivery-confirm" onClick={handleCardPayment}>
-  Pagar
-</button>
+  <input type="hidden" id="issuer" />
+  <input type="hidden" id="identificationType" />
+  <input type="hidden" id="identificationNumber" />
+  <input type="hidden" id="email" value="cliente@valledasflores.com" />
+
+  <button className="delivery-confirm" type="submit">
+    Pagar
+  </button>
+</form>
 
 
 
