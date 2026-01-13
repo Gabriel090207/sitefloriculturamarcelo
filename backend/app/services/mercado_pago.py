@@ -53,20 +53,3 @@ def create_card_payment(
         "status_detail": payment["status_detail"],
     }
 
-
-from fastapi import APIRouter, HTTPException
-from services.mercado_pago import create_card_payment
-
-router = APIRouter()
-
-@router.post("/pay/card")
-def pay_card(data: dict):
-    try:
-        return create_card_payment(
-            token=data["token"],
-            amount=float(data["total"]),
-            installments=int(data.get("installments", 1)),
-            email=data["email"],
-        )
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))

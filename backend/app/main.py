@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.services.mercado_pago import create_pix_payment
+from fastapi import HTTPException
+from app.services.mercado_pago import create_card_payment
+
 
 
 app = FastAPI(title="Valle das Flores API", version="1.0.0")
@@ -14,7 +17,9 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",  # Vite (comum)
         "http://localhost:3000",
-        "https://vallesdasflores.netlify.app",  # React (caso use)
+        "https://vallesdasflores.netlify.app",
+        "https://sitefloriculturamarcelo.onrender.com",
+          # React (caso use)
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -61,3 +66,16 @@ def checkout(data: CheckoutRequest):
         }
 
     return {"message": "Método de pagamento não implementado"}
+
+
+@app.post("/pay/card")
+def pay_card(data: dict):
+    try:
+        return create_card_payment(
+            token=data["token"],
+            amount=float(data["total"]),
+            installments=int(data.get("installments", 1)),
+            email=data["email"],
+        )
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
