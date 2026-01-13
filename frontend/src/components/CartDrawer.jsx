@@ -7,6 +7,7 @@ import { registerSale } from '../firebase/updateSales'
 import { api } from '../services/api'
 
 
+const MP_PUBLIC_KEY = import.meta.env.VITE_MP_PUBLIC_KEY
 
 
 const parsePrice = (price) => {
@@ -61,17 +62,62 @@ const formatCVV = (value) => {
   return value.replace(/\D/g, '').slice(0, 4)
 }
 
-console.log('PUBLIC KEY:', import.meta.env.VITE_MP_PUBLIC_KEY)
 
 
-const mp = new window.MercadoPago(
-  import.meta.env.VITE_MP_PUBLIC_KEY,
-  { locale: 'pt-BR' }
-)
+
+
 
 
 
 function CartDrawer({ open, onClose }) {
+
+  const createCardToken = async () => {
+    const mp = new window.MercadoPago(MP_PUBLIC_KEY, { locale: 'pt-BR' })
+  
+    const [expMonth, expYear] = cardData.expiry.split('/')
+  
+    const tokenResponse = await mp.createCardToken({
+      cardNumber: cardData.number.replace(/\s/g, ''),
+      cardholderName: cardData.name,
+      expirationMonth: expMonth,
+      expirationYear: `20${expYear}`,
+      securityCode: cardData.cvv,
+      identificationType: 'CPF',
+      identificationNumber: '49546332810', // depois podemos pedir no formulário
+    })
+  
+    if (!tokenResponse?.id) {
+      throw new Error('Erro ao gerar token do cartão')
+    }
+  
+    return tokenResponse.id
+  }
+  
+
+  const handleCardPayment = async () => {
+    try {
+      const token = await createCardToken()
+  
+      const response = await api.post('/pay/card', {
+        token,
+        total: finalTotal,
+        installments: Number(cardData.installments),
+        email: 'cliente@valledasflores.com',
+      })
+  
+      if (response.data.status === 'approved') {
+        // 👉 AQUI VAI A TELA DE SUCESSO
+        setShowCardFormModal(null)
+        setShowSuccessModal(true)
+      } else {
+        alert('Pagamento recusado')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Erro ao processar pagamento')
+    }
+  }
+  
 const {
   cartItems,
   removeFromCart,
@@ -872,55 +918,10 @@ const gerarPix = async () => {
         </div>
       )}
 
-     <button
-  className="delivery-confirm"
-  onClick={async () => {
-    try {
-      // 1️⃣ separar validade
-      const [month, year] = cardData.expiry.split('/')
-
-      // 2️⃣ criar token do cartão
-      const tokenResponse = await mp.createCardToken({
-        cardNumber: cardData.number.replace(/\s/g, ''),
-        cardholderName: cardData.name,
-        securityCode: cardData.cvv,
-        expirationMonth: month,
-        expirationYear: `20${year}`,
-      })
-
-      // 3️⃣ validar token
-      if (tokenResponse.error) {
-        console.error(tokenResponse.error)
-        alert('Dados do cartão inválidos')
-        return
-      }
-
-      const token = tokenResponse.id
-
-      // 4️⃣ enviar token pro backend
-      const response = await api.post('/pay/card', {
-        token,
-        total: finalTotal,
-        installments: cardData.installments,
-        email: 'cliente@valledasflores.com',
-      })
-
-      // 5️⃣ tratar resposta REAL
-      if (response.data.status === 'approved') {
-        setShowCardFormModal(null)
-        setShowSuccessModal(true)
-      } else {
-        alert('Pagamento recusado')
-      }
-
-    } catch (err) {
-      console.error(err)
-      alert('Erro ao processar pagamento')
-    }
-  }}
->
+<button className="delivery-confirm" onClick={handleCardPayment}>
   Pagar
 </button>
+
 
 
     </div>
