@@ -222,3 +222,101 @@ background: var(--rosa-suave);
 .monte-buque-enter {
   animation: buqueEnter 0.45s ease forwards;
 }
+
+
+/* ============================= */
+/* RESPONSIVIDADE — MONTE SEU BUQUÊ */
+/* ============================= */
+
+/* ===== TABLET ===== */
+@media (max-width: 1024px) {
+
+  .monte-buque {
+    padding: 64px 24px;
+    gap: 36px;
+  }
+
+  .grid-opcoes {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .buque-preview {
+    width: 320px;
+    height: 320px;
+    margin-bottom: 40px;
+  }
+
+  .monte-buque-header {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+}
+
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+
+  .monte-buque {
+    padding: 68px 20px;
+    gap: 32px;
+  }
+
+  .grid-opcoes {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .buque-preview {
+    width: 200px;
+    height: 200px;
+     
+    margin-bottom: 32px;
+  }
+
+  .camada-vaso {
+    width: 180%;
+    bottom: -24px;
+    margin-left: 10px;
+
+  }
+
+  .camada-plantinha {
+    width: 185%;
+    bottom: -25px;
+  }
+
+  .camada-flor {
+    bottom: 170px;
+  }
+
+  .option-group {
+    max-width: 100%;
+  }
+
+  .option-buttons {
+    gap: 8px;
+  }
+
+  .option-buttons button {
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+
+  .btn-whatsapp {
+    width: 100%;
+    max-width: 320px;
+    padding: 14px;
+  }
+
+  .monte-buque-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: -60px;
+}
+
+}
+
+
+/* ===== MOBILE PEQUENO ===== */

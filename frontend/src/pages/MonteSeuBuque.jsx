@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import html2canvas from 'html2canvas'
 
 
@@ -13,6 +13,18 @@ function MonteSeuBuque() {
   const [plantinha, setPlantinha] = useState('mosquitinho')
   const [vaso, setVaso] = useState('vaso-base')
   const [quantidade, setQuantidade] = useState(1)
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+
+useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768)
+  }
+
+  window.addEventListener('resize', handleResize)
+  return () => window.removeEventListener('resize', handleResize)
+}, [])
+
 
 
   const flores = [
@@ -78,6 +90,71 @@ const posicoesFlores = {
     { top: '39%', left: '55%', scale: 2 }
   ]
 }
+
+const posicoesFloresMobile = {
+  1: [
+    { top: '18%', left: '50%', scale: 2 }
+  ],
+
+  3: [
+    { top: '24%', left: '42%', scale: 1.7 },
+    { top: '22%', left: '58%', scale: 1.7 },
+    { top: '32%', left: '50%', scale: 1.7 }
+  ],
+
+  6: [
+    { top: '20%', left: '30%', scale: 1.6 },
+    { top: '18%', left: '50%', scale: 1.6 },
+    { top: '20%', left: '70%', scale: 1.6 },
+    { top: '32%', left: '40%', scale: 1.6 },
+    { top: '32%', left: '60%', scale: 1.6 },
+    { top: '44%', left: '50%', scale: 1.6 }
+  ],
+
+  8: [
+    { top: '18%', left: '30%', scale: 1.5 },
+    { top: '16%', left: '50%', scale: 1.5 },
+    { top: '18%', left: '70%', scale: 1.5 },
+    { top: '30%', left: '35%', scale: 1.5 },
+    { top: '30%', left: '65%', scale: 1.5 },
+    { top: '42%', left: '50%', scale: 1.5 },
+    { top: '24%', left: '60%', scale: 1.5 },
+    { top: '24%', left: '40%', scale: 1.5 }
+  ],
+
+  10: [
+    { top: '18%', left: '28%', scale: 1.4 },
+    { top: '16%', left: '50%', scale: 1.4 },
+    { top: '18%', left: '72%', scale: 1.4 },
+    { top: '30%', left: '35%', scale: 1.4 },
+    { top: '30%', left: '65%', scale: 1.4 },
+    { top: '42%', left: '50%', scale: 1.4 },
+    { top: '24%', left: '60%', scale: 1.4 },
+    { top: '24%', left: '40%', scale: 1.4 },
+    { top: '36%', left: '42%', scale: 1.4 },
+    { top: '36%', left: '58%', scale: 1.4 }
+  ],
+
+  12: [
+    { top: '16%', left: '30%', scale: 1.35 },
+    { top: '14%', left: '50%', scale: 1.35 },
+    { top: '16%', left: '70%', scale: 1.35 },
+    { top: '28%', left: '35%', scale: 1.35 },
+    { top: '28%', left: '65%', scale: 1.35 },
+    { top: '40%', left: '50%', scale: 1.35 },
+    { top: '22%', left: '42%', scale: 1.35 },
+    { top: '22%', left: '58%', scale: 1.35 },
+    { top: '34%', left: '42%', scale: 1.35 },
+    { top: '34%', left: '58%', scale: 1.35 },
+    { top: '46%', left: '45%', scale: 1.35 },
+    { top: '46%', left: '55%', scale: 1.35 }
+  ]
+}
+
+const posicoesAtuais = isMobile
+  ? posicoesFloresMobile
+  : posicoesFlores
+
 
 
 
@@ -165,7 +242,7 @@ message += `Aguardo orientações para finalizar.\nObrigado(a)!`
     alt="Plantinha"
   />
 
- {posicoesFlores[quantidade].map((pos, index) => (
+ {posicoesAtuais[quantidade].map((pos, index) => (
   <img
     key={index}
     className="camada-flor flor-item"
