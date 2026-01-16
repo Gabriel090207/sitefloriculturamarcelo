@@ -4,6 +4,13 @@ import { useState, useEffect, useRef } from 'react'
 import Home from './pages/Home'
 import Loja from './pages/Loja'
 import Sobre from './pages/Sobre'
+import Pagamento from './pages/Pagamento'
+import PoliticaEntrega from './pages/PoliticaEntrega'
+import PoliticaPrivacidade from './pages/PoliticaPrivacidade'
+import PoliticaTrocaDevolucao from './pages/PoliticaTrocaDevolucao'
+
+
+
 import Contato from './pages/Contato'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -57,6 +64,11 @@ function App() {
         <Route path="/loja" element={<Loja />} />
         <Route path="/sobre" element={<Sobre />} />
         <Route path="/contato" element={<Contato />} />
+        <Route path="/pagamento" element={<Pagamento />} />
+        <Route path="/politica-de-entrega" element={<PoliticaEntrega />} />
+        <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
+        <Route path="/troca-e-devolucao" element={<PoliticaTrocaDevolucao />} />
+
       </Routes>
 
       {/* BOTÃO FLUTUANTE */}

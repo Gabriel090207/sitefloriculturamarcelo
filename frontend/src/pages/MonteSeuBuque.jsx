@@ -9,7 +9,7 @@ function MonteSeuBuque() {
   const buqueRef = useRef(null)
 
   // estados (por enquanto só 1 opção cada)
-  const [flor, setFlor] = useState('flor-base')
+  const [flor, setFlor] = useState('rosa-azul')
   const [plantinha, setPlantinha] = useState('mosquitinho')
   const [vaso, setVaso] = useState('vaso-base')
   const [quantidade, setQuantidade] = useState(1)
@@ -28,8 +28,10 @@ useEffect(() => {
 
 
   const flores = [
-  { id: 'flor-base', nome: 'Rosa Azul' },
-  { id: 'rosa-vermelha', nome: 'Rosa Vermelha' }
+  { id: 'rosa-azul', nome: 'Rosa Azul' },
+  { id: 'rosa-vermelha', nome: 'Rosa Vermelha' },
+  { id: 'rosa-branca', nome: 'Rosa Branca' },
+  { id: 'rosa-amarela', nome: 'Rosa Amarela' }
 ]
 
 const plantinhas = [
