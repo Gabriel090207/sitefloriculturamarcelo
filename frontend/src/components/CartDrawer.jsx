@@ -135,14 +135,62 @@ const calculateDeliveryFeeByCEP = (cep) => {
   return 29.9
 }
 
-const calculateDeliveryFeeByDistance = (distanceKm) => {
-  if (distanceKm <= 1) return 9.9
-  if (distanceKm <= 3) return 14.9
-  if (distanceKm <= 6) return 19.9
-  if (distanceKm <= 10) return 24.9
+const BAIRRO_ZONA_MAP = {
+  // CENTRO-SUL
+  'Centro': 'centro-sul',
+  'Adrianópolis': 'centro-sul',
+  'Nossa Senhora das Graças': 'centro-sul',
+  'Chapada': 'centro-sul',
+  'Aleixo': 'centro-sul',
 
-  return 29.9
+  // SUL
+  'Cachoeirinha': 'sul',
+  'Educandos': 'sul',
+  'São Francisco': 'sul',
+  'Petrópolis': 'sul',
+  'Santa Luzia': 'sul',
+
+  // OESTE
+  'Compensa': 'oeste',
+  'Santo Agostinho': 'oeste',
+  'São Jorge': 'oeste',
+  'Alvorada': 'oeste',
+
+  // CENTRO-OESTE
+  'Redenção': 'centro-oeste',
+  'Dom Pedro': 'centro-oeste',
+  'Planalto': 'centro-oeste',
+
+  // NORTE
+  'Cidade Nova': 'norte',
+  'Nova Cidade': 'norte',
+  'Santa Etelvina': 'norte',
+  'Monte das Oliveiras': 'norte'
 }
+
+const calculateDeliveryFeeByZone = (bairro) => {
+  if (!bairro) return 40
+
+  const zona = BAIRRO_ZONA_MAP[bairro]
+
+  switch (zona) {
+    case 'centro-sul':
+      return 25
+
+    case 'sul':
+    case 'oeste':
+    case 'centro-oeste':
+      return 30
+
+    case 'norte':
+      return 40
+
+    default:
+      // bairro não mapeado
+      return 40
+  }
+}
+
 
 
 const fetchCEPData = async (cep) => {
@@ -190,6 +238,9 @@ const mp = new window.MercadoPago(
   import.meta.env.VITE_MP_PUBLIC_KEY,
   { locale: 'pt-BR' }
 )
+
+
+
 
 
 
@@ -357,36 +408,30 @@ useEffect(() => {
       customerData.cep.length !== 9 ||
       deliveryPeriod === 'retiradanaloja'
     ) {
-      setDistanceKm(null)
       setDeliveryFee(0)
       return
     }
 
     try {
-      const clientCoords = await fetchCoordsByCEP(customerData.cep)
-      if (!clientCoords) return
+      const cepData = await fetchCEPData(customerData.cep)
+      if (!cepData || !cepData.bairro) {
+        setDeliveryFee(40)
+        return
+      }
 
-      const km = calculateDistanceKm(
-        STORE_COORDS.lat,
-        STORE_COORDS.lng,
-        clientCoords.lat,
-        clientCoords.lng
-      )
-
-      setDistanceKm(km)
-
-      const fee = calculateDeliveryFeeByDistance(km)
+      const fee = calculateDeliveryFeeByZone(cepData.bairro)
       setDeliveryFee(fee)
 
-      console.log('Distância calculada (km):', km)
-      console.log('Frete calculado: R$', fee)
+      console.log('Bairro:', cepData.bairro)
+      console.log('Frete por zona: R$', fee)
     } catch (err) {
-      console.error('Erro ao calcular frete:', err)
+      console.error('Erro ao calcular frete por zona:', err)
     }
   }
 
   run()
 }, [customerData.cep, deliveryPeriod])
+
 
 const handleCheckoutWhatsApp = async (customPhrase = '') => {
 
