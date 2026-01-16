@@ -7,6 +7,68 @@ import { registerSale } from '../firebase/updateSales'
 import { api } from '../services/api'
 
 
+const fetchCoordsByAddress = async (address) => {
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+    address
+  )}`
+
+  
+
+  const response = await fetch(url)
+  const data = await response.json()
+
+  if (!data.length) return null
+
+  return {
+    lat: Number(data[0].lat),
+    lng: Number(data[0].lon)
+  }
+}
+
+const fetchCoordsByCEP = async (cep) => {
+  const cleanCEP = cep.replace('-', '')
+
+  const response = await fetch(
+    `https://nominatim.openstreetmap.org/search?format=json&q=${cleanCEP}, Manaus`
+  )
+
+  const data = await response.json()
+
+  if (!data.length) return null
+
+  return {
+    lat: Number(data[0].lat),
+    lng: Number(data[0].lon)
+  }
+}
+
+
+const calculateDistanceKm = (lat1, lon1, lat2, lon2) => {
+  const toRad = (value) => (value * Math.PI) / 180
+  const R = 6371 // raio da Terra em KM
+
+  const dLat = toRad(lat2 - lat1)
+  const dLon = toRad(lon2 - lon1)
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2)
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+  return Number((R * c).toFixed(2))
+}
+
+
+const STORE_COORDS = {
+  lat: -3.131633,
+  lng: -60.023289
+}
+// Floricultura Valle das Flores
+// Rua Major Gabriel, Centro – Manaus
 
 
 const parsePrice = (price) => {
@@ -43,6 +105,66 @@ const formatPhone = (value) => {
     .slice(0, 15)                       // limite total
 }
 
+const formatCEP = (value) => {
+  return value
+    .replace(/\D/g, '')          // remove tudo que não for número
+    .replace(/^(\d{5})(\d)/, '$1-$2')
+    .slice(0, 9)
+}
+
+const calculateDeliveryFeeByCEP = (cep) => {
+  if (!cep || cep.length < 9) return 0
+
+  // remove o hífen
+  const cepNumber = Number(cep.replace('-', ''))
+
+  // FAIXAS DE CEP (Manaus)
+  if (cepNumber >= 69000000 && cepNumber <= 69049999) {
+    return 9.9
+  }
+
+  if (cepNumber >= 69050000 && cepNumber <= 69079999) {
+    return 14.9
+  }
+
+  if (cepNumber >= 69080000 && cepNumber <= 69099999) {
+    return 19.9
+  }
+
+  // fora da área principal
+  return 29.9
+}
+
+const calculateDeliveryFeeByDistance = (distanceKm) => {
+  if (distanceKm <= 1) return 9.9
+  if (distanceKm <= 3) return 14.9
+  if (distanceKm <= 6) return 19.9
+  if (distanceKm <= 10) return 24.9
+
+  return 29.9
+}
+
+
+const fetchCEPData = async (cep) => {
+  const cleanCEP = cep.replace('-', '')
+
+  const response = await fetch(
+    `https://viacep.com.br/ws/${cleanCEP}/json/`
+  )
+
+  const data = await response.json()
+
+  if (data.erro) return null
+
+  return {
+    bairro: data.bairro,
+    cidade: data.localidade,
+    uf: data.uf,
+    logradouro: data.logradouro
+  }
+}
+
+
 const formatCardNumber = (value) => {
   return value
     .replace(/\D/g, '')
@@ -71,6 +193,8 @@ const mp = new window.MercadoPago(
 
 
 
+
+
 function CartDrawer({ open, onClose }) {
 const {
   cartItems,
@@ -90,7 +214,10 @@ const [customerData, setCustomerData] = useState({
   name: '',
   phone: '',
   date: '',
-  address: '',
+  street: '',
+  neighborhood: '',
+  number: '',
+  cep: '',
   tribute: ''
 })
 
@@ -107,10 +234,14 @@ const resetCustomerForm = () => {
     name: '',
     phone: '',
     date: '',
-    address: '',
+    street: '',
+    neighborhood: '',
+    number: '',
+    cep: '',
     tribute: ''
   })
 }
+
 
 const [cardData, setCardData] = useState({
   number: '',
@@ -146,9 +277,18 @@ const [deliveryFee, setDeliveryFee] = useState(0)
 const [showSuccessModal, setShowSuccessModal] = useState(false)
 
 
+const safeDeliveryFee = Number(deliveryFee) || 0
+
 const finalTotal = parseFloat(
-  (totalPrice + deliveryFee).toFixed(2)
+  (totalPrice + safeDeliveryFee).toFixed(2)
 )
+
+const [cepLocation, setCepLocation] = useState(null)
+// exemplo: { bairro: 'Centro', cidade: 'Manaus' }
+
+const [distanceKm, setDistanceKm] = useState(null)
+
+
 
 
 
@@ -189,6 +329,65 @@ useEffect(() => {
 }, [])
 
 
+useEffect(() => {
+  const run = async () => {
+    if (
+      customerData.cep.length === 9 &&
+      deliveryPeriod !== 'retiradanaloja'
+    ) {
+      try {
+        const data = await fetchCEPData(customerData.cep)
+        setCepLocation(data)
+      } catch (err) {
+        console.error('Erro ao buscar CEP:', err)
+        setCepLocation(null)
+      }
+    } else {
+      setCepLocation(null)
+    }
+  }
+
+  run()
+}, [customerData.cep, deliveryPeriod])
+
+
+useEffect(() => {
+  const run = async () => {
+    if (
+      customerData.cep.length !== 9 ||
+      deliveryPeriod === 'retiradanaloja'
+    ) {
+      setDistanceKm(null)
+      setDeliveryFee(0)
+      return
+    }
+
+    try {
+      const clientCoords = await fetchCoordsByCEP(customerData.cep)
+      if (!clientCoords) return
+
+      const km = calculateDistanceKm(
+        STORE_COORDS.lat,
+        STORE_COORDS.lng,
+        clientCoords.lat,
+        clientCoords.lng
+      )
+
+      setDistanceKm(km)
+
+      const fee = calculateDeliveryFeeByDistance(km)
+      setDeliveryFee(fee)
+
+      console.log('Distância calculada (km):', km)
+      console.log('Frete calculado: R$', fee)
+    } catch (err) {
+      console.error('Erro ao calcular frete:', err)
+    }
+  }
+
+  run()
+}, [customerData.cep, deliveryPeriod])
+
 const handleCheckoutWhatsApp = async (customPhrase = '') => {
 
   const phoneNumber = '5516994287026'
@@ -211,7 +410,14 @@ const handleCheckoutWhatsApp = async (customPhrase = '') => {
   message += `Cliente: ${customerData.name}\n`
 message += `Telefone: ${customerData.phone}\n`
 message += `Data desejada: ${customerData.date}\n`
-message += `Endereço: ${customerData.address}\n\n`
+if (deliveryPeriod === 'retiradanaloja') {
+  message += `Retirada na loja\n\n`
+} else {
+  message += `Endereço:\n`
+  message += `${customerData.street}, ${customerData.number}\n`
+  message += `${customerData.neighborhood} - CEP ${customerData.cep}\n\n`
+}
+
 
 if (deliveryPeriod) {
   message += `Período de entrega: ${deliveryPeriod}\n`
@@ -341,13 +547,13 @@ const gerarPix = async () => {
 
      {cartItems.length > 0 && (
   <div className="cart-drawer-footer">
-    <div className="cart-total">
-      <span>Total</span>
-      <strong>
-  R$ {finalTotal.toFixed(2).replace('.', ',')}
-</strong>
+   <div className="cart-total">
+  <span>Total</span>
+  <strong>
+    R$ {finalTotal.toFixed(2).replace('.', ',')}
+  </strong>
+</div>
 
-    </div>
 
    <button
   className="btn-checkout"
@@ -589,14 +795,52 @@ const gerarPix = async () => {
       </div>
 
       <div className="form-group">
-        <label>Endereço de entrega</label>
-        <textarea
-          rows="2"
-          value={customerData.address}
-          onChange={(e) => handleCustomerChange('address', e.target.value)}
-          placeholder="Rua, número, bairro, complemento"
-        />
-      </div>
+  <label>Rua</label>
+  <input
+    type="text"
+    value={customerData.street}
+    onChange={(e) => handleCustomerChange('street', e.target.value)}
+    placeholder="Ex: Rua Major Gabriel"
+  />
+</div>
+
+<div className="form-group">
+  <label>Bairro</label>
+  <input
+    type="text"
+    value={customerData.neighborhood}
+    onChange={(e) => handleCustomerChange('neighborhood', e.target.value)}
+    placeholder="Ex: Centro"
+  />
+</div>
+
+<div className="form-row">
+  <div className="form-group">
+    <label>Número</label>
+    <input
+      type="text"
+      value={customerData.number}
+      onChange={(e) => handleCustomerChange('number', e.target.value)}
+      placeholder="Ex: 1833"
+    />
+  </div>
+
+  <div className="form-group">
+    <label>CEP</label>
+    <input
+  type="text"
+  inputMode="numeric"
+  value={customerData.cep}
+  onChange={(e) =>
+    handleCustomerChange('cep', formatCEP(e.target.value))
+  }
+  placeholder="00000-000"
+  maxLength={9}
+/>
+
+  </div>
+</div>
+
 
       {/* FRASE SOMENTE SE TIVER COROA */}
       {hasCoroa && (
@@ -614,11 +858,15 @@ const gerarPix = async () => {
       <button
         className="delivery-confirm"
         disabled={
-          !customerData.name ||
-          !customerData.phone ||
-          !customerData.date ||
-          !customerData.address
-        }
+  !customerData.name ||
+  !customerData.phone ||
+  !customerData.date ||
+  !customerData.street ||
+  !customerData.neighborhood ||
+  !customerData.number ||
+  !customerData.cep
+}
+
         onClick={() => {
           setShowCustomerModal(false)
           setShowDeliveryModal(true)
@@ -654,22 +902,34 @@ const gerarPix = async () => {
 
       <h4>Em qual período vamos entregar?</h4>
 
+      <div className="delivery-warning">
+  <strong>AVISO IMPORTANTE:</strong>
+  <p>
+    Certifique-se de que a pessoa estará no local durante o período de entrega
+    escolhido. Caso contrário, o produto retornará para a loja e será cobrada
+    uma nova taxa para reenviar o item.
+  </p>
+</div>
+
+
 
       {[
-        { id: 'manha', label: 'Manhã', time: '08h às 13h', price: 19.9 },
-        { id: 'tarde', label: 'Tarde', time: '13h às 19h', price: 19.9 },
-        { id: 'comercial', label: 'Comercial', time: '08h às 19h', price: 0 },
-        { id: 'noite', label: 'Noite', time: '19h às 23h30', price: 19.9 }
-      ].map(option => (
+  { id: 'retiradanaloja', label: 'Retirada na Loja', time: '08h às 19h', price: 0 },
+  { id: 'manha', label: 'Manhã', time: '08h às 13h', price: 0 },
+  { id: 'tarde', label: 'Tarde', time: '13h às 19h', price: 0 },
+  { id: 'noite', label: 'Noite', time: 'A combinar por WhatsApp', price: 0 }
+].map(option => (
+
         <div
           key={option.id}
           className={`delivery-option ${
             deliveryPeriod === option.id ? 'selected' : ''
           }`}
-          onClick={() => {
+         onClick={() => {
   setDeliveryPeriod(option.id)
-  setDeliveryFee(option.price)
 }}
+
+
 
         >
           <div className="delivery-left">
@@ -694,10 +954,13 @@ const gerarPix = async () => {
           </div>
 
           <div className="delivery-price">
-            {option.price === 0
-              ? 'Grátis'
-              : `R$ ${option.price.toFixed(2).replace('.', ',')}`}
-          </div>
+  {option.id === 'retiradanaloja'
+    ? 'Grátis'
+    : deliveryFee > 0
+      ? `R$ ${deliveryFee.toFixed(2).replace('.', ',')}`
+      : '—'}
+</div>
+
         </div>
       ))}
 

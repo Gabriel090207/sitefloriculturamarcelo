@@ -80,3 +80,26 @@
   }
 }
 
+/* LOGOS DE PAGAMENTO */
+.payment-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  margin: 16px 0 20px;
+}
+
+.payment-cards img {
+  height: 42px;
+  object-fit: contain;
+}
+
+/* PIX */
+.payment-pix {
+  margin: 16px 0 20px;
+}
+
+.payment-pix img {
+  height: 48px;
+  object-fit: contain;
+}
