@@ -10,10 +10,10 @@ function Pagamento() {
           <h3>Cartão de crédito e Débito</h3>
 
           <div className="payment-cards">
-            <img src="./public/visa.png" alt="Visa" />
-            <img src="./public/mastercard.svg" alt="Mastercard" />
-            <img src="./public/american.png" alt="American Express" />
-            <img src="./public/elo.png" alt="Elo" />
+            <img src="/cards/visa.png" alt="Visa" />
+            <img src="/cards/mastercard.svg" alt="Mastercard" />
+            <img src="/cards/american.png" alt="American Express" />
+            <img src="/cards/elo.png" alt="Elo" />
            
           </div>
 
@@ -28,7 +28,7 @@ function Pagamento() {
           <h3>Pix</h3>
 
           <div className="payment-pix">
-            <img src="./public/pix.png" alt="Pix" />
+            <img src="/cards/pix.png" alt="Pix" />
           </div>
 
           <p>
