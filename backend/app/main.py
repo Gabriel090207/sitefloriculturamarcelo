@@ -20,6 +20,8 @@ app.add_middleware(
         "https://vallesdasflores.netlify.app",
         "https://sitefloriculturamarcelo.onrender.com",
         "http://floriculturavalledasflores.com.br",
+        "https://floriculturavalledasflores.com.br",
+
           # React (caso use)
     ],
     allow_credentials=True,

@@ -16,6 +16,9 @@ function MonteSeuBuque() {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
+
+  const [imagensCarregadas, setImagensCarregadas] = useState(false)
+
 useEffect(() => {
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 768)
@@ -25,6 +28,34 @@ useEffect(() => {
   return () => window.removeEventListener('resize', handleResize)
 }, [])
 
+useEffect(() => {
+  const imagensParaPreload = []
+
+  flores.forEach(f => {
+    imagensParaPreload.push(`/buque/flor/${f.id}.png`)
+  })
+
+  plantinhas.forEach(p => {
+    imagensParaPreload.push(`/buque/plantinha/${p.id}.png`)
+  })
+
+  vasos.forEach(v => {
+    imagensParaPreload.push(`/buque/vaso/${v.id}.png`)
+  })
+
+  let carregadas = 0
+
+  imagensParaPreload.forEach(src => {
+    const img = new Image()
+    img.src = src
+    img.onload = () => {
+      carregadas++
+      if (carregadas === imagensParaPreload.length) {
+        setImagensCarregadas(true)
+      }
+    }
+  })
+}, [])
 
 
   const flores = [
