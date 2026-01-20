@@ -1215,7 +1215,20 @@ const gerarPix = async () => {
   onClick={async () => {
     try {
       // 1️⃣ separar validade
-      const [month, year] = cardData.expiry.split('/')
+      const expiry = cardData.expiry.replace(/\s/g, '')
+
+      if (!expiry || !expiry.includes('/')) {
+        alert('Validade do cartão inválida')
+        return
+      }
+      
+      const [month, year] = expiry.split('/')
+      
+      if (!month || !year || month.length !== 2 || year.length !== 2) {
+        alert('Validade do cartão inválida')
+        return
+      }
+      
 
       // 2️⃣ criar token do cartão
       const tokenResponse = await mp.createCardToken({
