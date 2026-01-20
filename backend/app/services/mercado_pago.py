@@ -37,8 +37,7 @@ def create_card_payment(
         "transaction_amount": amount,
         "token": token,
         "description": "Pedido Valle das Flores",
-        "installments": installments,
-        "payment_method_id": "visa",  # depois automatizamos
+        "installments": installments, # depois automatizamos
         "payer": {
             "email": email
         }
