@@ -79,6 +79,7 @@ def pay_card(data: dict):
             amount=float(data["total"]),
             installments=int(data.get("installments", 1)),
             email=data["email"],
+            cpf=data["cpf"],  # 👈 CPF recebido do frontend
         )
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

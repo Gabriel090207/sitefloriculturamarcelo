@@ -112,6 +112,16 @@ const formatCEP = (value) => {
     .slice(0, 9)
 }
 
+const formatCPF = (value) => {
+  return value
+    .replace(/\D/g, '')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+    .slice(0, 14)
+}
+
+
 const calculateDeliveryFeeByCEP = (cep) => {
   if (!cep || cep.length < 9) return 0
 
@@ -264,6 +274,7 @@ const hasCoroa = cartItems.some(
 const [customerData, setCustomerData] = useState({
   name: '',
   phone: '',
+  cpf: '',          // 👈 ADICIONADO
   date: '',
   street: '',
   neighborhood: '',
@@ -284,6 +295,7 @@ const resetCustomerForm = () => {
   setCustomerData({
     name: '',
     phone: '',
+    cpf: '',        // 👈 ADICIONADO
     date: '',
     street: '',
     neighborhood: '',
@@ -292,6 +304,7 @@ const resetCustomerForm = () => {
     tribute: ''
   })
 }
+
 
 
 const [cardData, setCardData] = useState({
@@ -827,6 +840,21 @@ const gerarPix = async () => {
       </div>
 
       <div className="form-group">
+  <label>CPF do pagador</label>
+  <input
+    type="text"
+    inputMode="numeric"
+    placeholder="000.000.000-00"
+    value={customerData.cpf}
+    onChange={(e) =>
+      handleCustomerChange('cpf', formatCPF(e.target.value))
+    }
+    maxLength={14}
+  />
+</div>
+
+
+      <div className="form-group">
         <label>Data que precisa estar pronto</label>
         <input
   type="text"
@@ -900,17 +928,19 @@ const gerarPix = async () => {
         </div>
       )}
 
-      <button
-        className="delivery-confirm"
-        disabled={
-  !customerData.name ||
-  !customerData.phone ||
-  !customerData.date ||
-  !customerData.street ||
-  !customerData.neighborhood ||
-  !customerData.number ||
-  !customerData.cep
-}
+<button
+  className="delivery-confirm"
+  disabled={
+    !customerData.name ||
+    !customerData.phone ||
+    !customerData.cpf ||        // 👈 ADICIONADO
+    !customerData.date ||
+    !customerData.street ||
+    !customerData.neighborhood ||
+    !customerData.number ||
+    !customerData.cep
+  }
+
 
         onClick={() => {
           setShowCustomerModal(false)
@@ -1211,7 +1241,9 @@ const gerarPix = async () => {
         total: finalTotal,
         installments: cardData.installments,
         email: 'cliente@valledasflores.com',
+        cpf: customerData.cpf.replace(/\D/g, '') // 👈 CPF SEM MÁSCARA
       })
+      
 
       // 5️⃣ tratar resposta REAL
       if (response.data.status === 'approved') {

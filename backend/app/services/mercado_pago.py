@@ -32,6 +32,7 @@ def create_card_payment(
     amount: float,
     installments: int,
     email: str,
+    cpf: str,
 ):
     payment_data = {
         "transaction_amount": round(amount, 2),
@@ -39,11 +40,17 @@ def create_card_payment(
         "description": "Pedido Valle das Flores",
         "installments": installments,
         "payer": {
-            "email": email
+            "email": email,
+            "identification": {
+                "type": "CPF",
+                "number": cpf
+            }
         }
     }
 
     payment_response = sdk.payment().create(payment_data)
 
-    # RETORNA TUDO para debug
+    # Retorna a resposta completa do Mercado Pago
+    # (evita KeyError e permite debug e produção)
     return payment_response
+
