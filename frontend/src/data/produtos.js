@@ -6,7 +6,7 @@ export const produtos = [
     details: 'Um buquê com 12 rosas personalizáveis ornamentadas com lindas flores do campo.',
     flowersQty: '12 Rosas',
     productionTime: '-',
-    price: 'R$ 0,50',
+    price: 'R$ 5,00',
     image: '/buqueprincipal4.png',
     category: 'Buquês',
   },

@@ -34,21 +34,16 @@ def create_card_payment(
     email: str,
 ):
     payment_data = {
-        "transaction_amount": amount,
+        "transaction_amount": round(amount, 2),
         "token": token,
         "description": "Pedido Valle das Flores",
-        "installments": installments, # depois automatizamos
+        "installments": installments,
         "payer": {
             "email": email
         }
     }
 
     payment_response = sdk.payment().create(payment_data)
-    payment = payment_response["response"]
 
-    return {
-        "id": payment["id"],
-        "status": payment["status"],
-        "status_detail": payment["status_detail"],
-    }
-
+    # RETORNA TUDO para debug
+    return payment_response
