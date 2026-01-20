@@ -1210,37 +1210,34 @@ const gerarPix = async () => {
         </div>
       )}
 
-     <button
+    
+  Pagar<button
   className="delivery-confirm"
   onClick={async () => {
     try {
-      // 1️⃣ separar validade
+      // 1️⃣ limpar e separar validade
       const expiry = cardData.expiry.replace(/\s/g, '')
 
       if (!expiry || !expiry.includes('/')) {
         alert('Validade do cartão inválida')
         return
       }
-      
-    
-      
+
+      const [month, year] = expiry.split('/')
+
       if (!month || !year || month.length !== 2 || year.length !== 2) {
         alert('Validade do cartão inválida')
         return
       }
-      
 
-      // 2️⃣ criar token do cartão
-      const [month, year] = cardData.expiry.split('/')
-
+      // 2️⃣ criar token do cartão (CAMPOS CORRETOS)
       const tokenResponse = await mp.createCardToken({
         cardNumber: cardData.number.replace(/\s/g, ''),
         cardholderName: cardData.name,
-        cardExpirationMonth: month,   // ✅ NOME CORRETO
-        cardExpirationYear: `20${year}`, // ✅ NOME CORRETO
+        cardExpirationMonth: month,
+        cardExpirationYear: `20${year}`,
         securityCode: cardData.cvv,
       })
-      
 
       // 3️⃣ validar token
       if (tokenResponse.error) {
@@ -1257,34 +1254,29 @@ const gerarPix = async () => {
         total: finalTotal,
         installments: cardData.installments,
         email: 'cliente@valledasflores.com',
-        cpf: customerData.cpf.replace(/\D/g, '') // 👈 CPF SEM MÁSCARA
+        cpf: customerData.cpf.replace(/\D/g, ''),
       })
-      
 
-      // 5️⃣ tratar resposta REAL
+      // 5️⃣ tratar resposta
       const payment = response.data.response
 
       if (payment && payment.status === 'approved') {
-      
         setShowCardFormModal(null)
         setShowSuccessModal(true)
       } else {
-        console.error('Pagamento recusado:', payment)
         alert(
           payment?.status_detail
             ? `Pagamento recusado: ${payment.status_detail}`
             : 'Pagamento recusado pelo emissor'
         )
       }
-      
-
     } catch (err) {
       console.error(err)
       alert('Erro ao processar pagamento')
     }
   }}
 >
-  Pagar
+
 </button>
 
 
