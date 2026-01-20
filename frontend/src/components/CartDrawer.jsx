@@ -1222,7 +1222,7 @@ const gerarPix = async () => {
         return
       }
       
-      const [month, year] = expiry.split('/')
+    
       
       if (!month || !year || month.length !== 2 || year.length !== 2) {
         alert('Validade do cartão inválida')
@@ -1231,13 +1231,16 @@ const gerarPix = async () => {
       
 
       // 2️⃣ criar token do cartão
+      const [month, year] = cardData.expiry.split('/')
+
       const tokenResponse = await mp.createCardToken({
         cardNumber: cardData.number.replace(/\s/g, ''),
         cardholderName: cardData.name,
+        cardExpirationMonth: month,   // ✅ NOME CORRETO
+        cardExpirationYear: `20${year}`, // ✅ NOME CORRETO
         securityCode: cardData.cvv,
-        expirationMonth: month,
-        expirationYear: `20${year}`,
       })
+      
 
       // 3️⃣ validar token
       if (tokenResponse.error) {
