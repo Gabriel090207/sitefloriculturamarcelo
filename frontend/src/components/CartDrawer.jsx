@@ -1246,12 +1246,21 @@ const gerarPix = async () => {
       
 
       // 5️⃣ tratar resposta REAL
-      if (response.data.status === 'approved') {
+      const payment = response.data.response
+
+      if (payment && payment.status === 'approved') {
+      
         setShowCardFormModal(null)
         setShowSuccessModal(true)
       } else {
-        alert('Pagamento recusado')
+        console.error('Pagamento recusado:', payment)
+        alert(
+          payment?.status_detail
+            ? `Pagamento recusado: ${payment.status_detail}`
+            : 'Pagamento recusado pelo emissor'
+        )
       }
+      
 
     } catch (err) {
       console.error(err)
