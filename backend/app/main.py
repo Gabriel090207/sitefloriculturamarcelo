@@ -35,22 +35,29 @@ def health():
     return {"status": "ok"}
 
 
+from app.services.mercado_pago import get_payment_by_id
+
 @app.post("/webhook/mercadopago")
 async def mercadopago_webhook(request: Request):
-    # Query params (ex: ?data.id=123&type=payment)
     qp = dict(request.query_params)
 
-    # Body (pode ser vazio ou JSON)
-    try:
-        body = await request.json()
-    except Exception:
-        body = None
+    payment_id = qp.get("data.id")
 
-    print("✅ WEBHOOK MERCADO PAGO RECEBIDO")
-    print("Query params:", qp)
-    print("Body:", body)
+    if not payment_id:
+        return {"ignored": True}
 
-    # Importante: responder rápido 200 para o Mercado Pago não ficar reenviando
+    payment = get_payment_by_id(payment_id)
+
+    status = payment.get("status")
+    status_detail = payment.get("status_detail")
+
+    print("💳 PAYMENT ID:", payment_id)
+    print("📌 STATUS:", status)
+    print("📌 DETAIL:", status_detail)
+
+    if status == "approved":
+        print("✅ PAGAMENTO APROVADO")
+
     return {"received": True}
 
 

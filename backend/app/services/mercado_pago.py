@@ -58,3 +58,7 @@ def create_card_payment(
     # (evita KeyError e permite debug e produção)
     return payment_response
 
+
+def get_payment_by_id(payment_id: str):
+    payment_response = sdk.payment().get(payment_id)
+    return payment_response["response"]
