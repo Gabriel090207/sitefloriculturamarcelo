@@ -257,13 +257,16 @@ const mp = new window.MercadoPago(
 
 
 function CartDrawer({ open, onClose }) {
-const {
-  cartItems,
-  removeFromCart,
-  increaseQuantity,
-  decreaseQuantity,
-  totalPrice
-} = useCart()
+
+  const {
+    cartItems,
+    removeFromCart,
+    increaseQuantity,
+    decreaseQuantity,
+    totalPrice,
+    clearCart
+  } = useCart()
+  
 
 const hasCoroa = cartItems.some(
   (item) =>
@@ -505,6 +508,10 @@ window.location.href = whatsappUrl
 // registra a venda em segundo plano
 registerSale(cartItems).catch((err) => {
   console.error('Erro ao registrar venda:', err)
+
+  // limpa o carrinho após iniciar o pedido
+clearCart()
+
 })
 
 
@@ -787,7 +794,11 @@ const gerarPix = async () => {
   onClick={() => {
     setPixData(null)
     setShowSuccessModal(true)
+  
+    // ✅ LIMPA O CARRINHO
+    clearCart()
   }}
+  
 >
   Já realizei o pagamento
 </button>
@@ -1210,8 +1221,7 @@ const gerarPix = async () => {
         </div>
       )}
 
-    
-  Pagar<button
+<button
   className="delivery-confirm"
   onClick={async () => {
     try {
@@ -1263,7 +1273,11 @@ const gerarPix = async () => {
       if (payment && payment.status === 'approved') {
         setShowCardFormModal(null)
         setShowSuccessModal(true)
-      } else {
+      
+        // ✅ LIMPA O CARRINHO
+        clearCart()
+      }
+      else {
         alert(
           payment?.status_detail
             ? `Pagamento recusado: ${payment.status_detail}`
@@ -1277,6 +1291,7 @@ const gerarPix = async () => {
   }}
 >
 
+  Pagar
 </button>
 
 

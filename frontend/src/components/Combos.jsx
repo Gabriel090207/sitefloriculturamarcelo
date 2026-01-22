@@ -1,97 +1,121 @@
 import { useState } from 'react'
 import './Combos.css'
+import { useCart } from '../context/CartContext'
+import { useNavigate } from 'react-router-dom'
+
 
 const combosData = [
   {
     id: 1,
     image: '/combosemfundo1.png',
-    title: 'Combo Amor Perfeito',
-    description: 'Flores selecionadas + chocolate + pelúcia.',
-    price: 'R$ 249,90',
+    title: 'Combo Beijinho de Natal',
+    description: 'Os melhores beijos são sempre em eventos especiais.',
+    price: 'R$ 119,00',
   },
   {
     id: 2,
     image: '/combosemfundo2.png',
-    title: 'Combo Encanto Floral',
-    description: 'Arranjo especial para surpreender.',
-    price: 'R$ 199,90',
+    title: 'Combo Magia de Natal',
+    description: 'Trazendo a magia que só o Natal pode oferecer.',
+    price: 'R$ 89,99',
   },
   {
     id: 3,
     image: '/combosemfundo3.png',
-    title: 'Combo Doce Carinho',
-    description: 'Flores delicadas + chocolates finos.',
-    price: 'R$ 219,90',
+    title: 'Combo Feliz Natal',
+    description: 'Desejando a todos uma explosão de emoções nessa data especial.',
+    price: 'R$ 29,99',
   },
   {
     id: 4,
     image: '/combosemfundo4.png',
-    title: 'Combo Doce Carinho',
-    description: 'Flores delicadas + chocolates finos.',
-    price: 'R$ 219,90',
+    title: 'Combo Apego Delicado',
+    description: 'Demonstrando sempre querer ficar perto de você.',
+    price: 'R$ 69,99',
   },
   {
     id: 5,
     image: '/combosemfundo5.png',
-    title: 'Combo Doce Carinho',
-    description: 'Flores delicadas + chocolates finos.',
-    price: 'R$ 219,90',
+    title: 'Combo Doce Afago',
+    description: 'Carinho e amor não se explicam, apenas se sente.',
+    price: 'R$ 169,99',
   },
   {
     id: 6,
     image: '/combosemfundo6.png',
-    title: 'Combo Doce Carinho',
-    description: 'Flores delicadas + chocolates finos.',
-    price: 'R$ 219,90',
+    title: 'Combo Cheirinho de Natal',
+    description: 'Nas menores caixas vêm sempre os melhores sentimentos.',
+    price: 'R$ 19,99',
   },
   {
     id: 7,
     image: '/combosemfundo7.png',
-    title: 'Combo Doce Carinho',
-    description: 'Flores delicadas + chocolates finos.',
-    price: 'R$ 219,90',
+    title: 'Combo Natal em Família',
+    description: 'Trazendo para essa data um significado ainda mais especial.',
+    price: 'R$ 149,99',
   },
   {
     id: 8,
     image: '/combosemfundo8.png',
-    title: 'Combo Doce Carinho',
-    description: 'Flores delicadas + chocolates finos.',
-    price: 'R$ 219,90',
+    title: 'Combo Tudo Meu',
+    description: 'Não deixando de mimar aquela pessoa que você tanto adora.',
+    price: 'R$ 89,99',
   },
   {
     id: 9,
     image: '/combosemfundo9.png',
-    title: 'Combo Doce Carinho',
-    description: 'Flores delicadas + chocolates finos.',
-    price: 'R$ 219,90',
+    title: 'Combo Luz e Alegria',
+    description: 'Iluminando a vida daqueles que nos são especiais.',
+    price: 'R$ 79,99',
   },
   {
     id: 10,
-    image: '/combosemfundo10.png',
-    title: 'Combo Doce Carinho',
-    description: 'Flores delicadas + chocolates finos.',
-    price: 'R$ 219,90',
+    image: '/combosemfundo11.png',
+    title: 'Combo Fofura Natalina',
+    description: 'Um presente doce e especial.',
+    price: 'R$ 89,99',
+  },
+  {
+    id: 11,
+    image: '/combosemfundo12.png',
+    title: 'Cesta Encantada',
+    description: 'Quando o amor não consegue ser expressado apenas com palavras.',
+    price: 'R$ 119,99',
+  },
+  {
+    id: 12,
+    image: '/combo13semfundo.png',
+    title: 'Cesta Boas Festas',
+    description: 'Começando o dia de quem a gente ama totalmente especial.',
+    price: 'R$ 149,99',
+  },
+  {
+    id: 13,
+    image: '/combosemfundo14.png',
+    title: 'Combo Aroma de Natal',
+    description:
+      'Sinta a fragrância do carinho que será entregue nessa data tão especial.',
+    price: 'R$ 139,99',
   },
 ]
 
 function Combos() {
 
-  const handleComprarWhatsApp = (combo) => {
-  const phoneNumber = '5516994287026'
+  const { addToCart } = useCart()
+const navigate = useNavigate()
 
-  let message = `Olá! Gostaria de fazer um pedido.\n\n`
-  message += `Pedido via site – Valle das Flores\n\n`
-  message += `• Combo Especial\n`
-  message += `• Produto: ${combo.title}\n`
-  message += `• Descrição: ${combo.description}\n`
-  message += `• Valor: ${combo.price}\n`
-  message += `• Foto: ${combo.image}\n\n`
-  message += `Aguardo orientações para finalizar.\nObrigado(a)!`
 
-  const encodedMessage = encodeURIComponent(message)
-  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
+ const handleComprar = (combo) => {
+  addToCart({
+    id: combo.id,
+    name: combo.title,
+    price: combo.price,
+    image: combo.image,
+    description: combo.description,
+    category: 'Cestas & Combos',
+  })
 
-  window.open(whatsappUrl, '_blank')
+  navigate('/loja')
 }
 
 
@@ -154,12 +178,13 @@ function Combos() {
   <div className="combo-actions">
     <span className="price">{combo.price}</span>
 
-    <button
-      className="combo-buy"
-      onClick={() => handleComprarWhatsApp(combo)}
-    >
-      Comprar
-    </button>
+   <button
+  className="combo-buy"
+  onClick={() => handleComprar(combo)}
+>
+  Comprar
+</button>
+
   </div>
 </div>
 

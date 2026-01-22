@@ -106,21 +106,31 @@ const posicoesFlores = {
     { top: '19%', left: '37%', scale: 2 }
   ],
    10: [
-    { top: '14%', left: '25%', scale: 2 },
+    { top: '14%', left: '30%', scale: 2 },
     { top: '11%', left: '55%', scale: 2 },
-    { top: '14%', left: '85%', scale: 2 },
+    { top: '18%', left: '65%', scale: 2 },
     { top: '26%', left: '40%', scale: 2 },
-    { top: '26%', left: '70%', scale: 2 },
-    { top: '39%', left: '55%', scale: 2 },
+    { top: '29%', left: '70%', scale: 2 },
+    { top: '39%', left: '50%', scale: 2 },
+    { top: '14%', left: '85%', scale: 2 },
+    { top: '12%', left: '45%', scale: 2 },
+    { top: '12%', left: '75%', scale: 2 },
+    { top: '28%', left: '58%', scale: 2 }
     
   ],
     12: [
-    { top: '14%', left: '25%', scale: 2 },
+     { top: '14%', left: '30%', scale: 2 },
     { top: '11%', left: '55%', scale: 2 },
+    { top: '18%', left: '65%', scale: 2 },
+    { top: '26%', left: '37%', scale: 2 },
+    { top: '29%', left: '70%', scale: 2 },
+    { top: '39%', left: '50%', scale: 2 },
     { top: '14%', left: '85%', scale: 2 },
-    { top: '26%', left: '40%', scale: 2 },
-    { top: '26%', left: '70%', scale: 2 },
-    { top: '39%', left: '55%', scale: 2 }
+    { top: '12%', left: '45%', scale: 2 },
+    { top: '12%', left: '75%', scale: 2 },
+    { top: '28%', left: '58%', scale: 2 },
+    { top: '26%', left: '78%', scale: 2 },
+    { top: '25%', left: '48%', scale: 2 }
   ]
 }
 
@@ -130,57 +140,57 @@ const posicoesFloresMobile = {
   ],
 
   3: [
-    { top: '24%', left: '42%', scale: 1.7 },
-    { top: '22%', left: '58%', scale: 1.7 },
-    { top: '32%', left: '50%', scale: 1.7 }
+    { top: '14%', left: '42%', scale: 1.7 },
+    { top: '12%', left: '68%', scale: 1.7 },
+    { top: '22%', left: '57%', scale: 1.7 }
   ],
 
   6: [
-    { top: '20%', left: '30%', scale: 1.6 },
-    { top: '18%', left: '50%', scale: 1.6 },
-    { top: '20%', left: '70%', scale: 1.6 },
-    { top: '32%', left: '40%', scale: 1.6 },
-    { top: '32%', left: '60%', scale: 1.6 },
-    { top: '44%', left: '50%', scale: 1.6 }
+    { top: '10%', left: '30%', scale: 1.6 },
+    { top: '8%', left: '50%', scale: 1.6 },
+    { top: '10%', left: '70%', scale: 1.6 },
+    { top: '22%', left: '40%', scale: 1.6 },
+    { top: '22%', left: '60%', scale: 1.6 },
+    { top: '28%', left: '50%', scale: 1.6 }
   ],
 
   8: [
-    { top: '18%', left: '30%', scale: 1.5 },
-    { top: '16%', left: '50%', scale: 1.5 },
-    { top: '18%', left: '70%', scale: 1.5 },
-    { top: '30%', left: '35%', scale: 1.5 },
-    { top: '30%', left: '65%', scale: 1.5 },
-    { top: '42%', left: '50%', scale: 1.5 },
-    { top: '24%', left: '60%', scale: 1.5 },
+    { top: '8%', left: '30%', scale: 1.5 },
+    { top: '6%', left: '50%', scale: 1.5 },
+    { top: '8%', left: '70%', scale: 1.5 },
+    { top: '18%', left: '29%', scale: 1.5 },
+    { top: '20%', left: '65%', scale: 1.5 },
+    { top: '28%', left: '50%', scale: 1.5 },
+    { top: '18%', left: '76%', scale: 1.5 },
     { top: '24%', left: '40%', scale: 1.5 }
   ],
 
   10: [
-    { top: '18%', left: '28%', scale: 1.4 },
-    { top: '16%', left: '50%', scale: 1.4 },
-    { top: '18%', left: '72%', scale: 1.4 },
-    { top: '30%', left: '35%', scale: 1.4 },
-    { top: '30%', left: '65%', scale: 1.4 },
-    { top: '42%', left: '50%', scale: 1.4 },
-    { top: '24%', left: '60%', scale: 1.4 },
-    { top: '24%', left: '40%', scale: 1.4 },
-    { top: '36%', left: '42%', scale: 1.4 },
-    { top: '36%', left: '58%', scale: 1.4 }
+    { top: '8%', left: '28%', scale: 1.4 },
+    { top: '6%', left: '50%', scale: 1.4 },
+    { top: '8%', left: '82%', scale: 1.4  },
+    { top: '20%', left: '33%', scale: 1.4  },
+    { top: '20%', left: '75%', scale: 1.4 },
+    { top: '32%', left: '50%', scale: 1.4 },
+    { top: '14%', left: '68%', scale: 1.4 },
+    { top: '14%', left: '45%', scale: 1.4  },
+    { top: '26%', left: '39%', scale: 1.4  },
+    { top: '26%', left: '62%', scale: 1.4  }
   ],
 
   12: [
-    { top: '16%', left: '30%', scale: 1.35 },
-    { top: '14%', left: '50%', scale: 1.35 },
-    { top: '16%', left: '70%', scale: 1.35 },
-    { top: '28%', left: '35%', scale: 1.35 },
-    { top: '28%', left: '65%', scale: 1.35 },
-    { top: '40%', left: '50%', scale: 1.35 },
-    { top: '22%', left: '42%', scale: 1.35 },
-    { top: '22%', left: '58%', scale: 1.35 },
-    { top: '34%', left: '42%', scale: 1.35 },
-    { top: '34%', left: '58%', scale: 1.35 },
-    { top: '46%', left: '45%', scale: 1.35 },
-    { top: '46%', left: '55%', scale: 1.35 }
+    { top: '6%', left: '25%', scale: 1.35 },
+    { top: '4%', left: '50%', scale: 1.35 },
+    { top: '6%', left: '80%', scale: 1.35 },
+    { top: '18%', left: '35%', scale: 1.35 },
+    { top: '18%', left: '75%', scale: 1.35 },
+    { top: '30%', left: '50%', scale: 1.35 },
+    { top: '12%', left: '47%', scale: 1.35 },
+    { top: '12%', left: '64%', scale: 1.35 },
+    { top: '24%', left: '39%', scale: 1.35 },
+    { top: '24%', left: '64%', scale: 1.35 },
+    { top: '28%', left: '45%', scale: 1.35 },
+    { top: '28%', left: '55%', scale: 1.35 }
   ]
 }
 

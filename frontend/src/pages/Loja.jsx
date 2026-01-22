@@ -13,10 +13,28 @@ import MonteSeuBuque from './MonteSeuBuque'
 
 
 
+
 function Loja() {
+
+  
+  
 
   const [modo, setModo] = useState('produtos') 
   const [sidebarAberta, setSidebarAberta] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const isMobile = window.innerWidth <= 768
+      setSidebarAberta(isMobile)
+    }
+  
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+  
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+  
+  
 
 // 'produtos' | 'buque'
 
@@ -74,6 +92,17 @@ useEffect(() => {
 
 
   const location = useLocation()
+
+  useEffect(() => {
+  const params = new URLSearchParams(location.search)
+  const categoriaUrl = params.get('categoria')
+
+  if (categoriaUrl) {
+    setModo('produtos')
+    setCategoriaAtiva(categoriaUrl)
+  }
+}, [location.search])
+
   const { clearCart } = useCart()
 
 
@@ -178,12 +207,7 @@ const irParaMonteBuque = () => {
     Coroas Flores do Campo
   </li>
 
-  <li
-    className={categoriaAtiva === 'Datas Especiais' && modo === 'produtos' ? 'active' : ''}
-    onClick={() => irParaCategoria('Datas Especiais')}
-  >
-    Datas Especiais
-  </li>
+  
 
   <li
      className={`monte-buque-item ${modo === 'buque' ? 'active' : ''}`}

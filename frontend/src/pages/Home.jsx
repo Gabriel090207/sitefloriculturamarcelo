@@ -6,6 +6,8 @@ import Combos from '../components/Combos'
 import Depoimentos from '../components/Depoimentos'
 import ArranjosHome from '../components/ArranjosHome'
 import Divider from '../components/Divider'
+import Coroas from '../components/Coroas'
+
 
 
 
@@ -45,7 +47,13 @@ function Home() {
       {/* Destaques da Semana */}
       <Destaques />
 
+      <Divider />
+      
+      <Coroas />
+
       <ArranjosHome />
+
+
 
 
       {/* Próximas seções (ainda vazias) */}

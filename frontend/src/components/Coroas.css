@@ -1,0 +1,289 @@
+.coroas {
+  padding: 110px 64px;
+  background-color: var(--bege-claro);
+  text-align: center;
+}
+
+.coroas h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 44px;
+  margin-top: -20px;
+  margin-bottom: 80px;
+  color: var(--marrom-escuro);
+}
+
+/* =========================
+   ÁREA IMAGEM + SETAS
+========================= */
+.combo-stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 420px;
+  overflow: hidden;
+}
+
+.combo-slide-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Imagem */
+.combo-image {
+  width: 85%;
+  max-width: 400px;
+  border-radius: 20px;
+  margin-top: -100px;
+  display: block;
+}
+
+/* Setas */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 108px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--marrom-madeira);
+  z-index: 2;
+}
+
+.arrow.left {
+  margin-top: -70px;
+  left: 310px;
+}
+
+.arrow.right {
+  margin-top: -70px;
+  right: 310px;
+}
+
+/* =========================
+   SLIDE / ANIMAÇÃO
+========================= */
+.combo-slide {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation-duration: 0.35s;
+  animation-fill-mode: both;
+  will-change: transform, opacity;
+}
+
+.combo-slide.right {
+  animation-name: slideFromRight;
+}
+
+.combo-slide.left {
+  animation-name: slideFromLeft;
+}
+
+/* =========================
+   TEXTO
+========================= */
+.combo-info {
+  margin-top: -20px;
+}
+
+.combo-info h4 {
+  font-size: 37px;
+  margin-bottom: 12px;
+  color: var(--marrom-escuro);
+}
+
+.combo-info p {
+  font-size: 13px;
+  margin-bottom: 24px;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* =========================
+   BOTÃO VER MAIS
+========================= */
+.ver-mais-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.ver-mais {
+  padding: 15px 42px;
+  border-radius: 26px;
+  border: none;
+  background: var(--rosa-suave);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.ver-mais:hover {
+  transform: translateY(2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+/* =========================
+   ANIMAÇÕES
+========================= */
+@keyframes slideFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+/* até 1200px */
+@media (max-width: 1200px) {
+  .coroas {
+    padding: 100px 48px;
+  }
+
+  .coroas h3 {
+    font-size: 40px;
+  }
+
+  .arrow.left {
+    left: 180px;
+  }
+
+  .arrow.right {
+    right: 180px;
+  }
+}
+
+/* até 992px */
+@media (max-width: 992px) {
+  .coroas {
+    padding: 90px 40px;
+  }
+
+  .coroas h3 {
+    font-size: 36px;
+  }
+
+  .combo-stage {
+    height: 380px;
+  }
+
+  .combo-image {
+    max-width: 360px;
+    margin-top: -80px;
+  }
+
+  .arrow {
+    font-size: 80px;
+  }
+
+  .arrow.left {
+    left: 80px;
+  }
+
+  .arrow.right {
+    right: 80px;
+  }
+
+  .combo-info h4 {
+    font-size: 32px;
+  }
+}
+
+/* até 768px */
+@media (max-width: 768px) {
+  .coroas {
+    padding: 80px 24px;
+  }
+
+  .coroas h3 {
+    font-size: 30px;
+  }
+
+  .combo-stage {
+    height: 320px;
+  }
+
+  .combo-image {
+    max-width: 300px;
+    margin-top: -60px;
+  }
+
+  .arrow {
+    font-size: 60px;
+  }
+
+  .arrow.left {
+    left: 16px;
+  }
+
+  .arrow.right {
+    right: 16px;
+  }
+
+  .combo-info h4 {
+    font-size: 26px;
+  }
+
+  .combo-info p {
+    font-size: 14px;
+  }
+}
+
+/* até 480px */
+@media (max-width: 480px) {
+  .coroas {
+    padding: 70px 16px;
+  }
+
+  .coroas h3 {
+    font-size: 26px;
+  }
+
+  .combo-stage {
+    height: 280px;
+  }
+
+  .combo-image {
+    max-width: 260px;
+    margin-top: -40px;
+  }
+
+  .arrow {
+    font-size: 46px;
+  }
+
+  .combo-info h4 {
+    font-size: 22px;
+  }
+
+  .combo-info p {
+    font-size: 13px;
+  }
+}
