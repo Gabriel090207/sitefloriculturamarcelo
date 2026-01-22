@@ -9,7 +9,8 @@ function MonteSeuBuque() {
   const buqueRef = useRef(null)
 
   // estados (por enquanto só 1 opção cada)
-  const [flor, setFlor] = useState('rosa-azul')
+  const [floresSelecionadas, setFloresSelecionadas] = useState(['rosa-azul'])
+
   const [plantinha, setPlantinha] = useState('mosquitinho')
   const [vaso, setVaso] = useState('vaso-base')
   const [quantidade, setQuantidade] = useState(1)
@@ -18,6 +19,25 @@ function MonteSeuBuque() {
 
 
   const [imagensCarregadas, setImagensCarregadas] = useState(false)
+
+
+  const toggleFlor = (florId) => {
+    setFloresSelecionadas((prev) => {
+      // se já estiver selecionada, remove
+      if (prev.includes(florId)) {
+        return prev.filter((f) => f !== florId)
+      }
+  
+      // se já tiver 2 flores, não adiciona mais
+      if (prev.length === 2) {
+        return prev
+      }
+  
+      // adiciona nova flor
+      return [...prev, florId]
+    })
+  }
+  
 
 useEffect(() => {
   const handleResize = () => {
@@ -63,12 +83,15 @@ useEffect(() => {
   { id: 'rosa-vermelha', nome: 'Rosa Vermelha' },
   { id: 'rosa-branca', nome: 'Rosa Branca' },
   { id: 'rosa-amarela', nome: 'Rosa Amarela' },
-  { id: 'rosa-rosa', nome: 'Rosa Rosa' }
+  { id: 'rosa-rosa', nome: 'Rosa Rosa' },
+  { id: 'girassol', nome: 'Girassol' },
+  { id: 'margarida-branca', nome: 'Margarida Branca' },
+  { id: 'margarida-azul', nome: 'Margarida Azul' }
 ]
 
 const plantinhas = [
   { id: 'mosquitinho', nome: 'Mosquitinho' },
-  { id: 'samambaia', nome: 'Samambaia' }
+
 ]
 
 const vasos = [
@@ -139,13 +162,13 @@ const posicoesFlores = {
 
 const posicoesFloresMobile = {
   1: [
-    { top: '18%', left: '50%', scale: 2 }
+    { top: '58%', left: '50%', scale: 2 }
   ],
 
   3: [
-    { top: '14%', left: '42%', scale: 1.7 },
-    { top: '12%', left: '68%', scale: 1.7 },
-    { top: '22%', left: '57%', scale: 1.7 }
+    { top: '54%', left: '42%', scale: 1.7 },
+    { top: '52%', left: '68%', scale: 1.7 },
+    { top: '62%', left: '57%', scale: 1.7 }
   ],
 
   6: [
@@ -182,18 +205,18 @@ const posicoesFloresMobile = {
   ],
 
   12: [
-    { top: '6%', left: '25%', scale: 1.35 },
-    { top: '4%', left: '50%', scale: 1.35 },
-    { top: '6%', left: '80%', scale: 1.35 },
-    { top: '18%', left: '35%', scale: 1.35 },
-    { top: '18%', left: '75%', scale: 1.35 },
-    { top: '30%', left: '50%', scale: 1.35 },
-    { top: '12%', left: '47%', scale: 1.35 },
-    { top: '12%', left: '64%', scale: 1.35 },
-    { top: '24%', left: '39%', scale: 1.35 },
-    { top: '24%', left: '64%', scale: 1.35 },
-    { top: '28%', left: '45%', scale: 1.35 },
-    { top: '28%', left: '55%', scale: 1.35 }
+    { top: '56%', left: '25%', scale: 1.35 },
+    { top: '54%', left: '50%', scale: 1.35 },
+    { top: '56%', left: '80%', scale: 1.35 },
+    { top: '58%', left: '35%', scale: 1.35 },
+    { top: '58%', left: '75%', scale: 1.35 },
+    { top: '50%', left: '50%', scale: 1.35 },
+    { top: '52%', left: '47%', scale: 1.35 },
+    { top: '52%', left: '64%', scale: 1.35 },
+    { top: '54%', left: '39%', scale: 1.35 },
+    { top: '54%', left: '64%', scale: 1.35 },
+    { top: '58%', left: '45%', scale: 1.35 },
+    { top: '58%', left: '55%', scale: 1.35 }
   ]
 }
 
@@ -225,43 +248,59 @@ Aguardo para finalizar 😊
   }
 
 
- const handleFinalizarWhatsApp = async () => {
-  if (!buqueRef.current) return
-
-  // GERA IMAGEM DO BUQUÊ
-  const canvas = await html2canvas(buqueRef.current, {
-    backgroundColor: null,
-    scale: 2
-  })
-
-  const imageData = canvas.toDataURL('image/png')
-
-  // FAZ DOWNLOAD AUTOMÁTICO DA IMAGEM
-  const link = document.createElement('a')
-  link.href = imageData
-  link.download = 'buque-personalizado.png'
-  link.click()
-
-  // DADOS DO PEDIDO
+  const handleFinalizarWhatsApp = async () => {
   const phoneNumber = '5516994287026'
 
+  // GERA IMAGEM DO BUQUÊ
+
+  // NOME BONITO DAS OPÇÕES
   const florSelecionada = flores.find(f => f.id === flor)?.nome
   const plantinhaSelecionada = plantinhas.find(p => p.id === plantinha)?.nome
   const vasoSelecionado = vasos.find(v => v.id === vaso)?.nome
 
-  let message = `Olá! Gostaria de fazer um pedido.\n\n`
-  message += `Pedido via site – Valle das Flores\n\n`
-  message += `• Buquê Personalizado\n`
-  message += `  Flor: ${florSelecionada}\n`
-  message += `  Plantinha: ${plantinhaSelecionada}\n`
-  message += `  Vaso: ${vasoSelecionado}\n`
-  message += `  Quantidade de flores: ${quantidade}\n\n`
-  message += `📸 A imagem do buquê foi gerada e anexada nesta conversa.\n\n`
-  message += `Aguardo orientações para finalizar 😊`
+let message = `Olá! Gostaria de fazer um pedido.\n\n`
+message += `Pedido via site – Valle das Flores\n\n`
 
-  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
+message += `• Buquê Personalizado\n`
+message += `  Flor: ${florSelecionada}\n`
+message += `  Plantinha: ${plantinhaSelecionada}\n`
+message += `  Vaso: ${vasoSelecionado}\n`
+message += `  Quantidade de flores: ${quantidade}\n\n`
+
+message += `Buquê montado pelo cliente no site.\n`
+
+
+message += `Aguardo orientações para finalizar.\nObrigado(a)!`
+
+  const encodedMessage = encodeURIComponent(message)
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
+
   window.open(whatsappUrl, '_blank')
 }
+
+
+const gerarFloresMescladas = () => {
+  if (floresSelecionadas.length === 1) {
+    return Array(quantidade).fill(floresSelecionadas[0])
+  }
+
+  const [florA, florB] = floresSelecionadas
+  const metade = Math.floor(quantidade / 2)
+
+  const resultado = []
+
+  for (let i = 0; i < quantidade; i++) {
+    // alternância com variação
+    if (i % 4 === 0 || i % 4 === 3) {
+      resultado.push(florA)
+    } else {
+      resultado.push(florB)
+    }
+  }
+
+  return resultado.slice(0, quantidade)
+}
+
 
 
   return (
@@ -296,19 +335,24 @@ Aguardo para finalizar 😊
     alt="Plantinha"
   />
 
- {posicoesAtuais[quantidade].map((pos, index) => (
-  <img
-    key={index}
-    className="camada-flor flor-item"
-    src={`/buque/flor/${flor}.png`}
-    alt="Flor"
-    style={{
-      top: pos.top,
-      left: pos.left,
-      transform: `translateX(-50%) scale(${pos.scale})`
-    }}
-  />
-))}
+{(() => {
+  const floresMescladas = gerarFloresMescladas()
+
+  return posicoesAtuais[quantidade].map((pos, index) => (
+    <img
+      key={index}
+      className="camada-flor flor-item"
+      src={`/buque/flor/${floresMescladas[index]}.png`}
+      alt="Flor"
+      style={{
+        top: pos.top,
+        left: pos.left,
+        transform: `translateX(-50%) scale(${pos.scale})`
+      }}
+    />
+  ))
+})()}
+
 
 
 </div>
@@ -353,15 +397,16 @@ Aguardo para finalizar 😊
   <div className="option-group">
     <h4>Flor</h4>
     <div className="option-buttons vertical">
-      {flores.map((item) => (
-        <button
-          key={item.id}
-          className={flor === item.id ? 'active' : ''}
-          onClick={() => setFlor(item.id)}
-        >
-          {item.nome}
-        </button>
-      ))}
+    {flores.map((item) => (
+  <button
+    key={item.id}
+    className={floresSelecionadas.includes(item.id) ? 'active' : ''}
+    onClick={() => toggleFlor(item.id)}
+  >
+    {item.nome}
+  </button>
+))}
+
     </div>
   </div>
 

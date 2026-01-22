@@ -260,6 +260,12 @@ background: var(--rosa-suave);
 /* ===== MOBILE ===== */
 @media (max-width: 768px) {
 
+  .btn-whatsapp {
+   margin-bottom: -120px;
+
+  }
+  
+
   .monte-buque {
     padding: 68px 20px;
     gap: 32px;
@@ -315,7 +321,8 @@ background: var(--rosa-suave);
   .monte-buque-header h2 {
   font-size: 22px;
   font-weight: 600;
-  margin-top: -60px;
+
+
 }
 
 }

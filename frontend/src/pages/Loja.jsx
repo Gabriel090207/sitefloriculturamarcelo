@@ -45,6 +45,23 @@ const produtosRef = useRef(null)
   const [produtoSelecionado, setProdutoSelecionado] = useState(null)
 
 
+  useEffect(() => {
+    if (produtoSelecionado) {
+      document.body.classList.add('modal-open')
+      document.documentElement.classList.add('modal-open')
+    } else {
+      document.body.classList.remove('modal-open')
+      document.documentElement.classList.remove('modal-open')
+    }
+  
+    return () => {
+      document.body.classList.remove('modal-open')
+      document.documentElement.classList.remove('modal-open')
+    }
+  }, [produtoSelecionado])
+  
+
+
   const [categoriaAtiva, setCategoriaAtiva] = useState(() => {
   return localStorage.getItem('categoriaAtiva') || 'Todos'
 })
