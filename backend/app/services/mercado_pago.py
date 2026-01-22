@@ -4,6 +4,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+print("🔥 BACKEND ATIVO")
+print("🔥 MP ACCESS TOKEN:", os.getenv("MP_ACCESS_TOKEN"))
+
+
 sdk = mercadopago.SDK(os.getenv("MP_ACCESS_TOKEN"))
 
 
