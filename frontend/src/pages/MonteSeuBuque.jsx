@@ -15,6 +15,9 @@ function MonteSeuBuque() {
   const [vaso, setVaso] = useState('vaso-base')
   const [quantidade, setQuantidade] = useState(1)
 
+  const [mensagemFlor, setMensagemFlor] = useState('')
+
+
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
 
@@ -23,22 +26,31 @@ function MonteSeuBuque() {
 
   const toggleFlor = (florId) => {
     setFloresSelecionadas((prev) => {
-      // se já estiver selecionada, remove
+      // limpa mensagem ao tentar novamente
+      setMensagemFlor('')
+  
+      // remover flor se já estiver selecionada
       if (prev.includes(florId)) {
         return prev.filter((f) => f !== florId)
       }
   
-      // se já tiver 2 flores, não adiciona mais
-      if (prev.length === 2) {
+      // 🚫 se quantidade for 1, só pode 1 flor
+      if (quantidade === 1 && prev.length === 1) {
+        setMensagemFlor('Para 1 flor, é possível escolher apenas uma opção.')
         return prev
       }
   
-      // adiciona nova flor
+      // 🚫 se já tiver 2 flores
+      if (prev.length === 2) {
+        setMensagemFlor('Você pode escolher no máximo 2 tipos de flores.')
+        return prev
+      }
+  
+      // adiciona normalmente
       return [...prev, florId]
     })
   }
   
-
 useEffect(() => {
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 768)
@@ -86,11 +98,15 @@ useEffect(() => {
   { id: 'rosa-rosa', nome: 'Rosa Rosa' },
   { id: 'girassol', nome: 'Girassol' },
   { id: 'margarida-branca', nome: 'Margarida Branca' },
-  { id: 'margarida-azul', nome: 'Margarida Azul' }
+  { id: 'margarida-azul', nome: 'Margarida Azul' },
+  { id: 'margarida-amarela', nome: 'Margarida Amarela' },
+  { id: 'margarida-rosa', nome: 'Margarida Rosa' },
+  { id: 'astromelia-branca', nome: 'Astromelia Branca' }
 ]
 
 const plantinhas = [
   { id: 'mosquitinho', nome: 'Mosquitinho' },
+  { id: 'samambaia', nome: 'Samambaia' },
 
 ]
 
@@ -162,28 +178,28 @@ const posicoesFlores = {
 
 const posicoesFloresMobile = {
   1: [
-    { top: '58%', left: '50%', scale: 2 }
+    { top: '18%', left: '50%', scale: 2 }
   ],
 
   3: [
-    { top: '54%', left: '42%', scale: 1.7 },
-    { top: '52%', left: '68%', scale: 1.7 },
-    { top: '62%', left: '57%', scale: 1.7 }
+    { top: '14%', left: '42%', scale: 1.7 },
+    { top: '12%', left: '68%', scale: 1.7 },
+    { top: '22%', left: '57%', scale: 1.7 }
   ],
 
   6: [
-    { top: '10%', left: '30%', scale: 1.6 },
-    { top: '8%', left: '50%', scale: 1.6 },
-    { top: '10%', left: '70%', scale: 1.6 },
+    { top: '16%', left: '30%', scale: 1.6 },
+    { top: '18%', left: '50%', scale: 1.6 },
+    { top: '20%', left: '70%', scale: 1.6 },
     { top: '22%', left: '40%', scale: 1.6 },
     { top: '22%', left: '60%', scale: 1.6 },
     { top: '28%', left: '50%', scale: 1.6 }
   ],
 
   8: [
-    { top: '8%', left: '30%', scale: 1.5 },
-    { top: '6%', left: '50%', scale: 1.5 },
-    { top: '8%', left: '70%', scale: 1.5 },
+    { top: '18%', left: '30%', scale: 1.5 },
+    { top: '16%', left: '50%', scale: 1.5 },
+    { top: '13%', left: '70%', scale: 1.5 },
     { top: '18%', left: '29%', scale: 1.5 },
     { top: '20%', left: '65%', scale: 1.5 },
     { top: '28%', left: '50%', scale: 1.5 },
@@ -192,9 +208,9 @@ const posicoesFloresMobile = {
   ],
 
   10: [
-    { top: '8%', left: '28%', scale: 1.4 },
-    { top: '6%', left: '50%', scale: 1.4 },
-    { top: '8%', left: '82%', scale: 1.4  },
+    { top: '14%', left: '28%', scale: 1.4 },
+    { top: '21%', left: '50%', scale: 1.4 },
+    { top: '12%', left: '82%', scale: 1.4  },
     { top: '20%', left: '33%', scale: 1.4  },
     { top: '20%', left: '75%', scale: 1.4 },
     { top: '32%', left: '50%', scale: 1.4 },
@@ -205,18 +221,18 @@ const posicoesFloresMobile = {
   ],
 
   12: [
-    { top: '56%', left: '25%', scale: 1.35 },
-    { top: '54%', left: '50%', scale: 1.35 },
-    { top: '56%', left: '80%', scale: 1.35 },
-    { top: '58%', left: '35%', scale: 1.35 },
-    { top: '58%', left: '75%', scale: 1.35 },
-    { top: '50%', left: '50%', scale: 1.35 },
-    { top: '52%', left: '47%', scale: 1.35 },
-    { top: '52%', left: '64%', scale: 1.35 },
-    { top: '54%', left: '39%', scale: 1.35 },
-    { top: '54%', left: '64%', scale: 1.35 },
-    { top: '58%', left: '45%', scale: 1.35 },
-    { top: '58%', left: '55%', scale: 1.35 }
+    { top: '16%', left: '25%', scale: 1.5 },
+    { top: '19%', left: '50%', scale:  1.5},
+    { top: '13%', left: '80%', scale:  1.5 },
+    { top: '18%', left: '35%', scale:  1.5 },
+    { top: '18%', left: '75%', scale:  1.5  },
+    { top: '30%', left: '50%', scale:  1.5 },
+    { top: '12%', left: '47%', scale:  1.5  },
+    { top: '12%', left: '64%', scale:  1.5  },
+    { top: '24%', left: '39%', scale:  1.5  },
+    { top: '24%', left: '64%', scale:  1.5 },
+    { top: '28%', left: '45%', scale:  1.5 },
+    { top: '28%', left: '55%', scale:  1.5 }
   ]
 }
 
@@ -329,11 +345,11 @@ const gerarFloresMescladas = () => {
     alt="Vaso"
   />
 
-  <img
-    className="camada-plantinha"
-    src={`/buque/plantinha/${plantinha}.png`}
-    alt="Plantinha"
-  />
+<img
+  className={`camada-plantinha plantinha-${plantinha}`}
+  src={`/buque/plantinha/${plantinha}.png`}
+  alt="Plantinha"
+/>
 
 {(() => {
   const floresMescladas = gerarFloresMescladas()
@@ -413,12 +429,27 @@ const gerarFloresMescladas = () => {
   {/* QUANTIDADE */}
   <div className="option-group">
     <h4>Quantidade</h4>
+
+    {mensagemFlor && (
+  <p className="mensagem-flor-aviso">
+    {mensagemFlor}
+  </p>
+)}
+
     <div className="option-buttons vertical">
       {quantidades.map((qtd) => (
         <button
           key={qtd}
           className={quantidade === qtd ? 'active' : ''}
-          onClick={() => setQuantidade(qtd)}
+          onClick={() => {
+            setQuantidade(qtd)
+            setMensagemFlor('')
+          
+            if (qtd === 1) {
+              setFloresSelecionadas((prev) => prev.slice(0, 1))
+            }
+          }}
+          
         >
           {qtd}
         </button>

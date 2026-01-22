@@ -19,11 +19,14 @@ function Loja() {
 
   const [modo, setModo] = useState('produtos') 
   const [sidebarAberta, setSidebarAberta] = useState(false)
+const [isMobile, setIsMobile] = useState(false)
+
+  const [sidebarFechadaManual, setSidebarFechadaManual] = useState(false)
+
 
   useEffect(() => {
     const checkMobile = () => {
-      const isMobile = window.innerWidth <= 768
-      setSidebarAberta(isMobile)
+      setIsMobile(window.innerWidth <= 768)
     }
   
     checkMobile()
@@ -32,6 +35,11 @@ function Loja() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
   
+  useEffect(() => {
+    if (isMobile) {
+      setSidebarAberta(true)
+    }
+  }, [isMobile])
   
 
 // 'produtos' | 'buque'
@@ -82,6 +90,12 @@ useEffect(() => {
   if (!sidebar || !produtos) return
 
   const onScroll = () => {
+
+    if (isMobile && !sidebarAberta) return
+
+    // 🔒 SE ESTIVER NO MOBILE E FECHADA MANUALMENTE, NÃO FAZ NADA
+    if (window.innerWidth <= 768 && sidebarFechadaManual) return
+
     const sidebarRect = sidebar.getBoundingClientRect()
     const produtosRect = produtos.getBoundingClientRect()
 
@@ -102,7 +116,7 @@ useEffect(() => {
 
   window.addEventListener('scroll', onScroll)
   return () => window.removeEventListener('scroll', onScroll)
-}, [])
+}, [sidebarFechadaManual])
 
 
 
@@ -174,12 +188,16 @@ useEffect(() => {
   className={`loja-sidebar ${sidebarAberta ? 'aberta' : ''}`}
 >
 
-  <button
+<button
   className="mobile-sidebar-close"
-  onClick={() => setSidebarAberta(false)}
+  onClick={() => {
+    setSidebarAberta(false)
+    setSidebarFechadaManual(true)
+  }}
 >
  ‹
 </button>
+
 
 
           <h4>Categorias</h4>
@@ -243,14 +261,18 @@ useEffect(() => {
 
         </aside>
 
-     {!sidebarAberta && (
+        {!sidebarAberta && (
   <button
     className="mobile-sidebar-toggle"
-    onClick={() => setSidebarAberta(true)}
+    onClick={() => {
+      setSidebarAberta(true)
+      setSidebarFechadaManual(false)
+    }}
   >
     ›
   </button>
 )}
+
 
 
         </div>

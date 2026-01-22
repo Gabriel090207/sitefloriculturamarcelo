@@ -358,6 +358,10 @@ const finalTotal = parseFloat(
 )
 
 const [cepLocation, setCepLocation] = useState(null)
+const [isFetchingCEP, setIsFetchingCEP] = useState(false)
+const [cepInvalid, setCepInvalid] = useState(false)
+
+
 // exemplo: { bairro: 'Centro', cidade: 'Manaus' }
 
 const [distanceKm, setDistanceKm] = useState(null)
@@ -454,15 +458,37 @@ useEffect(() => {
       deliveryPeriod !== 'retiradanaloja'
     ) {
       try {
+        setIsFetchingCEP(true)
+
         const data = await fetchCEPData(customerData.cep)
-        setCepLocation(data)
+
+if (!data) {
+  setCepInvalid(true)
+  setCepLocation(null)
+  return
+}
+
+// ✅ CEP válido
+setCepInvalid(false)
+setCepLocation(data)
+
+setCustomerData(prev => ({
+  ...prev,
+  street: prev.street || data.logradouro || '',
+  neighborhood: prev.neighborhood || data.bairro || ''
+}))
+
       } catch (err) {
         console.error('Erro ao buscar CEP:', err)
         setCepLocation(null)
+      } finally {
+        setIsFetchingCEP(false)
       }
     } else {
       setCepLocation(null)
+      setCepInvalid(false)
     }
+    
   }
 
   run()
@@ -1034,6 +1060,19 @@ const gerarPix = async () => {
   placeholder="00000-000"
   maxLength={9}
 />
+
+{isFetchingCEP && (
+  <small style={{ color: '#999' }}>
+    Buscando endereço...
+  </small>
+)}
+
+{cepInvalid && !isFetchingCEP && (
+  <small style={{ color: '#c0392b' }}>
+    CEP inválido
+  </small>
+)}
+
 
   </div>
 </div>

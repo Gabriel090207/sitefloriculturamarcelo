@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Request
 from app.services.mercado_pago import create_pix_payment
 from fastapi import HTTPException
 from app.services.mercado_pago import create_card_payment
@@ -32,6 +33,25 @@ app.add_middleware(
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.post("/webhook/mercadopago")
+async def mercadopago_webhook(request: Request):
+    # Query params (ex: ?data.id=123&type=payment)
+    qp = dict(request.query_params)
+
+    # Body (pode ser vazio ou JSON)
+    try:
+        body = await request.json()
+    except Exception:
+        body = None
+
+    print("✅ WEBHOOK MERCADO PAGO RECEBIDO")
+    print("Query params:", qp)
+    print("Body:", body)
+
+    # Importante: responder rápido 200 para o Mercado Pago não ficar reenviando
+    return {"received": True}
 
 
 from pydantic import BaseModel
