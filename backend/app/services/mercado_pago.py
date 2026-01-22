@@ -7,13 +7,16 @@ load_dotenv()
 sdk = mercadopago.SDK(os.getenv("MP_ACCESS_TOKEN"))
 
 
-def create_pix_payment(amount: float, description: str):
+def create_pix_payment(amount: float, description: str, items: list):
     payment_data = {
         "transaction_amount": amount,
         "description": description,
         "payment_method_id": "pix",
         "payer": {
             "email": "cliente@valledasflores.com"
+        },
+        "additional_info": {
+            "items": items
         }
     }
 
@@ -26,6 +29,7 @@ def create_pix_payment(amount: float, description: str):
         "qr_code": payment["point_of_interaction"]["transaction_data"]["qr_code"],
         "qr_code_base64": payment["point_of_interaction"]["transaction_data"]["qr_code_base64"],
     }
+
 
 def create_card_payment(
     token: str,

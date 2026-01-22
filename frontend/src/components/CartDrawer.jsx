@@ -255,8 +255,14 @@ const mp = new window.MercadoPago(
 
 
 
-
 function CartDrawer({ open, onClose }) {
+
+
+
+
+
+
+
 
   const {
     cartItems,
@@ -362,18 +368,37 @@ const [distanceKm, setDistanceKm] = useState(null)
   const [visible, setVisible] = useState(false)
   const [animate, setAnimate] = useState(false)
 
- useEffect(() => {
+
+  
+  const isCheckoutOpen =
+  showCustomerModal ||
+  showDeliveryModal ||
+  showPaymentChoiceModal ||
+  showPaymentModal ||
+  showCardFormModal ||
+  showSuccessModal ||
+  pixLoading ||
+  pixData
+
+useEffect(() => {
   if (open) {
+    document.body.classList.add('no-scroll')
+    document.documentElement.classList.add('no-scroll') // 👈 html
+  // 🔒 trava fundo
+
     setVisible(true)
     setAnimate(false)
 
-    // força reflow antes de abrir
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setAnimate(true)
       })
     })
-  } else {
+} else {
+  document.body.classList.remove('no-scroll')
+  document.documentElement.classList.remove('no-scroll')
+ // 🔓 libera fundo
+
     setAnimate(false)
 
     const timer = setTimeout(() => {
@@ -382,7 +407,15 @@ const [distanceKm, setDistanceKm] = useState(null)
 
     return () => clearTimeout(timer)
   }
+
+  // segurança extra ao desmontar
+ return () => {
+  document.body.classList.remove('no-scroll')
+  document.documentElement.classList.remove('no-scroll')
+}
+
 }, [open])
+
 
 
 useEffect(() => {
@@ -559,7 +592,12 @@ const gerarPix = async () => {
     <>
       <div className="cart-overlay" onClick={onClose} />
 
-      <aside className={`cart-drawer ${animate ? 'open' : 'close'}`}>
+      <aside
+  className={`cart-drawer ${animate ? 'open' : 'close'} ${
+    isCheckoutOpen ? 'checkout-open' : ''
+  }`}
+>
+
         <header className="cart-drawer-header">
           <h3>Seu carrinho</h3>
           <button onClick={onClose}>✕</button>
