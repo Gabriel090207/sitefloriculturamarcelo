@@ -260,6 +260,7 @@ function CartDrawer({ open, onClose }) {
 
 
 
+const [confirmedOrder, setConfirmedOrder] = useState(null)
 
 
 
@@ -551,6 +552,56 @@ clearCart()
 }
 
 
+const handleCheckoutWhatsAppConfirmed = () => {
+  if (!confirmedOrder) return
+
+  const {
+    cartItems,
+    customerData,
+    deliveryPeriod,
+    deliveryFee,
+    finalTotal
+  } = confirmedOrder
+
+  let message = `Olá! Gostaria de fazer um pedido.\n\n`
+  message += `Pedido via site – Valle das Flores\n\n`
+
+  cartItems.forEach((item) => {
+    message += `• ${item.name}\n`
+    message += `Quantidade: ${item.quantity}\n`
+    message += `Valor: ${item.price}\n\n`
+  })
+
+  message += `Cliente: ${customerData.name}\n`
+  message += `Telefone: ${customerData.phone}\n`
+  message += `Data desejada: ${customerData.date}\n`
+
+  if (deliveryPeriod === 'retiradanaloja') {
+    message += `Retirada na loja\n\n`
+  } else {
+    message += `Endereço:\n`
+    message += `${customerData.street}, ${customerData.number}\n`
+    message += `${customerData.neighborhood} - CEP ${customerData.cep}\n\n`
+  }
+
+  message += `Período de entrega: ${deliveryPeriod}\n`
+
+  if (deliveryFee > 0) {
+    message += `Frete: R$ ${deliveryFee.toFixed(2).replace('.', ',')}\n`
+  }
+
+  message += `\nTotal do pedido: R$ ${finalTotal.toFixed(2).replace('.', ',')}\n\n`
+  message += `Obrigado(a)!`
+
+  const encoded = encodeURIComponent(message)
+  window.location.href = `https://wa.me/5516994287026?text=${encoded}`
+
+  // ✅ AGORA SIM limpa tudo
+  clearCart()
+  setConfirmedOrder(null)
+}
+
+
 const gerarPix = async () => {
   try {
     setPixLoading(true)
@@ -827,16 +878,23 @@ const gerarPix = async () => {
         style={{ width: '100%', height: 120 }}
       />
 
-      <button
+     <button
   className="phrase-confirm"
   onClick={() => {
+    // ✅ salva tudo
+    setConfirmedOrder({
+      cartItems,
+      customerData,
+      deliveryPeriod,
+      deliveryFee,
+      finalTotal
+    })
+
     setPixData(null)
     setShowSuccessModal(true)
-  
-    // ✅ LIMPA O CARRINHO
-    clearCart()
+
+    // ❌ ainda NÃO limpa
   }}
-  
 >
   Já realizei o pagamento
 </button>
@@ -1355,16 +1413,17 @@ const gerarPix = async () => {
         Em breve entraremos em contato.
       </p>
 
-      <button
-        className="success-whatsapp"
-        onClick={() => {
-          setShowSuccessModal(false)
-          handleCheckoutWhatsApp()
-        }}
-      >
-        <i className="fa-brands fa-whatsapp"></i>
-        Enviar detalhes no WhatsApp
-      </button>
+     <button
+  className="success-whatsapp"
+  onClick={() => {
+    setShowSuccessModal(false)
+    handleCheckoutWhatsAppConfirmed()
+  }}
+>
+  <i className="fa-brands fa-whatsapp"></i>
+  Enviar detalhes no WhatsApp
+</button>
+
     </div>
   </div>
 )}

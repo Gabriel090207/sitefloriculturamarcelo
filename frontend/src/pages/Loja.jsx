@@ -12,8 +12,6 @@ import MonteSeuBuque from './MonteSeuBuque'
 
 
 
-
-
 function Loja() {
 
   
@@ -123,15 +121,21 @@ useEffect(() => {
   setModo('produtos')
   setCategoriaAtiva(categoria)
   setSidebarAberta(false)
-  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 const irParaMonteBuque = () => {
   setModo('buque')
   setCategoriaAtiva(null)
   setSidebarAberta(false)
-  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
+
+useEffect(() => {
+  // força scroll no topo ao trocar categoria ou modo
+  window.scrollTo(0, 0)
+  document.documentElement.scrollTop = 0
+  document.body.scrollTop = 0
+}, [categoriaAtiva, modo])
+
 
 
 

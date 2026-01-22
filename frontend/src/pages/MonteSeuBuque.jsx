@@ -62,17 +62,20 @@ useEffect(() => {
   { id: 'rosa-azul', nome: 'Rosa Azul' },
   { id: 'rosa-vermelha', nome: 'Rosa Vermelha' },
   { id: 'rosa-branca', nome: 'Rosa Branca' },
-  { id: 'rosa-amarela', nome: 'Rosa Amarela' }
+  { id: 'rosa-amarela', nome: 'Rosa Amarela' },
+  { id: 'rosa-rosa', nome: 'Rosa Rosa' }
 ]
 
 const plantinhas = [
   { id: 'mosquitinho', nome: 'Mosquitinho' },
-  { id: 'eucalipto', nome: 'Eucalipto' }
+  { id: 'samambaia', nome: 'Samambaia' }
 ]
 
 const vasos = [
-  { id: 'vaso-base', nome: 'Base padrão' },
-  { id: 'vaso-vidro', nome: 'Vaso de vidro' }
+   { id: 'vaso-base', nome: 'Vaso Base' },
+  { id: 'vaso-aquario', nome: 'Vaso Aquario Escuro' },
+  { id: 'vaso-aquarioclaro', nome: 'Vaso Aquario Claro' },
+   { id: 'vaso-aquarioefeito', nome: 'Vaso com Estampa' }
 ]
 
 const quantidades = [1, 3, 6, 8, 10, 12]

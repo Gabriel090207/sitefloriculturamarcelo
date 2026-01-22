@@ -5,11 +5,12 @@ function ScrollToTop() {
   const { pathname } = useLocation()
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'instant' // pode trocar por 'smooth' se quiser
-    })
+    // força scroll no window
+    window.scrollTo(0, 0)
+
+    // força scroll no document (fallback)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
   }, [pathname])
 
   return null
