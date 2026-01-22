@@ -225,33 +225,41 @@ Aguardo para finalizar 😊
   }
 
 
-  const handleFinalizarWhatsApp = async () => {
-  const phoneNumber = '5516994287026'
+ const handleFinalizarWhatsApp = async () => {
+  if (!buqueRef.current) return
 
   // GERA IMAGEM DO BUQUÊ
+  const canvas = await html2canvas(buqueRef.current, {
+    backgroundColor: null,
+    scale: 2
+  })
 
-  // NOME BONITO DAS OPÇÕES
+  const imageData = canvas.toDataURL('image/png')
+
+  // FAZ DOWNLOAD AUTOMÁTICO DA IMAGEM
+  const link = document.createElement('a')
+  link.href = imageData
+  link.download = 'buque-personalizado.png'
+  link.click()
+
+  // DADOS DO PEDIDO
+  const phoneNumber = '5516994287026'
+
   const florSelecionada = flores.find(f => f.id === flor)?.nome
   const plantinhaSelecionada = plantinhas.find(p => p.id === plantinha)?.nome
   const vasoSelecionado = vasos.find(v => v.id === vaso)?.nome
 
-let message = `Olá! Gostaria de fazer um pedido.\n\n`
-message += `Pedido via site – Valle das Flores\n\n`
+  let message = `Olá! Gostaria de fazer um pedido.\n\n`
+  message += `Pedido via site – Valle das Flores\n\n`
+  message += `• Buquê Personalizado\n`
+  message += `  Flor: ${florSelecionada}\n`
+  message += `  Plantinha: ${plantinhaSelecionada}\n`
+  message += `  Vaso: ${vasoSelecionado}\n`
+  message += `  Quantidade de flores: ${quantidade}\n\n`
+  message += `📸 A imagem do buquê foi gerada e anexada nesta conversa.\n\n`
+  message += `Aguardo orientações para finalizar 😊`
 
-message += `• Buquê Personalizado\n`
-message += `  Flor: ${florSelecionada}\n`
-message += `  Plantinha: ${plantinhaSelecionada}\n`
-message += `  Vaso: ${vasoSelecionado}\n`
-message += `  Quantidade de flores: ${quantidade}\n\n`
-
-message += `Buquê montado pelo cliente no site.\n`
-message += `Imagem disponível para conferência.\n\n`
-
-message += `Aguardo orientações para finalizar.\nObrigado(a)!`
-
-  const encodedMessage = encodeURIComponent(message)
-  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
-
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
   window.open(whatsappUrl, '_blank')
 }
 

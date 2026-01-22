@@ -24,10 +24,12 @@
 .buque-preview {
   position: relative;
   width: 360px;
-  height: 360px;
+  height: auto;
+  min-height: 360px;
   margin: 0 auto 48px;
-  overflow: hidden;
+  overflow: visible;
 }
+
 
 
 .buque-preview img {
