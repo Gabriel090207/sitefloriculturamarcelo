@@ -9,7 +9,8 @@ from app.services.mercado_pago import (
     sdk
 )
 
-from services.whatsapp_ultramsg import send_whatsapp_message
+from app.services.whatsapp_ultramsg import send_whatsapp_message
+
 
 
 app = FastAPI(title="Valle das Flores API", version="1.0.0")
