@@ -11,7 +11,9 @@ from app.services.mercado_pago import (
 
 from app.services.whatsapp_ultramsg import (
     send_whatsapp_message,
-    format_payment_message
+    send_whatsapp_message_to,
+    format_payment_message,
+    format_customer_message
 )
 
 app = FastAPI(title="Valle das Flores API", version="1.0.0")
@@ -70,6 +72,7 @@ class CheckoutRequest(BaseModel):
     customer_neighborhood: str
     customer_cep: str
     tribute: Optional[str] = None
+
 
 # =====================================================
 # CHECKOUT PIX
@@ -145,10 +148,16 @@ async def mercadopago_webhook(request: Request):
 
         print("✅ PAGAMENTO APROVADO — ENVIANDO WHATSAPP")
 
-        message = format_payment_message(payment)
-        send_whatsapp_message(message)
+        # mensagem para a floricultura
+        store_message = format_payment_message(payment)
+        send_whatsapp_message(store_message)
 
-        # 🔒 marca como processado
+        # mensagem para o cliente
+        customer_phone = payment.get("metadata", {}).get("customer_phone")
+        if customer_phone:
+            customer_message = format_customer_message(payment)
+            send_whatsapp_message_to(customer_phone, customer_message)
+
         PROCESSED_PAYMENTS.add(payment_id)
 
     return {"received": True}

@@ -26,6 +26,27 @@ def send_whatsapp_message(message: str):
     return response.json()
 
 
+def send_whatsapp_message_to(number: str, message: str):
+    if not INSTANCE_ID or not TOKEN:
+        raise Exception("UltraMsg não configurado corretamente")
+
+    payload = {
+        "token": TOKEN,
+        "to": number,
+        "body": message
+    }
+
+    response = requests.post(BASE_URL, data=payload, timeout=15)
+
+    if response.status_code != 200:
+        raise Exception(f"Erro UltraMsg cliente: {response.text}")
+
+    return response.json()
+
+
+# ===============================
+# MENSAGEM FLORICULTURA
+# ===============================
 def format_payment_message(payment: dict) -> str:
     items = payment.get("additional_info", {}).get("items", [])
     meta = payment.get("metadata", {})
@@ -58,5 +79,30 @@ def format_payment_message(payment: dict) -> str:
 
     message += f"⏰ *Período:* {meta.get('delivery_period')}\n"
     message += f"\n💰 *Total:* R$ {payment.get('transaction_amount')}\n"
+
+    return message
+
+
+# ===============================
+# MENSAGEM CLIENTE (🌸 + 💗)
+# ===============================
+def format_customer_message(payment: dict) -> str:
+    meta = payment.get("metadata", {})
+
+    date = meta.get("customer_date", "")
+    period = meta.get("delivery_period", "")
+
+    message = "🌸 *Pedido confirmado!*\n\n"
+    message += "Olá 😊\n"
+    message += "Recebemos o pagamento do *seu pedido* com sucesso.\n\n"
+    message += "Seu pedido já está *em produção* e está sendo preparado com todo carinho 💗\n\n"
+
+    if date:
+        message += f"📅 Data: {date}\n"
+    if period:
+        message += f"⏰ Entrega: {period}\n"
+
+    message += "\nQualquer dúvida, estamos à disposição.\n"
+    message += "Obrigado por escolher a *Valle das Flores* 💗"
 
     return message
