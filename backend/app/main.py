@@ -12,8 +12,9 @@ from app.services.whatsapp_ultramsg import (
     send_whatsapp_message,
     send_whatsapp_message_to,
     format_payment_message,
-    format_client_confirmation_message,  # 👈 mensagem definida lá
+    format_customer_message,
 )
+
 
 load_dotenv()
 
@@ -114,8 +115,9 @@ def pay_card(data: dict):
 
 def send_client_message_with_delay(phone: str, payment_info: dict):
     time.sleep(50)
-    message = format_client_confirmation_message(payment_info)
+    message = format_customer_message(payment_info)
     send_whatsapp_message_to(phone, message)
+
 
 # =====================================================
 # WEBHOOK MERCADO PAGO
