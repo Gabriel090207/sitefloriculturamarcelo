@@ -1,48 +1,56 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List
-import threading
-import time
+from typing import List, Optional
 
-from app.services.mercado_pago import create_pix_payment
+from app.services.mercado_pago import (
+    create_pix_payment,
+    create_card_payment,
+    get_payment_by_id
+)
+
 from app.services.whatsapp_ultramsg import (
     send_whatsapp_message,
     send_whatsapp_message_to,
     format_payment_message,
-    format_customer_message,
+    format_customer_message
 )
 
 app = FastAPI(title="Valle das Flores API", version="1.0.0")
 
-# ===============================
+# =====================================================
+# 🔒 CONTROLE ANTI-DUPLICAÇÃO (WEBHOOK)
+# =====================================================
+PROCESSED_PAYMENTS = set()
+
+# =====================================================
 # CORS
-# ===============================
+# =====================================================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "https://vallesdasflores.netlify.app",
         "https://sitefloriculturamarcelo.onrender.com",
-        "https://floriculturavalledasflores.com.br",
         "http://floriculturavalledasflores.com.br",
+        "https://floriculturavalledasflores.com.br",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ===============================
+# =====================================================
 # HEALTH
-# ===============================
+# =====================================================
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-
-# ===============================
+# =====================================================
 # MODELS
-# ===============================
+# =====================================================
 class Item(BaseModel):
     id: str
     name: str
@@ -59,97 +67,97 @@ class CheckoutRequest(BaseModel):
     customer_name: str
     customer_phone: str
     customer_date: str
-
-    street: str | None = None
-    number: str | None = None
-    neighborhood: str | None = None
-    cep: str | None = None
-
-    tribute: str | None = None
+    customer_street: str
+    customer_number: str
+    customer_neighborhood: str
+    customer_cep: str
+    tribute: Optional[str] = None
 
 
-# ===============================
-# CHECKOUT
-# ===============================
+# =====================================================
+# CHECKOUT PIX
+# =====================================================
 @app.post("/checkout")
 def checkout(data: CheckoutRequest):
-    if data.payment_method != "pix":
-        raise HTTPException(status_code=400, detail="Método de pagamento não suportado")
-
-    pix = create_pix_payment(
-        amount=data.total,
-        description="Pedido Valle das Flores",
-        items=[
-            {
-                "title": item.name,
-                "quantity": item.quantity,
-                "unit_price": item.price,
+    if data.payment_method == "pix":
+        pix = create_pix_payment(
+            amount=data.total,
+            description="Pedido Valle das Flores",
+            items=data.items,
+            metadata={
+                "customer_name": data.customer_name,
+                "customer_phone": data.customer_phone,
+                "customer_date": data.customer_date,
+                "delivery_period": data.delivery_period,
+                "street": data.customer_street,
+                "number": data.customer_number,
+                "neighborhood": data.customer_neighborhood,
+                "cep": data.customer_cep,
+                "tribute": data.tribute or ""
             }
-            for item in data.items
-        ],
-        metadata={
-            "customer_name": data.customer_name,
-            "customer_phone": data.customer_phone,
-            "customer_date": data.customer_date,
-            "delivery_period": data.delivery_period,
-            "street": data.street,
-            "number": data.number,
-            "neighborhood": data.neighborhood,
-            "cep": data.cep,
-            "tribute": data.tribute,
-        },
-    )
+        )
 
-    return {
-        "payment_method": "pix",
-        "payment": pix,
-    }
+        return {
+            "payment_method": "pix",
+            "payment": pix
+        }
 
+    return {"message": "Método de pagamento não implementado"}
 
-# ===============================
+# =====================================================
+# PAGAMENTO CARTÃO
+# =====================================================
+@app.post("/pay/card")
+def pay_card(data: dict):
+    try:
+        return create_card_payment(
+            token=data["token"],
+            amount=float(data["total"]),
+            installments=int(data.get("installments", 1)),
+            email=data["email"],
+            cpf=data["cpf"],
+        )
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# =====================================================
 # WEBHOOK MERCADO PAGO
-# ===============================
-def send_client_message_with_delay(phone: str, payment_info: dict):
-    time.sleep(50)
-    message = format_customer_message(payment_info)
-    send_whatsapp_message_to(phone, message)
-
-
+# =====================================================
 @app.post("/webhook/mercadopago")
-async def mercado_pago_webhook(request: Request):
-    body = await request.json()
-    payment_id = body.get("data", {}).get("id")
+async def mercadopago_webhook(request: Request):
+    qp = dict(request.query_params)
 
+    payment_id = qp.get("data.id")
     if not payment_id:
-        return {"status": "ignored"}
+        return {"ignored": True}
 
-    import mercadopago
-    import os
-
-    sdk = mercadopago.SDK(os.getenv("MP_ACCESS_TOKEN"))
-    payment = sdk.payment().get(payment_id)["response"]
+    payment = get_payment_by_id(payment_id)
 
     status = payment.get("status")
-    detail = payment.get("status_detail")
+    status_detail = payment.get("status_detail")
 
-    print(f"💳 PAYMENT ID: {payment_id}")
-    print(f"📌 STATUS: {status}")
-    print(f"📌 DETAIL: {detail}")
+    print("💳 PAYMENT ID:", payment_id)
+    print("📌 STATUS:", status)
+    print("📌 DETAIL:", status_detail)
 
-    if status == "approved":
+    if status == "approved" and status_detail == "accredited":
+
+        if payment_id in PROCESSED_PAYMENTS:
+            print("⚠️ PAGAMENTO JÁ PROCESSADO — IGNORANDO DUPLICADO")
+            return {"ignored": True}
+
         print("✅ PAGAMENTO APROVADO — ENVIANDO WHATSAPP")
 
-        # Mensagem para a floricultura
+        # mensagem para a floricultura
         store_message = format_payment_message(payment)
         send_whatsapp_message(store_message)
 
-        # Mensagem para o cliente (50s depois)
+        # mensagem para o cliente
         customer_phone = payment.get("metadata", {}).get("customer_phone")
         if customer_phone:
-            threading.Thread(
-                target=send_client_message_with_delay,
-                args=(customer_phone, payment),
-                daemon=True,
-            ).start()
+            customer_message = format_customer_message(payment)
+            send_whatsapp_message_to(customer_phone, customer_message)
 
-    return {"status": "ok"}
+        PROCESSED_PAYMENTS.add(payment_id)
+
+    return {"received": True}
