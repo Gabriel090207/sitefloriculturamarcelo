@@ -1,6 +1,5 @@
-from fastapi import FastAPI, Request, HTTPException
 import asyncio
-
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
@@ -106,6 +105,7 @@ def checkout(data: CheckoutRequest):
 
     return {"message": "Método de pagamento não implementado"}
 
+
 # =====================================================
 # PAGAMENTO CARTÃO
 # =====================================================
@@ -122,6 +122,7 @@ def pay_card(data: dict):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
 # =====================================================
 # WEBHOOK MERCADO PAGO
 # =====================================================
@@ -131,6 +132,11 @@ async def mercadopago_webhook(request: Request):
 
     payment_id = qp.get("data.id")
     if not payment_id:
+        return {"ignored": True}
+
+    # 🔒 ignora se já processado
+    if payment_id in PROCESSED_PAYMENTS:
+        print("⚠️ PAGAMENTO JÁ PROCESSADO — IGNORANDO DUPLICADO")
         return {"ignored": True}
 
     payment = get_payment_by_id(payment_id)
@@ -144,26 +150,21 @@ async def mercadopago_webhook(request: Request):
 
     if status == "approved" and status_detail == "accredited":
 
-        if payment_id in PROCESSED_PAYMENTS:
-            print("⚠️ PAGAMENTO JÁ PROCESSADO — IGNORANDO DUPLICADO")
-            return {"ignored": True}
+        print("✅ PAGAMENTO APROVADO — PROCESSANDO")
 
-        print("✅ PAGAMENTO APROVADO — ENVIANDO WHATSAPP")
+        # 🔒 bloqueia IMEDIATAMENTE
+        PROCESSED_PAYMENTS.add(payment_id)
 
-        # mensagem para a floricultura
+        # mensagem para a floricultura (imediata)
         store_message = format_payment_message(payment)
         send_whatsapp_message(store_message)
 
-        
-        # mensagem para o cliente (com delay de 45 segundos)
+        # mensagem para o cliente (com delay)
         customer_phone = payment.get("metadata", {}).get("customer_phone")
         if customer_phone:
             print("⏳ Aguardando 45 segundos para enviar mensagem ao cliente...")
             await asyncio.sleep(45)
             customer_message = format_customer_message(payment)
             send_whatsapp_message_to(customer_phone, customer_message)
-
-
-        PROCESSED_PAYMENTS.add(payment_id)
 
     return {"received": True}
