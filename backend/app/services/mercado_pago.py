@@ -1,24 +1,33 @@
 import os
 import mercadopago
-from dotenv import load_dotenv
-
-load_dotenv()
-
-print("🔥 BACKEND ATIVO")
-print("🔥 MP ACCESS TOKEN:", os.getenv("MP_ACCESS_TOKEN"))
-
 
 sdk = mercadopago.SDK(os.getenv("MP_ACCESS_TOKEN"))
 
 
-def create_pix_payment(amount: float, description: str):
+def create_pix_payment(
+    amount: float,
+    description: str,
+    items: list,
+    metadata: dict
+):
     payment_data = {
-        "transaction_amount": amount,
+        "transaction_amount": round(amount, 2),
         "description": description,
         "payment_method_id": "pix",
         "payer": {
             "email": "cliente@valledasflores.com"
-        }
+        },
+        "additional_info": {
+            "items": [
+                {
+                    "title": item.name,
+                    "quantity": item.quantity,
+                    "unit_price": item.price
+                }
+                for item in items
+            ]
+        },
+        "metadata": metadata
     }
 
     payment_response = sdk.payment().create(payment_data)
@@ -30,6 +39,7 @@ def create_pix_payment(amount: float, description: str):
         "qr_code": payment["point_of_interaction"]["transaction_data"]["qr_code"],
         "qr_code_base64": payment["point_of_interaction"]["transaction_data"]["qr_code_base64"],
     }
+
 
 def create_card_payment(
     token: str,
@@ -52,13 +62,9 @@ def create_card_payment(
         }
     }
 
-    payment_response = sdk.payment().create(payment_data)
-
-    # Retorna a resposta completa do Mercado Pago
-    # (evita KeyError e permite debug e produção)
-    return payment_response
+    return sdk.payment().create(payment_data)
 
 
 def get_payment_by_id(payment_id: str):
-    payment_response = sdk.payment().get(payment_id)
-    return payment_response["response"]
+    response = sdk.payment().get(payment_id)
+    return response["response"]
