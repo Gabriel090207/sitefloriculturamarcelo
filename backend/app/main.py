@@ -1,3 +1,8 @@
+from app.services.whatsapp_ultramsg import (
+    send_whatsapp_message,
+    format_payment_message
+)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Request
@@ -55,8 +60,12 @@ async def mercadopago_webhook(request: Request):
     print("📌 STATUS:", status)
     print("📌 DETAIL:", status_detail)
 
-    if status == "approved":
-        print("✅ PAGAMENTO APROVADO")
+    if status == "approved" and status_detail == "accredited":
+        print("✅ PAGAMENTO APROVADO — ENVIANDO WHATSAPP")
+
+        message = format_payment_message(payment)
+        send_whatsapp_message(message)
+
 
     return {"received": True}
 
