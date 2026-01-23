@@ -314,7 +314,7 @@ export const produtos = [
     id: 11,
     name: 'Coroa de Rosas',
     description: 'Uma homenagem respeitosa com rosas selecionadas para expressar carinho.',
-    price: 'R$ 400,00',
+    price: 'R$ 0,20',
     flowersQty: '160 a 200 flores',
     productionTime: '50min a 60min de confecção',
     image: '/coroa1.png',

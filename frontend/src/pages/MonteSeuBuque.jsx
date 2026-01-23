@@ -270,7 +270,11 @@ Aguardo para finalizar 😊
   // GERA IMAGEM DO BUQUÊ
 
   // NOME BONITO DAS OPÇÕES
-  const florSelecionada = flores.find(f => f.id === flor)?.nome
+  const floresSelecionadasNomes = floresSelecionadas
+  .map(id => flores.find(f => f.id === id)?.nome)
+  .filter(Boolean)
+  .join(', ')
+
   const plantinhaSelecionada = plantinhas.find(p => p.id === plantinha)?.nome
   const vasoSelecionado = vasos.find(v => v.id === vaso)?.nome
 
@@ -278,7 +282,8 @@ let message = `Olá! Gostaria de fazer um pedido.\n\n`
 message += `Pedido via site – Valle das Flores\n\n`
 
 message += `• Buquê Personalizado\n`
-message += `  Flor: ${florSelecionada}\n`
+message += `  Flor(es): ${floresSelecionadasNomes}\n`
+
 message += `  Plantinha: ${plantinhaSelecionada}\n`
 message += `  Vaso: ${vasoSelecionado}\n`
 message += `  Quantidade de flores: ${quantidade}\n\n`
