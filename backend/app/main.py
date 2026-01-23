@@ -16,9 +16,14 @@ from app.services.whatsapp_ultramsg import (
 
 app = FastAPI(title="Valle das Flores API", version="1.0.0")
 
-# ===============================
+# =====================================================
+# 🔒 CONTROLE ANTI-DUPLICAÇÃO (WEBHOOK)
+# =====================================================
+PROCESSED_PAYMENTS = set()
+
+# =====================================================
 # CORS
-# ===============================
+# =====================================================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -34,16 +39,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ===============================
+# =====================================================
 # HEALTH
-# ===============================
+# =====================================================
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-# ===============================
+# =====================================================
 # MODELS
-# ===============================
+# =====================================================
 class Item(BaseModel):
     id: str
     name: str
@@ -66,10 +71,9 @@ class CheckoutRequest(BaseModel):
     customer_cep: str
     tribute: Optional[str] = None
 
-
-# ===============================
+# =====================================================
 # CHECKOUT PIX
-# ===============================
+# =====================================================
 @app.post("/checkout")
 def checkout(data: CheckoutRequest):
     if data.payment_method == "pix":
@@ -97,10 +101,9 @@ def checkout(data: CheckoutRequest):
 
     return {"message": "Método de pagamento não implementado"}
 
-
-# ===============================
+# =====================================================
 # PAGAMENTO CARTÃO
-# ===============================
+# =====================================================
 @app.post("/pay/card")
 def pay_card(data: dict):
     try:
@@ -114,10 +117,9 @@ def pay_card(data: dict):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-
-# ===============================
+# =====================================================
 # WEBHOOK MERCADO PAGO
-# ===============================
+# =====================================================
 @app.post("/webhook/mercadopago")
 async def mercadopago_webhook(request: Request):
     qp = dict(request.query_params)
@@ -136,9 +138,17 @@ async def mercadopago_webhook(request: Request):
     print("📌 DETAIL:", status_detail)
 
     if status == "approved" and status_detail == "accredited":
+
+        if payment_id in PROCESSED_PAYMENTS:
+            print("⚠️ PAGAMENTO JÁ PROCESSADO — IGNORANDO DUPLICADO")
+            return {"ignored": True}
+
         print("✅ PAGAMENTO APROVADO — ENVIANDO WHATSAPP")
 
         message = format_payment_message(payment)
         send_whatsapp_message(message)
+
+        # 🔒 marca como processado
+        PROCESSED_PAYMENTS.add(payment_id)
 
     return {"received": True}

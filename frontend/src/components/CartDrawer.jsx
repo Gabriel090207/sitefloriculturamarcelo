@@ -651,18 +651,27 @@ const gerarPix = async () => {
 
     const payload = {
       items: cartItems.map(item => ({
-  id: String(item.id),
-  name: String(item.name),
-  quantity: Number(item.quantity),
-  price: parsePrice(item.price)
-}))
-,
+        id: String(item.id),
+        name: String(item.name),
+        quantity: Number(item.quantity),
+        price: parsePrice(item.price)
+      })),
+    
       delivery_period: deliveryPeriod,
       payment_method: 'pix',
-      total: finalTotal
-
-
+      total: finalTotal,
+    
+      // 🔽 DADOS DO CLIENTE (OBRIGATÓRIOS)
+      customer_name: customerData.name,
+      customer_phone: customerData.phone,
+      customer_date: customerData.date,
+      customer_street: customerData.street,
+      customer_number: customerData.number,
+      customer_neighborhood: customerData.neighborhood,
+      customer_cep: customerData.cep,
+      tribute: customerData.tribute || ''
     }
+    
 
     console.log('Payload checkout:', payload)
 
