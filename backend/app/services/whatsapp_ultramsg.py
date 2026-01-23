@@ -30,9 +30,16 @@ def send_whatsapp_message_to(number: str, message: str):
     if not INSTANCE_ID or not TOKEN:
         raise Exception("UltraMsg não configurado corretamente")
 
+    # 🔧 normaliza telefone para E.164
+    clean_number = "".join(filter(str.isdigit, number))
+
+    # garante DDI 55
+    if not clean_number.startswith("55"):
+        clean_number = f"55{clean_number}"
+
     payload = {
         "token": TOKEN,
-        "to": number,
+        "to": clean_number,
         "body": message
     }
 
