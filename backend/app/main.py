@@ -1,4 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException
+import asyncio
+
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
@@ -152,11 +154,15 @@ async def mercadopago_webhook(request: Request):
         store_message = format_payment_message(payment)
         send_whatsapp_message(store_message)
 
-        # mensagem para o cliente
+        
+        # mensagem para o cliente (com delay de 45 segundos)
         customer_phone = payment.get("metadata", {}).get("customer_phone")
         if customer_phone:
+            print("⏳ Aguardando 45 segundos para enviar mensagem ao cliente...")
+            await asyncio.sleep(45)
             customer_message = format_customer_message(payment)
             send_whatsapp_message_to(customer_phone, customer_message)
+
 
         PROCESSED_PAYMENTS.add(payment_id)
 
