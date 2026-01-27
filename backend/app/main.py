@@ -26,6 +26,10 @@ from .services.whatsapp_zapi import (
 )
 
 
+from app.services.firebase import get_firestore
+from datetime import datetime
+
+
 
 app = FastAPI(title="Valle das Flores API", version="1.0.0")
 
@@ -136,6 +140,9 @@ def pay_card(data: dict):
 # =====================================================
 # WEBHOOK MERCADO PAGO
 # =====================================================
+from datetime import datetime
+from app.services.firebase import get_firestore
+
 @app.post("/webhook/mercadopago")
 async def mercadopago_webhook(request: Request):
     qp = dict(request.query_params)
@@ -166,6 +173,36 @@ async def mercadopago_webhook(request: Request):
         PROCESSED_PAYMENTS.add(payment_id)
 
         # ==========================
+        # 🔥 FIRESTORE — SALVAR PEDIDO
+        # ==========================
+        db = get_firestore()
+
+        meta = payment.get("metadata", {})
+        items = payment.get("additional_info", {}).get("items", [])
+
+        order_data = {
+            "payment_id": str(payment_id),
+            "status": "paid",
+            "customer_name": meta.get("customer_name"),
+            "customer_phone": meta.get("customer_phone"),
+            "delivery_date": meta.get("customer_date"),
+            "delivery_period": meta.get("delivery_period"),
+            "address": {
+                "street": meta.get("street"),
+                "number": meta.get("number"),
+                "neighborhood": meta.get("neighborhood"),
+                "cep": meta.get("cep"),
+            },
+            "items": items,
+            "total": payment.get("transaction_amount"),
+            "created_at": datetime.utcnow(),
+        }
+
+        db.collection("orders").document(str(payment_id)).set(order_data)
+
+        print("🔥 Pedido salvo no Firestore com sucesso")
+
+        # ==========================
         # 📧 EMAIL — FLORICULTURA
         # ==========================
         html = format_payment_email(payment)
@@ -174,15 +211,18 @@ async def mercadopago_webhook(request: Request):
             html=html
         )
 
+        print("📧 Email enviado para floricultura")
+
         # ==========================
         # 💬 WHATSAPP — CLIENTE
         # ==========================
-        customer_phone = payment.get("metadata", {}).get("customer_phone")
+        customer_phone = meta.get("customer_phone")
 
         if customer_phone:
             print("⏳ Aguardando 45s para WhatsApp do cliente...")
             await asyncio.sleep(45)
             customer_message = format_customer_message(payment)
             send_whatsapp_message_to(customer_phone, customer_message)
+            print("💬 WhatsApp enviado para o cliente")
 
     return {"received": True}
