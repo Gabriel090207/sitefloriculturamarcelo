@@ -10,10 +10,15 @@ from app.services.mercado_pago import (
     get_payment_by_id
 )
 
+# ✅ EMAIL (RESEND) — FLORICULTURA
+from app.services.email_resend import (
+    send_email,
+    format_payment_email
+)
+
+# ✅ WHATSAPP — SOMENTE CLIENTE
 from app.services.whatsapp_ultramsg import (
-    send_whatsapp_message,
     send_whatsapp_message_to,
-    format_payment_message,
     format_customer_message
 )
 
@@ -134,9 +139,9 @@ async def mercadopago_webhook(request: Request):
     if not payment_id:
         return {"ignored": True}
 
-    # 🔒 ignora se já processado
+    # 🔒 ignora duplicados
     if payment_id in PROCESSED_PAYMENTS:
-        print("⚠️ PAGAMENTO JÁ PROCESSADO — IGNORANDO DUPLICADO")
+        print("⚠️ PAGAMENTO JÁ PROCESSADO — IGNORANDO")
         return {"ignored": True}
 
     payment = get_payment_by_id(payment_id)
@@ -152,17 +157,25 @@ async def mercadopago_webhook(request: Request):
 
         print("✅ PAGAMENTO APROVADO — PROCESSANDO")
 
-        # 🔒 bloqueia IMEDIATAMENTE
+        # 🔒 trava imediatamente
         PROCESSED_PAYMENTS.add(payment_id)
 
-        # mensagem para a floricultura (imediata)
-        store_message = format_payment_message(payment)
-        send_whatsapp_message(store_message)
+        # ==========================
+        # 📧 EMAIL — FLORICULTURA
+        # ==========================
+        html = format_payment_email(payment)
+        send_email(
+            subject="🌸 Novo pedido confirmado – Valle das Flores",
+            html=html
+        )
 
-        # mensagem para o cliente (com delay)
+        # ==========================
+        # 💬 WHATSAPP — CLIENTE
+        # ==========================
         customer_phone = payment.get("metadata", {}).get("customer_phone")
+
         if customer_phone:
-            print("⏳ Aguardando 45 segundos para enviar mensagem ao cliente...")
+            print("⏳ Aguardando 45s para WhatsApp do cliente...")
             await asyncio.sleep(45)
             customer_message = format_customer_message(payment)
             send_whatsapp_message_to(customer_phone, customer_message)
