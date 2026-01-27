@@ -16,7 +16,19 @@ function parseBRDate(dateStr) {
   return new Date(year, month - 1, day);
 }
 
-function isToday(dateStr) {
+// Converte Firestore Timestamp → Date
+function parseFirestoreDate(value) {
+  if (!value) return null;
+
+  // Firestore Timestamp
+  if (value.seconds) {
+    return new Date(value.seconds * 1000);
+  }
+
+  return new Date(value);
+}
+
+function isTodayBR(dateStr) {
   const date = parseBRDate(dateStr);
   if (!date) return false;
 
@@ -29,14 +41,26 @@ function isToday(dateStr) {
   );
 }
 
-function isLast30Days(dateStr) {
-  const date = parseBRDate(dateStr);
+function isTodayDate(date) {
+  if (!date) return false;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const compare = new Date(date);
+  compare.setHours(0, 0, 0, 0);
+
+  return compare.getTime() === today.getTime();
+}
+
+function isLast30DaysDate(date) {
   if (!date) return false;
 
   const now = new Date();
-  const diff = now - date;
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(now.getDate() - 30);
 
-  return diff <= 30 * 24 * 60 * 60 * 1000;
+  return date >= thirtyDaysAgo && date <= now;
 }
 
 /* =========================
@@ -72,16 +96,25 @@ export default function Orders() {
      MÉTRICAS
   ========================= */
 
+  // ENTREGAS HOJE → delivery_date
   const entregasHoje = orders.filter(o =>
-    isToday(o.delivery_date)
+    isTodayBR(o.delivery_date)
   ).length;
 
+  // VENDAS HOJE → created_at
   const vendasHoje = orders
-    .filter(o => isToday(o.delivery_date))
+    .filter(o => {
+      const createdAt = parseFirestoreDate(o.created_at);
+      return isTodayDate(createdAt);
+    })
     .reduce((sum, o) => sum + Number(o.total || 0), 0);
 
+  // ÚLTIMOS 30 DIAS → created_at
   const vendas30Dias = orders
-    .filter(o => isLast30Days(o.delivery_date))
+    .filter(o => {
+      const createdAt = parseFirestoreDate(o.created_at);
+      return isLast30DaysDate(createdAt);
+    })
     .reduce((sum, o) => sum + Number(o.total || 0), 0);
 
   /* =========================

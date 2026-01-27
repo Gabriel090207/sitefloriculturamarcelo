@@ -2,12 +2,15 @@ import {
   collection,
   getDocs,
   query,
-  orderBy,
-  updateDoc,
-  doc
+  orderBy
 } from "firebase/firestore";
 import { db } from "./firebase";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
+/* =========================
+   BUSCAR PEDIDOS
+========================= */
 export async function getOrders() {
   const q = query(
     collection(db, "orders"),
@@ -21,7 +24,24 @@ export async function getOrders() {
   }));
 }
 
+/* =========================
+   ATUALIZAR STATUS (BACKEND)
+========================= */
 export async function updateOrderStatus(id, status) {
-  const ref = doc(db, "orders", id);
-  await updateDoc(ref, { status });
+  const response = await fetch(
+    `${API_URL}/orders/${id}/status`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ status })
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Erro ao atualizar status do pedido");
+  }
+
+  return response.json();
 }

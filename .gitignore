@@ -1,0 +1,19 @@
+# ENV (todas as apps)
+.env
+frontend/.env
+backend/.env
+admin/.env
+
+# Firebase
+serviceAccountKey.json
+
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Build
+dist/

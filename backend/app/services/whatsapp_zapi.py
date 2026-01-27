@@ -1,26 +1,11 @@
 import os
 import requests
-import time
 
 INSTANCE_ID = os.getenv("ZAPI_INSTANCE_ID")
 INSTANCE_TOKEN = os.getenv("ZAPI_INSTANCE_TOKEN")
 CLIENT_TOKEN = os.getenv("ZAPI_CLIENT_TOKEN")
 
 BASE_URL = f"https://api.z-api.io/instances/{INSTANCE_ID}/token/{INSTANCE_TOKEN}"
-
-
-# ======================================================
-# STATUS DIGITANDO (opcional, humano)
-# ======================================================
-def enviar_digitando(numero: str):
-    try:
-        url = f"{BASE_URL}/send-status-typing"
-        headers = {
-            "Client-Token": CLIENT_TOKEN
-        }
-        requests.post(url, headers=headers, timeout=5)
-    except:
-        pass
 
 
 # ======================================================
@@ -60,7 +45,7 @@ def send_whatsapp_message_to(number: str, message: str):
 
 
 # ======================================================
-# MENSAGEM PADRÃO CLIENTE
+# MENSAGEM — PAGAMENTO CONFIRMADO
 # ======================================================
 def format_customer_message(payment: dict) -> str:
     meta = payment.get("metadata", {})
@@ -83,5 +68,66 @@ def format_customer_message(payment: dict) -> str:
 
     message += "\nQualquer dúvida, estamos à disposição.\n"
     message += "Obrigado por escolher a *Valle das Flores* 💗"
+
+    return message
+
+
+# ======================================================
+# MENSAGEM — PEDIDO FINALIZADO
+# ======================================================
+def format_order_finished_message(order: dict) -> str:
+    customer_name = order.get("customer_name", "")
+    delivery_date = order.get("delivery_date", "")
+    delivery_period = order.get("delivery_period", "")
+
+    is_pickup = delivery_period == "retiradanaloja"
+
+    message = "🌸 *Seu pedido está pronto!* 🌸\n\n"
+    message += f"Olá {customer_name} 😊\n\n"
+
+    if is_pickup:
+        message += (
+            "Seu pedido foi *finalizado com sucesso* "
+            "e já está *disponível para retirada na loja* 💐✨\n\n"
+        )
+        message += "📍 Você já pode vir buscar no horário de funcionamento.\n"
+
+    else:
+        message += (
+            "Seu pedido foi *finalizado com sucesso* "
+            "e está prontinho 💐✨\n\n"
+        )
+        if delivery_date:
+            message += f"📅 Data da entrega: {delivery_date}\n"
+        if delivery_period:
+            message += f"⏰ Período: {delivery_period}\n"
+
+        message += "\nEle será entregue conforme o combinado 💗\n"
+
+    message += (
+        "\nQualquer dúvida, estamos à disposição.\n"
+        "Obrigado por escolher a *Valle das Flores* 🌷"
+    )
+
+    return message
+
+
+# ======================================================
+# MENSAGEM — PEDIDO ENTREGUE
+# ======================================================
+def format_order_delivered_message(order: dict) -> str:
+    customer_name = order.get("customer_name", "")
+
+    message = "🌸 *Pedido entregue!* 🌸\n\n"
+    message += f"Olá {customer_name} 😊\n\n"
+    message += (
+        "Passando para avisar que seu pedido "
+        "foi *entregue com sucesso* 💐✨\n\n"
+    )
+    message += (
+        "Esperamos que você tenha gostado 💗\n"
+        "Qualquer coisa, estamos sempre à disposição.\n\n"
+        "*Valle das Flores* 🌷"
+    )
 
     return message

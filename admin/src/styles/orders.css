@@ -205,3 +205,92 @@
   box-shadow: var(--sombra-card);
   overflow: hidden; /* 🔥 recorta bordas */
 }
+
+
+.order-details-btn {
+  margin-top: 6px;
+  background: none;
+  border: none;
+  color: var(--rosa-suave);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+}
+
+.order-details-btn:hover {
+  text-decoration: underline;
+}
+
+
+/* OVERLAY */
+.order-details-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+}
+
+/* MODAL */
+.order-details-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px;
+  width: 520px;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+}
+
+.order-details-modal h2 {
+  margin-bottom: 20px;
+  color: var(--marrom-escuro);
+}
+
+/* FECHAR */
+.close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* SEÇÕES */
+.details-section {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.details-section strong {
+  font-size: 14px;
+}
+
+/* ITENS */
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+
+/* TOTAL */
+.details-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  font-size: 16px;
+}

@@ -237,3 +237,44 @@ async def mercadopago_webhook(request: Request):
             print("💬 WhatsApp enviado para o cliente")
 
     return {"received": True}
+
+
+from fastapi import Body
+from app.services.whatsapp_zapi import (
+    send_whatsapp_message_to,
+    format_order_finished_message,
+    format_order_delivered_message
+)
+
+@app.put("/orders/{order_id}/status")
+async def update_order_status(order_id: str, payload: dict = Body(...)):
+    new_status = payload.get("status")
+
+    if new_status not in ["pendente", "feito", "entregue"]:
+        raise HTTPException(status_code=400, detail="Status inválido")
+
+    db = get_firestore()
+    ref = db.collection("orders").document(order_id)
+
+    doc = ref.get()
+    if not doc.exists:
+        raise HTTPException(status_code=404, detail="Pedido não encontrado")
+
+    order = doc.to_dict()
+
+    # Atualiza status
+    ref.update({"status": new_status})
+
+    customer_phone = order.get("customer_phone")
+
+    # 🔔 DISPARO DE WHATSAPP
+    if customer_phone:
+        if new_status == "feito":
+            message = format_order_finished_message(order)
+            send_whatsapp_message_to(customer_phone, message)
+
+        elif new_status == "entregue":
+            message = format_order_delivered_message(order)
+            send_whatsapp_message_to(customer_phone, message)
+
+    return {"success": True}
