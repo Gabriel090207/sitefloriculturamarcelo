@@ -375,9 +375,6 @@ const [distanceKm, setDistanceKm] = useState(null)
 
 
   
-  const [waitingPayment, setWaitingPayment] = useState(false)
-const [paymentId, setPaymentId] = useState(null)
-
   const isCheckoutOpen =
   showCustomerModal ||
   showDeliveryModal ||
@@ -529,30 +526,6 @@ useEffect(() => {
 }, [customerData.cep, deliveryPeriod])
 
 
-useEffect(() => {
-  if (!waitingPayment || !paymentId) return
-
-  const interval = setInterval(async () => {
-    try {
-      const res = await api.get(`/payment/status/${paymentId}`)
-
-      if (res.data.status === 'approved') {
-        clearInterval(interval)
-
-        setWaitingPayment(false)
-        setShowSuccessModal(true)
-        clearCart()
-      }
-    } catch (err) {
-      console.error('Erro ao verificar pagamento:', err)
-    }
-  }, 4000) // a cada 4 segundos
-
-  return () => clearInterval(interval)
-}, [waitingPayment, paymentId])
-
-
-
 const handleCheckoutWhatsApp = async (customPhrase = '') => {
 
   const phoneNumber = '559281230907'
@@ -664,7 +637,7 @@ const handleCheckoutWhatsAppConfirmed = () => {
   message += `Obrigado(a)!`
 
   const encoded = encodeURIComponent(message)
-  window.location.href = `https://wa.me/5516994287026?text=${encoded}`
+  window.location.href = `https://wa.me/559281230907?text=${encoded}`
 
   // ✅ AGORA SIM limpa tudo
   clearCart()
@@ -1460,7 +1433,10 @@ const gerarPix = async () => {
 
       if (payment && payment.status === 'approved') {
         setShowCardFormModal(null)
-    
+        setShowSuccessModal(true)
+      
+        // ✅ LIMPA O CARRINHO
+        clearCart()
       }
       else {
         alert(
@@ -1484,16 +1460,6 @@ const gerarPix = async () => {
   </div>
 )}
 
-{waitingPayment && (
-  <div className="delivery-overlay">
-    <div className="delivery-card pix-loading">
-      <i className="fa-solid fa-spinner fa-spin"></i>
-      <p>Aguardando confirmação do pagamento…</p>
-      <span>Isso pode levar alguns segundos</span>
-    </div>
-  </div>
-)}
-
 {showSuccessModal && (
   <div className="delivery-overlay">
     <div className="success-card">
@@ -1511,12 +1477,16 @@ const gerarPix = async () => {
         <br />
         Em breve entraremos em contato.
       </p>
-
       <button
-  className="success-close"
+  className="success-whatsapp"
   onClick={() => {
-    setShowSuccessModal(false)
-    onClose()
+    clearCart();  // Limpar o carrinho
+    setShowSuccessModal(false);  // Fechar o modal de sucesso
+
+    // Redireciona o usuário para a loja
+    history.push('/loja');  // Para versões mais antigas do react-router
+    // Ou para versões mais novas (v6+)
+    // navigate('/loja');
   }}
 >
   Fechar

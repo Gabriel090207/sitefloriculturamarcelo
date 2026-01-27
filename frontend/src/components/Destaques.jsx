@@ -2,26 +2,26 @@ import './Destaques.css'
 import { useEffect, useState } from 'react'
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore'
 import { db } from '../firebase/firebase'
+import { useCart } from '../context/CartContext'
+import { useNavigate } from 'react-router-dom'
 
 function Destaques() {
+  const { addToCart } = useCart()  // Importando a função addToCart
+  const navigate = useNavigate()
 
-  const handleComprarWhatsApp = (produto) => {
-  const phoneNumber = '5516994287026'
+  const handleComprar = (produto) => {
+    addToCart({
+      id: produto.id,
+      name: produto.name,
+      price: produto.price,
+      image: produto.image,
+      description: produto.description,
+      category: 'Destaques',  // Ou qualquer categoria relevante
+    })
 
-  let message = `Olá! Gostaria de fazer um pedido.\n\n`
-  message += `Produto em destaque – Valle das Flores\n\n`
-  message += `• Produto: ${produto.name}\n`
-  message += `• Descrição: ${produto.description}\n`
-  message += `• Valor: ${produto.price}\n`
-  message += `• Foto: ${produto.image}\n\n`
-  message += `Aguardo orientações para finalizar.\nObrigado(a)!`
-
-  const encodedMessage = encodeURIComponent(message)
-  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`
-
-  window.open(whatsappUrl, '_blank')
-}
-
+    // Após adicionar ao carrinho, redireciona para a página da loja
+    navigate('/loja')
+  }
 
   const [destaques, setDestaques] = useState([])
 
@@ -60,10 +60,9 @@ function Destaques() {
               <h4>{item.name}</h4>
               <p>{item.description}</p>
               <span className="price">{item.price}</span>
-              <button onClick={() => handleComprarWhatsApp(item)}>
-  Comprar
-</button>
-
+              <button onClick={() => handleComprar(item)}>
+                Comprar
+              </button>
             </div>
           </div>
         ))}
