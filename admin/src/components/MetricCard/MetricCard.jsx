@@ -1,4 +1,4 @@
-import "../styles/metrics.css";
+import "./MetricCard.css";
 
 export default function MetricCard({ title, value, icon }) {
   return (

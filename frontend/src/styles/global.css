@@ -34,7 +34,7 @@ html.modal-open {
   
   /* Estilo global */
   body {
-    fo 
+    font-family: 'Poppins', sans-serif;
     background-color: var(--bege-claro);
     color: var(--marrom-escuro);
   }

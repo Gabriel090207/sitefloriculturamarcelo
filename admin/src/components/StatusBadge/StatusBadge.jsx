@@ -1,4 +1,4 @@
-import "../styles/status.css";
+import "./StatusBadge.css";
 
 export default function StatusBadge({ status }) {
   return (

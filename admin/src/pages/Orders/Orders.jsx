@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react";
-import { FiDollarSign, FiCalendar, FiTrendingUp } from "react-icons/fi";
-import MetricCard from "../components/MetricCard";
-import OrderRow from "../components/OrderRow";
-import { getOrders, updateOrderStatus } from "../services/orders";
-import { FiSearch } from "react-icons/fi";
+import {
+  FiDollarSign,
+  FiCalendar,
+  FiTrendingUp,
+  FiSearch
+} from "react-icons/fi";
+
+import MetricCard from "../../components/MetricCard/MetricCard";
+import OrderRow from "../../components/OrderRow/OrderRow";
+import { getOrders, updateOrderStatus } from "../../services/orders";
+
+import "./Orders.css";
 
 /* =========================
    FUNÇÕES AUXILIARES
 ========================= */
 
-// Converte "DD/MM/YYYY" → Date
 function parseBRDate(dateStr) {
   if (!dateStr) return null;
   const [day, month, year] = dateStr.split("/");
   return new Date(year, month - 1, day);
 }
 
-// Firestore Timestamp → Date
 function parseFirestoreDate(value) {
   if (!value) return null;
   if (value.seconds) return new Date(value.seconds * 1000);
@@ -51,44 +56,41 @@ export default function Orders() {
   const [filter, setFilter] = useState("Todas");
   const [search, setSearch] = useState("");
   const [openActionsId, setOpenActionsId] = useState(null);
+  const [loadingStatusId, setLoadingStatusId] = useState(null);
+
 
   useEffect(() => {
     getOrders().then(setOrders);
   }, []);
 
-  /* =========================
-     ATUALIZA STATUS (SEM RELOAD)
-  ========================= */
   async function handleStatusChange(orderId, newStatus) {
-    await updateOrderStatus(orderId, newStatus);
-
-    setOrders(prev =>
-      prev.map(o =>
-        o.id === orderId ? { ...o, status: newStatus } : o
-      )
-    );
-
-    setOpenActionsId(null);
+    setLoadingStatusId(orderId);
+  
+    try {
+      await updateOrderStatus(orderId, newStatus);
+  
+      setOrders(prev =>
+        prev.map(o =>
+          o.id === orderId ? { ...o, status: newStatus } : o
+        )
+      );
+    } finally {
+      setLoadingStatusId(null);
+      setOpenActionsId(null);
+    }
   }
+  
 
-  /* =========================
-     FILTRO DA LISTA
-  ========================= */
   const filtered = orders.filter(o => {
     const matchSearch =
       o.customer_name?.toLowerCase().includes(search.toLowerCase()) ||
       o.customer_phone?.includes(search) ||
       o.payment_id?.includes(search);
 
-    const matchStatus =
-      filter === "Todas" || o.status === filter;
+    const matchStatus = filter === "Todas" || o.status === filter;
 
     return matchSearch && matchStatus;
   });
-
-  /* =========================
-     MÉTRICAS
-  ========================= */
 
   const entregasHoje = orders.filter(o =>
     parseBRDate(o.delivery_date)?.toDateString() ===
@@ -103,14 +105,8 @@ export default function Orders() {
     .filter(o => isLast30DaysDate(parseFirestoreDate(o.created_at)))
     .reduce((sum, o) => sum + Number(o.total || 0), 0);
 
-  /* =========================
-     RENDER
-  ========================= */
-
   return (
     <div className="orders-page">
-
-
       {/* MÉTRICAS */}
       <div className="orders-metrics">
         <MetricCard
@@ -134,12 +130,18 @@ export default function Orders() {
 
       {/* FILTROS */}
       <div className="orders-filters">
-      <div className="search-input">
-    <FiSearch className="search-icon" />
-    <input type="text" placeholder="Buscar pedidos..." />
-  </div>
+        <div className="search-input">
+          <FiSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Buscar pedidos..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
+
         <div className="filter-tabs">
-          {["Todas", "Pendente", "Pronto", "entregue"].map(s => (
+          {["Todas", "Pendente", "Pronto", "Entregue"].map(s => (
             <button
               key={s}
               className={filter === s ? "active" : ""}
@@ -156,15 +158,18 @@ export default function Orders() {
         <div className="orders-list">
           {filtered.map(order => (
             <OrderRow
-              key={order.id}
-              order={order}
-              openActionsId={openActionsId}
-              setOpenActionsId={setOpenActionsId}
-              onChangeStatus={handleStatusChange}
-            />
+            key={order.id}
+            order={order}
+            loading={loadingStatusId === order.id}
+            openActionsId={openActionsId}
+            setOpenActionsId={setOpenActionsId}
+            onChangeStatus={handleStatusChange}
+          />
+          
           ))}
         </div>
       </div>
     </div>
   );
 }
+

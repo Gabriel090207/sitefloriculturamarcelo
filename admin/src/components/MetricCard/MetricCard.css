@@ -1,0 +1,28 @@
+.metric-card {
+  background: var(--branco);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--sombra-card);
+}
+
+.metric-icon {
+  font-size: 28px;
+  color: var(--rosa-suave);
+}
+
+.metric-card span {
+  font-weight: bold;
+  font-size: 21px;
+  color: var(--marrom-escuro);
+}
+
+.metric-card strong {
+  font-weight: bold;
+  display: block;
+  font-size: 28px;
+  margin-top: 14px;
+  color: var(--marrom-madeira);
+}

@@ -1,22 +1,52 @@
 import { FiX, FiPhone } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import "./OrderDetailsModal.css";
+
+
 
 export default function OrderDetailsModal({ order, onClose }) {
+  const [closing, setClosing] = useState(false);
+
   if (!order) return null;
+
+
+
+  useEffect(() => {
+    // bloqueia scroll
+    document.body.style.overflow = "hidden";
+  
+    return () => {
+      // libera scroll ao fechar
+      document.body.style.overflow = "";
+    };
+  }, []);
+  
 
   return (
     <>
-      {/* OVERLAY */}
-      <div className="order-details-overlay" onClick={onClose} />
+      <div
+  className="order-details-overlay"
+  onClick={() => {
+    setClosing(true);
+    setTimeout(onClose, 200);
+  }}
+/>
 
-      {/* MODAL */}
-      <div className="order-details-modal">
-        <button className="close-btn" onClick={onClose}>
+<div className={`order-details-modal ${closing ? "closing" : ""}`}>
+
+      <button
+  className="close-btn"
+  onClick={() => {
+    setClosing(true);
+    setTimeout(onClose, 200);
+  }}
+>
+
           <FiX />
         </button>
 
         <h2>Detalhes do pedido</h2>
 
-        {/* CLIENTE */}
         <div className="details-section">
           <strong>{order.customer_name}</strong>
           <span>
@@ -24,23 +54,27 @@ export default function OrderDetailsModal({ order, onClose }) {
           </span>
         </div>
 
-        {/* ENTREGA */}
         <div className="details-section">
           <strong>Entrega</strong>
           <span>{order.delivery_date}</span>
         </div>
 
-        {/* ENDEREÇO */}
         <div className="details-section">
-          <strong>Endereço</strong>
-          <span>
-            {order.address?.street}, {order.address?.number}
-          </span>
-          <span>{order.address?.neighborhood}</span>
-          <span>CEP: {order.address?.cep}</span>
-        </div>
+  <strong>Endereço</strong>
 
-        {/* ITENS */}
+  <div className="address-block">
+    <span>
+      {order.address?.street}, {order.address?.number}
+    </span>
+
+    <span>{order.address?.neighborhood}</span>
+
+    <span className="cep">
+      CEP: {order.address?.cep}
+    </span>
+  </div>
+</div>
+
         <div className="details-section">
           <strong>Itens</strong>
 
@@ -56,10 +90,11 @@ export default function OrderDetailsModal({ order, onClose }) {
           ))}
         </div>
 
-        {/* TOTAL */}
         <div className="details-total">
           <strong>Total</strong>
-          <strong>R$ {Number(order.total).toFixed(2)}</strong>
+          <strong>
+            R$ {Number(order.total).toFixed(2)}
+          </strong>
         </div>
       </div>
     </>

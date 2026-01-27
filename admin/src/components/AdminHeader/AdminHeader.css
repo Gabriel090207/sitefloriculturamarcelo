@@ -1,0 +1,71 @@
+.admin-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 90px;
+    background-color: var(--marrom-madeira);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    padding-right: 24px;
+  }
+  
+  .admin-logo-wrapper {
+    position: absolute;
+    left: 8px;
+    bottom: -47px;
+  }
+  
+  .admin-logo {
+    height: 130px;
+    filter: drop-shadow(0 8px 18px rgba(0,0,0,0.25));
+  }
+  
+  /* ===== BOTÃO LOGOUT ===== */
+  .logout-btn {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: 12px;
+  
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  
+  .logout-btn svg {
+    font-size: 18px;
+  }
+  
+  .logout-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+  }
+  
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .admin-header {
+      height: 60px;
+    }
+  
+    .admin-logo-wrapper {
+      left: -12px;
+      bottom: -36px;
+    }
+  
+    .admin-logo {
+      height: 90px;
+    }
+  
+    .logout-btn span {
+      display: none; /* só ícone no mobile */
+    }
+  }
+  

@@ -1,19 +1,14 @@
 @import "./variables.css";
 @import "./layout.css";
-@import "./metrics.css";
-@import "./orders.css";
-@import "./order-row.css";
-@import "./order-actions.css";
-@import "./status.css";
-@import "./admin-header.css";
 
-
+/* RESET */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* GLOBAL */
 body {
   font-family: 'Poppins', sans-serif;
   background: var(--bege-claro);
@@ -22,49 +17,4 @@ body {
 
 button {
   font-family: inherit;
-}
-
-
-.admin-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 90px;
-
-  background-color: var(--marrom-madeira);
-  z-index: 1000;
-
-  display: flex;
-  align-items: center;
-}
-
-/* Wrapper da logo */
-.admin-logo-wrapper {
-  position: absolute;
-  left: 8px;
-  bottom: -47px;
-}
-
-/* Logo */
-.admin-logo {
-  height: 130px;
-  width: auto;
-  filter: drop-shadow(0 8px 18px rgba(0,0,0,0.25));
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .admin-header {
-    height: 60px;
-  }
-
-  .admin-logo-wrapper {
-    left: -12px;
-    bottom: -36px;
-  }
-
-  .admin-logo {
-    height: 90px;
-  }
 }
