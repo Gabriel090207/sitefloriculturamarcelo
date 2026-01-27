@@ -17,10 +17,11 @@ from app.services.email_resend import (
 )
 
 # ✅ WHATSAPP — SOMENTE CLIENTE
-from app.services.whatsapp_ultramsg import (
+from app.services.whatsapp_zapi import (
     send_whatsapp_message_to,
     format_customer_message
 )
+
 
 app = FastAPI(title="Valle das Flores API", version="1.0.0")
 
