@@ -143,6 +143,7 @@ def pay_card(data: dict):
 from datetime import datetime
 from app.services.firebase import get_firestore
 
+
 @app.post("/webhook/mercadopago")
 async def mercadopago_webhook(request: Request):
     qp = dict(request.query_params)
@@ -182,17 +183,25 @@ async def mercadopago_webhook(request: Request):
 
         order_data = {
             "payment_id": str(payment_id),
-            "status": "paid",
+
+            # 💳 STATUS FINANCEIRO
+            "payment_status": "paid",
+
+            # 📦 STATUS OPERACIONAL
+            "status": "pendente",
+
             "customer_name": meta.get("customer_name"),
             "customer_phone": meta.get("customer_phone"),
             "delivery_date": meta.get("customer_date"),
             "delivery_period": meta.get("delivery_period"),
+
             "address": {
                 "street": meta.get("street"),
                 "number": meta.get("number"),
                 "neighborhood": meta.get("neighborhood"),
                 "cep": meta.get("cep"),
             },
+
             "items": items,
             "total": payment.get("transaction_amount"),
             "created_at": datetime.utcnow(),
@@ -221,8 +230,10 @@ async def mercadopago_webhook(request: Request):
         if customer_phone:
             print("⏳ Aguardando 45s para WhatsApp do cliente...")
             await asyncio.sleep(45)
+
             customer_message = format_customer_message(payment)
             send_whatsapp_message_to(customer_phone, customer_message)
+
             print("💬 WhatsApp enviado para o cliente")
 
     return {"received": True}

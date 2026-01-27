@@ -1,0 +1,40 @@
+.order-row {
+  padding: 22px 24px;
+
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr 40px;
+  align-items: center;
+  gap: 16px;
+
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+
+.order-row:last-child {
+  border-bottom: none;
+}
+
+.order-row:last-child {
+  border-bottom: none;
+}
+
+.order-row strong {
+  font-size: 15px;
+}
+
+.order-row span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--cinza-texto);
+  margin-top: 4px;
+}
+
+.more-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--cinza-texto);
+}

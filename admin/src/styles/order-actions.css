@@ -1,0 +1,28 @@
+.order-actions {
+  position: absolute;
+  right: 20px;
+  top: 60px;
+
+  background: var(--branco);
+  border-radius: 14px;
+  box-shadow: var(--sombra-card);
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 9999;
+}
+
+
+.order-actions button {
+  padding: 12px 18px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: left;
+}
+
+.order-actions button:hover {
+  background: rgba(227, 164, 186, 0.15);
+}
