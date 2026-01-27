@@ -85,7 +85,7 @@ function App() {
         </button>
       ) : (
         <a
-          href="https://wa.me/5599999999999?text=Olá,%20vim%20pelo%20site%20Valle%20das%20Flores!"
+          href="https://wa.me/559281230907?text=Olá,%20vim%20pelo%20site%20Valle%20das%20Flores!"
           className="whatsapp-float"
           target="_blank"
           rel="noopener noreferrer"

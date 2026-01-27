@@ -244,7 +244,7 @@ const posicoesAtuais = isMobile
 
 
   const handleWhatsApp = () => {
-    const phoneNumber = '5516999999999'
+    const phoneNumber = '559281230907'
 
     const message = `
 Olá! Gostaria de montar um buquê personalizado 🌸
@@ -265,7 +265,7 @@ Aguardo para finalizar 😊
 
 
   const handleFinalizarWhatsApp = async () => {
-  const phoneNumber = '5516994287026'
+  const phoneNumber = '559281230907'
 
   // GERA IMAGEM DO BUQUÊ
 

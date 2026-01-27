@@ -278,3 +278,18 @@ async def update_order_status(order_id: str, payload: dict = Body(...)):
             send_whatsapp_message_to(customer_phone, message)
 
     return {"success": True}
+
+
+@app.get("/payment/status/{payment_id}")
+def get_payment_status(payment_id: str):
+    db = get_firestore()
+    doc = db.collection("orders").document(payment_id).get()
+
+    if not doc.exists:
+        return {"status": "pending"}
+
+    data = doc.to_dict()
+    return {
+        "status": "approved",
+        "order": data
+    }

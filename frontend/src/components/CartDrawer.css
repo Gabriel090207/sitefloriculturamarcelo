@@ -993,3 +993,25 @@
     margin-top: 12px;
   }
 }
+
+
+/* ===============================
+   BOTÃO FECHAR – SUCESSO
+================================ */
+
+.success-close {
+  background: var(--rosa-suave);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+
+.success-close:hover {
+  transform: translateY(2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}

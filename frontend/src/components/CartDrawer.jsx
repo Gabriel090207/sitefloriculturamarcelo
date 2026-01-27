@@ -375,6 +375,9 @@ const [distanceKm, setDistanceKm] = useState(null)
 
 
   
+  const [waitingPayment, setWaitingPayment] = useState(false)
+const [paymentId, setPaymentId] = useState(null)
+
   const isCheckoutOpen =
   showCustomerModal ||
   showDeliveryModal ||
@@ -526,9 +529,33 @@ useEffect(() => {
 }, [customerData.cep, deliveryPeriod])
 
 
+useEffect(() => {
+  if (!waitingPayment || !paymentId) return
+
+  const interval = setInterval(async () => {
+    try {
+      const res = await api.get(`/payment/status/${paymentId}`)
+
+      if (res.data.status === 'approved') {
+        clearInterval(interval)
+
+        setWaitingPayment(false)
+        setShowSuccessModal(true)
+        clearCart()
+      }
+    } catch (err) {
+      console.error('Erro ao verificar pagamento:', err)
+    }
+  }, 4000) // a cada 4 segundos
+
+  return () => clearInterval(interval)
+}, [waitingPayment, paymentId])
+
+
+
 const handleCheckoutWhatsApp = async (customPhrase = '') => {
 
-  const phoneNumber = '5516994287026'
+  const phoneNumber = '559281230907'
 
   let message = `Olá! Gostaria de fazer um pedido.\n\n`
   message += `Pedido via site – Valle das Flores\n\n`
@@ -1433,10 +1460,7 @@ const gerarPix = async () => {
 
       if (payment && payment.status === 'approved') {
         setShowCardFormModal(null)
-        setShowSuccessModal(true)
-      
-        // ✅ LIMPA O CARRINHO
-        clearCart()
+    
       }
       else {
         alert(
@@ -1460,6 +1484,16 @@ const gerarPix = async () => {
   </div>
 )}
 
+{waitingPayment && (
+  <div className="delivery-overlay">
+    <div className="delivery-card pix-loading">
+      <i className="fa-solid fa-spinner fa-spin"></i>
+      <p>Aguardando confirmação do pagamento…</p>
+      <span>Isso pode levar alguns segundos</span>
+    </div>
+  </div>
+)}
+
 {showSuccessModal && (
   <div className="delivery-overlay">
     <div className="success-card">
@@ -1478,16 +1512,16 @@ const gerarPix = async () => {
         Em breve entraremos em contato.
       </p>
 
-     <button
-  className="success-whatsapp"
+      <button
+  className="success-close"
   onClick={() => {
     setShowSuccessModal(false)
-    handleCheckoutWhatsAppConfirmed()
+    onClose()
   }}
 >
-  <i className="fa-brands fa-whatsapp"></i>
-  Enviar detalhes no WhatsApp
+  Fechar
 </button>
+
 
     </div>
   </div>
