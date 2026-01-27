@@ -50,6 +50,8 @@ app.add_middleware(
         "https://sitefloriculturamarcelo.onrender.com",
         "http://floriculturavalledasflores.com.br",
         "https://floriculturavalledasflores.com.br",
+        "http://painel.floriculturavalledasflores.com.br",
+        "https://painel.floriculturavalledasflores.com.br"
     ],
     allow_credentials=True,
     allow_methods=["*"],
