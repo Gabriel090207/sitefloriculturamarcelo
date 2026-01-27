@@ -4,23 +4,27 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 
-from app.services.mercado_pago import (
+from dotenv import load_dotenv
+load_dotenv()
+
+
+
+from .services.mercado_pago import (
     create_pix_payment,
     create_card_payment,
     get_payment_by_id
 )
 
-# ✅ EMAIL (RESEND) — FLORICULTURA
-from app.services.email_resend import (
+from .services.email_resend import (
     send_email,
     format_payment_email
 )
 
-# ✅ WHATSAPP — SOMENTE CLIENTE
-from app.services.whatsapp_zapi import (
+from .services.whatsapp_zapi import (
     send_whatsapp_message_to,
     format_customer_message
 )
+
 
 
 app = FastAPI(title="Valle das Flores API", version="1.0.0")
