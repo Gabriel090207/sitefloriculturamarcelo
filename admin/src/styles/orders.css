@@ -39,15 +39,15 @@
 }
 
 .metric-card span {
-  font-size: 14px;
-  opacity: 0.7;
+  font-size: 16px;
+  
 }
 
 .metric-card strong {
   display: block;
   font-size: 22px;
-  margin-top: 4px;
-  color: var(--marrom-escuro);
+  margin-top: 14px;
+  color: var(--marrom-madeira);
 }
 
 /* =========================
@@ -67,6 +67,43 @@
   border: 1px solid #ddd;
   font-size: 14px;
 }
+
+.search-input {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.search-input input {
+  width: 100%;
+  padding: 12px 16px 12px 44px; /* espaço para a lupa */
+  border-radius: 14px;
+  border: 1px solid var(--marrom-madeira);
+  font-size: 14px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  font-size: 18px;
+  color: var(--marrom-escuro);
+  pointer-events: none;
+}
+
+.search-input:focus-within input {
+  border-color: var(--rosa-suave);
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.15);
+}
+
+.search-input:focus-within .search-icon {
+  color: var(--rosa-suave);
+}
+
+.search-input input:focus {
+  outline: none;
+}
+
 
 .filter-tabs {
   display: flex;
@@ -141,20 +178,6 @@
   width: fit-content;
 }
 
-.order-status.pendente {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.order-status.entregue {
-  background: #d4edda;
-  color: #155724;
-}
-
-.order-status.feito {
-  background: #e2e3ff;
-  color: #383d7c;
-}
 
 /* =========================
    MENU 3 PONTOS

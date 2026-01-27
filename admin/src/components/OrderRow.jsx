@@ -2,25 +2,18 @@ import { FiMoreVertical, FiPhone, FiEye } from "react-icons/fi";
 import StatusBadge from "./StatusBadge";
 import OrderActionsModal from "./OrderActionsModal";
 import OrderDetailsModal from "./OrderDetailsModal";
-import { useState, useRef } from "react";
-import { updateOrderStatus } from "../services/orders";
+import { useRef, useState } from "react";
 
-export default function OrderRow({ order }) {
-  const [openActions, setOpenActions] = useState(false);
+export default function OrderRow({
+  order,
+  openActionsId,
+  setOpenActionsId,
+  onChangeStatus
+}) {
   const [openDetails, setOpenDetails] = useState(false);
   const actionBtnRef = useRef(null);
 
-  const mainItemTitle = order.items?.[0]?.title || "Pedido";
-  const deliveryDate = order.delivery_date || "—";
-
- async function changeStatus(status) {
-  try {
-    await updateOrderStatus(order.id, status);
-    setOpenActions(false);
-  } catch (err) {
-    alert("Erro ao atualizar status");
-  }
-}
+  const isOpen = openActionsId === order.id;
 
   return (
     <>
@@ -30,16 +23,13 @@ export default function OrderRow({ order }) {
           <strong>
             {order.customer_name} #{order.payment_id}
           </strong>
-
           <span>
             <FiPhone /> {order.customer_phone}
           </span>
         </div>
 
-        {/* RESUMO DO PEDIDO */}
+        {/* DETALHES */}
         <div className="order-client">
-         
-
           <button
             className="order-details-btn"
             onClick={() => setOpenDetails(true)}
@@ -54,23 +44,25 @@ export default function OrderRow({ order }) {
         {/* AÇÕES */}
         <button
           ref={actionBtnRef}
-          onClick={() => setOpenActions(prev => !prev)}
+          onClick={() =>
+            setOpenActionsId(isOpen ? null : order.id)
+          }
           className="order-actions-btn"
         >
           <FiMoreVertical />
         </button>
 
-        {/* MENU DE AÇÕES */}
-        {openActions && actionBtnRef.current && (
+        {isOpen && actionBtnRef.current && (
           <OrderActionsModal
-            onChangeStatus={changeStatus}
             anchorRect={actionBtnRef.current.getBoundingClientRect()}
-            onClose={() => setOpenActions(false)}
+            onChangeStatus={status =>
+              onChangeStatus(order.id, status)
+            }
+            onClose={() => setOpenActionsId(null)}
           />
         )}
       </div>
 
-      {/* MODAL DE DETALHES (CENTRAL + OVERLAY) */}
       {openDetails && (
         <OrderDetailsModal
           order={order}

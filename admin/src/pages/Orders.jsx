@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { FiDollarSign, FiCalendar, FiTrendingUp } from "react-icons/fi";
 import MetricCard from "../components/MetricCard";
 import OrderRow from "../components/OrderRow";
-import { getOrders } from "../services/orders";
+import { getOrders, updateOrderStatus } from "../services/orders";
+import { FiSearch } from "react-icons/fi";
 
 /* =========================
    FUNÇÕES AUXILIARES
@@ -11,39 +12,19 @@ import { getOrders } from "../services/orders";
 // Converte "DD/MM/YYYY" → Date
 function parseBRDate(dateStr) {
   if (!dateStr) return null;
-
   const [day, month, year] = dateStr.split("/");
   return new Date(year, month - 1, day);
 }
 
-// Converte Firestore Timestamp → Date
+// Firestore Timestamp → Date
 function parseFirestoreDate(value) {
   if (!value) return null;
-
-  // Firestore Timestamp
-  if (value.seconds) {
-    return new Date(value.seconds * 1000);
-  }
-
+  if (value.seconds) return new Date(value.seconds * 1000);
   return new Date(value);
-}
-
-function isTodayBR(dateStr) {
-  const date = parseBRDate(dateStr);
-  if (!date) return false;
-
-  const today = new Date();
-
-  return (
-    date.getDate() === today.getDate() &&
-    date.getMonth() === today.getMonth() &&
-    date.getFullYear() === today.getFullYear()
-  );
 }
 
 function isTodayDate(date) {
   if (!date) return false;
-
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -55,12 +36,10 @@ function isTodayDate(date) {
 
 function isLast30DaysDate(date) {
   if (!date) return false;
-
   const now = new Date();
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(now.getDate() - 30);
-
-  return date >= thirtyDaysAgo && date <= now;
+  const past = new Date();
+  past.setDate(now.getDate() - 30);
+  return date >= past && date <= now;
 }
 
 /* =========================
@@ -69,17 +48,32 @@ function isLast30DaysDate(date) {
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
-  const [filter, setFilter] = useState("todas");
+  const [filter, setFilter] = useState("Todas");
   const [search, setSearch] = useState("");
+  const [openActionsId, setOpenActionsId] = useState(null);
 
   useEffect(() => {
     getOrders().then(setOrders);
   }, []);
 
   /* =========================
+     ATUALIZA STATUS (SEM RELOAD)
+  ========================= */
+  async function handleStatusChange(orderId, newStatus) {
+    await updateOrderStatus(orderId, newStatus);
+
+    setOrders(prev =>
+      prev.map(o =>
+        o.id === orderId ? { ...o, status: newStatus } : o
+      )
+    );
+
+    setOpenActionsId(null);
+  }
+
+  /* =========================
      FILTRO DA LISTA
   ========================= */
-
   const filtered = orders.filter(o => {
     const matchSearch =
       o.customer_name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -87,7 +81,7 @@ export default function Orders() {
       o.payment_id?.includes(search);
 
     const matchStatus =
-      filter === "todas" || o.status === filter;
+      filter === "Todas" || o.status === filter;
 
     return matchSearch && matchStatus;
   });
@@ -96,25 +90,17 @@ export default function Orders() {
      MÉTRICAS
   ========================= */
 
-  // ENTREGAS HOJE → delivery_date
   const entregasHoje = orders.filter(o =>
-    isTodayBR(o.delivery_date)
+    parseBRDate(o.delivery_date)?.toDateString() ===
+    new Date().toDateString()
   ).length;
 
-  // VENDAS HOJE → created_at
   const vendasHoje = orders
-    .filter(o => {
-      const createdAt = parseFirestoreDate(o.created_at);
-      return isTodayDate(createdAt);
-    })
+    .filter(o => isTodayDate(parseFirestoreDate(o.created_at)))
     .reduce((sum, o) => sum + Number(o.total || 0), 0);
 
-  // ÚLTIMOS 30 DIAS → created_at
   const vendas30Dias = orders
-    .filter(o => {
-      const createdAt = parseFirestoreDate(o.created_at);
-      return isLast30DaysDate(createdAt);
-    })
+    .filter(o => isLast30DaysDate(parseFirestoreDate(o.created_at)))
     .reduce((sum, o) => sum + Number(o.total || 0), 0);
 
   /* =========================
@@ -123,7 +109,7 @@ export default function Orders() {
 
   return (
     <div className="orders-page">
-      <h1>Pedidos</h1>
+
 
       {/* MÉTRICAS */}
       <div className="orders-metrics">
@@ -148,14 +134,12 @@ export default function Orders() {
 
       {/* FILTROS */}
       <div className="orders-filters">
-        <input
-          placeholder="Buscar pedido..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-
+      <div className="search-input">
+    <FiSearch className="search-icon" />
+    <input type="text" placeholder="Buscar pedidos..." />
+  </div>
         <div className="filter-tabs">
-          {["todas", "pendente", "entregue", "feito"].map(s => (
+          {["Todas", "Pendente", "Pronto", "entregue"].map(s => (
             <button
               key={s}
               className={filter === s ? "active" : ""}
@@ -171,7 +155,13 @@ export default function Orders() {
       <div className="orders-wrapper">
         <div className="orders-list">
           {filtered.map(order => (
-            <OrderRow key={order.id} order={order} />
+            <OrderRow
+              key={order.id}
+              order={order}
+              openActionsId={openActionsId}
+              setOpenActionsId={setOpenActionsId}
+              onChangeStatus={handleStatusChange}
+            />
           ))}
         </div>
       </div>

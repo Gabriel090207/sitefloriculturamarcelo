@@ -22,12 +22,13 @@
 }
 
 .metric-card span {
-  font-size: 14px;
-  color: var(--cinza-texto);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--marrom-escuro);
 }
 
 .metric-card strong {
-  font-size: 22px;
+  font-size: 2px;
   display: block;
   margin-top: 4px;
 }

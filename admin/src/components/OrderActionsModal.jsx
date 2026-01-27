@@ -12,15 +12,16 @@ export default function OrderActionsModal({ onChangeStatus, anchorRect }) {
         right: window.innerWidth - anchorRect.right,
       }}
     >
-      <button onClick={() => onChangeStatus("pendente")}>
-        Marcar como pendente
+      <button onClick={() => onChangeStatus("Pendente")}>
+        Marcar como Pendente
       </button>
-      <button onClick={() => onChangeStatus("entregue")}>
-        Marcar como entregue
+      <button onClick={() => onChangeStatus("Pronto")}>
+        Marcar como Pronto
       </button>
-      <button onClick={() => onChangeStatus("feito")}>
-        Marcar como feito
+      <button onClick={() => onChangeStatus("Entregue")}>
+        Marcar como Entregue
       </button>
+      
     </div>,
     document.body
   );

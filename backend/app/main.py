@@ -188,7 +188,7 @@ async def mercadopago_webhook(request: Request):
             "payment_status": "paid",
 
             # 📦 STATUS OPERACIONAL
-            "status": "pendente",
+            "status": "Pendente",
 
             "customer_name": meta.get("customer_name"),
             "customer_phone": meta.get("customer_phone"),
@@ -250,7 +250,7 @@ from app.services.whatsapp_zapi import (
 async def update_order_status(order_id: str, payload: dict = Body(...)):
     new_status = payload.get("status")
 
-    if new_status not in ["pendente", "feito", "entregue"]:
+    if new_status not in ["Pendente", "Pronto", "Entregue"]:
         raise HTTPException(status_code=400, detail="Status inválido")
 
     db = get_firestore()
@@ -269,11 +269,11 @@ async def update_order_status(order_id: str, payload: dict = Body(...)):
 
     # 🔔 DISPARO DE WHATSAPP
     if customer_phone:
-        if new_status == "feito":
+        if new_status == "Pronto":
             message = format_order_finished_message(order)
             send_whatsapp_message_to(customer_phone, message)
 
-        elif new_status == "entregue":
+        elif new_status == "Entregue":
             message = format_order_delivered_message(order)
             send_whatsapp_message_to(customer_phone, message)
 
