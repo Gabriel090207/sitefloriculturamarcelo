@@ -48,3 +48,6 @@ env/
 # VSCode (mantém apenas extensões recomendadas)
 .vscode/*
 !.vscode/extensions.json
+
+
+# Environment variables
