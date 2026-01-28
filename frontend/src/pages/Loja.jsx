@@ -84,22 +84,17 @@ useEffect(() => {
 
 
 useEffect(() => {
+  // 🚫 No mobile, não controlamos sidebar por scroll
+  if (window.innerWidth <= 768) return
+
   const sidebar = sidebarRef.current
   const produtos = produtosRef.current
 
   if (!sidebar || !produtos) return
 
   const onScroll = () => {
-
-    if (isMobile && !sidebarAberta) return
-
-    // 🔒 SE ESTIVER NO MOBILE E FECHADA MANUALMENTE, NÃO FAZ NADA
-    if (window.innerWidth <= 768 && sidebarFechadaManual) return
-
-    const sidebarRect = sidebar.getBoundingClientRect()
-    const produtosRect = produtos.getBoundingClientRect()
-
     const offsetTop = 160
+    const produtosRect = produtos.getBoundingClientRect()
     const limiteInferior =
       produtosRect.bottom - sidebar.offsetHeight - offsetTop
 
@@ -116,7 +111,7 @@ useEffect(() => {
 
   window.addEventListener('scroll', onScroll)
   return () => window.removeEventListener('scroll', onScroll)
-}, [sidebarFechadaManual])
+}, [])
 
 
 
