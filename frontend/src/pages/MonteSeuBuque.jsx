@@ -25,31 +25,30 @@ function MonteSeuBuque() {
 
 
   const toggleFlor = (florId) => {
-    setFloresSelecionadas((prev) => {
-      // limpa mensagem ao tentar novamente
-      setMensagemFlor('')
-  
-      // remover flor se já estiver selecionada
-      if (prev.includes(florId)) {
-        return prev.filter((f) => f !== florId)
-      }
-  
-      // 🚫 se quantidade for 1, só pode 1 flor
-      if (quantidade === 1 && prev.length === 1) {
-        setMensagemFlor('Para 1 flor, é possível escolher apenas uma opção.')
-        return prev
-      }
-  
-      // 🚫 se já tiver 2 flores
-      if (prev.length === 2) {
-        setMensagemFlor('Você pode escolher no máximo 2 tipos de flores.')
-        return prev
-      }
-  
-      // adiciona normalmente
-      return [...prev, florId]
-    })
-  }
+  setFloresSelecionadas((prev) => {
+    setMensagemFlor('')
+
+    // 🌸 SE QUANTIDADE FOR 1 → SUBSTITUI DIRETAMENTE
+    if (quantidade === 1) {
+      return [florId]
+    }
+
+    // remover flor se já estiver selecionada
+    if (prev.includes(florId)) {
+      return prev.filter((f) => f !== florId)
+    }
+
+    // 🚫 limite de 2 tipos de flores
+    if (prev.length === 2) {
+      setMensagemFlor('Você pode escolher no máximo 2 tipos de flores.')
+      return prev
+    }
+
+    // adiciona normalmente
+    return [...prev, florId]
+  })
+}
+
   
 useEffect(() => {
   const handleResize = () => {
@@ -106,7 +105,7 @@ useEffect(() => {
 
 const plantinhas = [
   { id: 'mosquitinho', nome: 'Mosquitinho' },
-  { id: 'samambaia', nome: 'Samambaia' },
+ 
 
 ]
 

@@ -17,7 +17,18 @@ function Loja() {
   
   
 
-  const [modo, setModo] = useState('produtos') 
+const [modo, setModo] = useState(() => {
+  return localStorage.getItem('modoLoja') || 'produtos'
+})
+
+useEffect(() => {
+  if (modo) {
+    localStorage.setItem('modoLoja', modo)
+  }
+}, [modo])
+
+
+
   const [sidebarAberta, setSidebarAberta] = useState(false)
 const [isMobile, setIsMobile] = useState(false)
 
@@ -151,7 +162,7 @@ useEffect(() => {
 
 const irParaMonteBuque = () => {
   setModo('buque')
-  setCategoriaAtiva(null)
+  // ✅ mantém a categoria salva
   setSidebarAberta(false)
 }
 
@@ -284,7 +295,14 @@ useEffect(() => {
           key={produto.id}
           style={{ animationDelay: `${index * 60}ms` }}
         >
-          <img src={produto.image} alt={produto.name} />
+          <div className="produto-imagem-wrapper">
+  <img src={produto.image} alt={produto.name} />
+
+  <span className="produto-imagem-aviso">
+    * Imagens meramente ilustrativas
+  </span>
+</div>
+
           <h3>{produto.name}</h3>
           <p>{produto.description}</p>
           <strong>{produto.price}</strong>

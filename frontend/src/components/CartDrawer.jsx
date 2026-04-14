@@ -975,12 +975,15 @@ const gerarPix = async () => {
 
       <div className="form-group">
         <label>Nome do responsável</label>
-        <input
-          type="text"
-          value={customerData.name}
-          onChange={(e) => handleCustomerChange('name', e.target.value)}
-          placeholder="Ex: Maria Silva"
-        />
+         <input
+  type="text"
+  value={customerData.name}
+  onChange={(e) => {
+    const onlyLetters = e.target.value.replace(/[^A-Za-zÀ-ÿ\s]/g, '')
+    handleCustomerChange('name', onlyLetters)
+  }}
+  placeholder="Ex: Maria Silva"
+/>
       </div>
 
       <div className="form-group">

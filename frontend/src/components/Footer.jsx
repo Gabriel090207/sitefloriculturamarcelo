@@ -67,10 +67,8 @@ function Footer() {
       <a href="https://www.instagram.com/floriculturavalledasflores/" aria-label="Instagram">
         <i className="fa-brands fa-instagram"></i>
       </a>
-      <a href="#" aria-label="Facebook">
-        <i className="fa-brands fa-facebook-f"></i>
-      </a>
-      <a href="#" aria-label="WhatsApp">
+      
+      <a href="https://wa.me/559281230907?text=Olá,%20vim%20pelo%20site%20Valle%20das%20Flores!" aria-label="WhatsApp">
         <i className="fa-brands fa-whatsapp"></i>
       </a>
     </div>

@@ -136,7 +136,15 @@ export default function Orders() {
             type="text"
             placeholder="Buscar pedidos..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => {
+  const value = e.target.value;
+
+  // permite letras, espaços e acentos
+  const sanitized = value.replace(/[^a-zA-ZÀ-ÿ\s0-9]/g, "");
+
+  setSearch(sanitized);
+}}
+
           />
         </div>
 

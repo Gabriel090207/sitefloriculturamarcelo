@@ -114,6 +114,30 @@
   margin-bottom: 16px;
 }
 
+/* WRAPPER DA IMAGEM DO PRODUTO */
+.produto-imagem-wrapper {
+  position: relative;
+}
+
+/* AVISO: IMAGENS MERAMENTE ILUSTRATIVAS */
+.produto-imagem-aviso {
+  position: absolute;
+  bottom: 5px;
+  right: -15px;
+
+  font-size: 6px;
+  line-height: 1.2;
+  color: #fff;
+
+  background: rgba(0, 0, 0, 0.55);
+  padding: 3px 6px;
+  border-radius: 4px;
+
+  pointer-events: none;
+  user-select: none;
+}
+
+
 .produto-card h3 {
   font-size: 20px;
   margin-bottom: 8px;
