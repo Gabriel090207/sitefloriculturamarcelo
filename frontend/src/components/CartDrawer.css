@@ -1029,3 +1029,28 @@
   transform: translateY(2px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
+
+
+
+.card-number-input{
+    position: relative;
+}
+
+.card-number-input input{
+    padding-right: 70px;
+}
+
+
+.card-brand-logo{
+    position:absolute;
+    right:16px;
+    top:50%;
+    transform:translateY(-50%);
+
+    width:42px;
+    height:auto;
+
+    object-fit:contain;
+
+    pointer-events:none;
+}

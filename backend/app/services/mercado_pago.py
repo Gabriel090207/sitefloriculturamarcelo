@@ -47,12 +47,19 @@ def create_card_payment(
     installments: int,
     email: str,
     cpf: str,
+    payment_method_id: str,
+    issuer_id: int | None,
 ):
     payment_data = {
         "transaction_amount": round(amount, 2),
         "token": token,
         "description": "Pedido Valle das Flores",
         "installments": installments,
+
+        "payment_method_id": payment_method_id,
+
+        "issuer_id": issuer_id,
+
         "payer": {
             "email": email,
             "identification": {

@@ -252,8 +252,6 @@ const mp = new window.MercadoPago(
 
 
 
-
-
 function CartDrawer({ open, onClose }) {
 
 
@@ -315,6 +313,12 @@ const [cardData, setCardData] = useState({
   installments: '1'
 })
 
+
+const [installments, setInstallments] = useState([])
+
+
+
+const [cardBrand, setCardBrand] = useState('')
 
 const [showCustomerModal, setShowCustomerModal] = useState(false)
 
@@ -1162,15 +1166,71 @@ const gerarPix = async () => {
 
       <div className="form-group">
         <label>Número do cartão</label>
+
+         <div className="card-number-input">
         <input
           type="text"
           inputMode="numeric"
           placeholder="0000 0000 0000 0000"
           value={cardData.number}
-          onChange={(e) =>
-            setCardData({ ...cardData, number: formatCardNumber(e.target.value) })
-          }
+          onChange={async (e) => {
+  const formatted = formatCardNumber(e.target.value)
+
+  setCardData({
+    ...cardData,
+    number: formatted
+  })
+
+  const cardNumber = formatted.replace(/\s/g, '')
+
+  if (cardNumber.length >= 6) {
+    try {
+      const response = await mp.getPaymentMethods({
+        bin: cardNumber.substring(0, 6)
+      })
+
+     if (response.results.length > 0) {
+  const paymentMethod = response.results[0]
+
+  setCardBrand(paymentMethod.name)
+
+  const installmentsResponse = await mp.getInstallments({
+    amount: String(finalTotal),
+    bin: cardNumber.substring(0, 6)
+  })
+
+  if (
+    installmentsResponse.length > 0 &&
+    installmentsResponse[0].payer_costs
+  ) {
+    setInstallments(installmentsResponse[0].payer_costs)
+  } else {
+    setInstallments([])
+  }
+} else {
+  setCardBrand('')
+  setInstallments([])
+}
+    } catch (err) {
+  console.error(err)
+  setCardBrand('')
+  setInstallments([])
+}
+  } else {
+    setCardBrand('')
+  }
+}}
         />
+
+        {cardBrand && (
+  <img
+    className="card-brand-logo"
+    src={`/card-brands/${cardBrand.toLowerCase()}.svg`}
+    alt={cardBrand}
+  />
+)}
+
+       </div>
       </div>
 
       <div className="form-group">
@@ -1217,26 +1277,45 @@ const gerarPix = async () => {
   <div className="form-group">
     <label>Parcelamento</label>
 
-    <select
-      value={cardData.installments}
-      onChange={(e) =>
-        setCardData({
-          ...cardData,
-          installments: e.target.value
-        })
-      }
-    >
-      <option value="1">1x</option>
+   <select
+  value={cardData.installments}
+  onChange={(e) =>
+    setCardData({
+      ...cardData,
+      installments: e.target.value
+    })
+  }
+>
 
-{[...Array(11)].map((_, index) => (
-  <option
-    key={index + 2}
-    value={index + 2}
-  >
-    {index + 2}x com juros
-  </option>
-))}
-    </select>
+  {installments.length === 0 ? (
+
+    <option value="1">
+      À vista
+    </option>
+
+  ) : (
+
+    installments.map((item) => (
+      <option
+        key={item.installments}
+        value={item.installments}
+      >
+       {item.installments === 1
+  ? `À vista — ${item.total_amount.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    })}`
+  : `${item.installments}x de ${item.installment_amount.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    })}`
+}
+      </option>
+    ))
+
+  )}
+
+</select>
   </div>
 )}
 
@@ -1277,14 +1356,28 @@ const gerarPix = async () => {
 
       const token = tokenResponse.id
 
+      const paymentMethods = await mp.getPaymentMethods({
+  bin: tokenResponse.first_six_digits
+})
+
+const paymentMethod = paymentMethods.results[0]
+
       // 4️⃣ enviar token pro backend
       const response = await api.post('/pay/card', {
-        token,
-        total: finalTotal,
-        installments: cardData.installments,
-        email: 'cliente@valledasflores.com',
-        cpf: customerData.cpf.replace(/\D/g, ''),
-      })
+  token,
+
+  total: finalTotal,
+
+  installments: Number(cardData.installments),
+
+  email: 'cliente@valledasflores.com',
+
+  cpf: customerData.cpf.replace(/\D/g, ''),
+
+  payment_method_id: paymentMethod.id,
+
+  issuer_id: paymentMethod.issuer?.id
+})
 
       // 5️⃣ tratar resposta
       const payment = response.data.response
@@ -1304,9 +1397,16 @@ const gerarPix = async () => {
         )
       }
     } catch (err) {
-      console.error(err)
-      alert('Erro ao processar pagamento')
-    }
+  console.error('ERRO COMPLETO:', err)
+
+  console.log('Resposta:', err.response)
+
+  console.log('Dados:', err.response?.data)
+
+  console.log('Backend:', err.response?.data?.response)
+
+  alert('Erro ao processar pagamento')
+}
   }}
 >
 

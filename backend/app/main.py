@@ -143,10 +143,11 @@ def pay_card(data: dict):
             installments=int(data.get("installments", 1)),
             email=data["email"],
             cpf=data["cpf"],
+            payment_method_id=data.get("payment_method_id"),
+            issuer_id=data.get("issuer_id"),
         )
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
 
 # =====================================================
 # WEBHOOK MERCADO PAGO
