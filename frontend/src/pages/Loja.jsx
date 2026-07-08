@@ -12,7 +12,7 @@ import MonteSeuBuque from './MonteSeuBuque'
 
 
 
-function Loja() {
+function Loja({ cartOpen }) {
 
   
   
@@ -47,10 +47,10 @@ const [isMobile, setIsMobile] = useState(false)
   }, [])
   
   useEffect(() => {
-    if (isMobile) {
-      setSidebarAberta(true)
-    }
-  }, [isMobile])
+  if (cartOpen) {
+    setSidebarAberta(false)
+  }
+}, [cartOpen])
   
 
 // 'produtos' | 'buque'
@@ -175,12 +175,19 @@ useEffect(() => {
 
 
 
-
-  return (
-    <section className="loja">
-
-
-
+return (
+   <section
+  className={`loja ${
+    (
+      window.innerWidth >= 1800 && window.innerHeight <= 1200
+    ) ||
+    (
+      window.innerHeight >= 1800
+    )
+      ? 'totem-mode'
+      : ''
+  }`}
+>
       
 
       <div className="loja-layout">
@@ -254,12 +261,6 @@ useEffect(() => {
 
   
 
-  <li
-     className={`monte-buque-item ${modo === 'buque' ? 'active' : ''}`}
-    onClick={irParaMonteBuque}
-  >
-    Monte seu buquê →
-  </li>
 </ul>
 
 
@@ -267,7 +268,7 @@ useEffect(() => {
 
         </aside>
 
-        {!sidebarAberta && (
+       {!sidebarAberta && !cartOpen && (
   <button
     className="mobile-sidebar-toggle"
     onClick={() => {

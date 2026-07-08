@@ -10,7 +10,7 @@ const coroasData = [
     title: 'Coroa de Rosas',
     description:
       'Uma homenagem respeitosa com rosas selecionadas para expressar carinho.',
-    price: 'R$ 400,00',
+    price: 'R$ 450,00',
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ const coroasData = [
     title: 'Coroa de Rosas',
     description:
       'Uma homenagem respeitosa com rosas selecionadas para expressar carinho.',
-    price: 'R$ 400,00',
+    price: 'R$ 450,00',
   },
   {
     id: 3,
@@ -26,7 +26,7 @@ const coroasData = [
     title: 'Coroa de Rosas',
     description:
       'Uma homenagem respeitosa com rosas selecionadas para expressar carinho.',
-    price: 'R$ 400,00',
+    price: 'R$ 450,00',
   },
   {
     id: 4,
@@ -34,7 +34,7 @@ const coroasData = [
     title: 'Coroa de Rosas',
     description:
       'Uma homenagem respeitosa com rosas selecionadas para expressar carinho.',
-    price: 'R$ 400,00',
+    price: 'R$ 450,00',
   },
   {
     id: 5,
@@ -42,7 +42,7 @@ const coroasData = [
     title: 'Coroa de Rosas',
     description:
       'Uma homenagem respeitosa com rosas selecionadas para expressar carinho.',
-    price: 'R$ 400,00',
+    price: 'R$ 450,00',
   },
   {
     id: 6,
@@ -50,7 +50,7 @@ const coroasData = [
     title: 'Coroa de Rosas',
     description:
       'Uma homenagem respeitosa com rosas selecionadas para expressar carinho.',
-    price: 'R$ 400,00',
+    price: 'R$ 450,00',
   },
   {
     id: 7,
@@ -58,7 +58,7 @@ const coroasData = [
     title: 'Coroa de Rosas',
     description:
       'Uma homenagem respeitosa com rosas selecionadas para expressar carinho.',
-    price: 'R$ 400,00',
+    price: 'R$ 450,00',
   },
   {
     id: 8,
@@ -66,7 +66,7 @@ const coroasData = [
     title: 'Coroa de Rosas',
     description:
       'Uma homenagem respeitosa com rosas selecionadas para expressar carinho.',
-    price: 'R$ 400,00',
+    price: 'R$ 450,00',
   },
   {
     id: 9,
@@ -74,7 +74,7 @@ const coroasData = [
     title: 'Coroa de Rosas',
     description:
       'Uma homenagem respeitosa com rosas selecionadas para expressar carinho.',
-    price: 'R$ 400,00',
+    price: 'R$ 450,00',
   },
   {
     id: 10,
@@ -82,7 +82,7 @@ const coroasData = [
     title: 'Coroa de Rosas',
     description:
       'Uma homenagem respeitosa com rosas selecionadas para expressar carinho.',
-    price: 'R$ 400,00',
+    price: 'R$ 450,00',
   },
   {
     id: 11,
@@ -90,7 +90,7 @@ const coroasData = [
     title: 'Coroa de Flores do Campo',
     description:
       'Uma homenagem respeitosa com flores do campo selecionadas para expressar carinho.',
-    price: 'R$ 370,00',
+    price: 'R$ 400,00',
   },
   {
     id: 12,
@@ -98,7 +98,7 @@ const coroasData = [
     title: 'Coroa de Flores do Campo',
     description:
       'Uma homenagem respeitosa com flores do campo selecionadas para expressar carinho.',
-    price: 'R$ 370,00',
+    price: 'R$ 400,00',
   },
   {
     id: 13,
@@ -106,7 +106,7 @@ const coroasData = [
     title: 'Coroa de Flores do Campo',
     description:
       'Uma homenagem respeitosa com flores do campo selecionadas para expressar carinho.',
-    price: 'R$ 370,00',
+    price: 'R$ 400,00',
   },
   {
     id: 14,
@@ -114,7 +114,7 @@ const coroasData = [
     title: 'Coroa de Flores do Campo',
     description:
       'Uma homenagem respeitosa com flores do campo selecionadas para expressar carinho.',
-    price: 'R$ 370,00',
+    price: 'R$ 400,00',
   },
   {
     id: 15,
@@ -122,7 +122,7 @@ const coroasData = [
     title: 'Coroa de Flores do Campo',
     description:
       'Uma homenagem respeitosa com flores do campo selecionadas para expressar carinho.',
-    price: 'R$ 370,00',
+    price: 'R$ 400,00',
   },
   {
     id: 16,
@@ -130,7 +130,7 @@ const coroasData = [
     title: 'Coroa de Flores do Campo',
     description:
       'Uma homenagem respeitosa com flores do campo selecionadas para expressar carinho.',
-    price: 'R$ 370,00',
+    price: 'R$ 400,00',
   },
   {
     id: 17,
@@ -138,7 +138,7 @@ const coroasData = [
     title: 'Coroa de Flores do Campo',
     description:
       'Uma homenagem respeitosa com flores do campo selecionadas para expressar carinho.',
-    price: 'R$ 370,00',
+    price: 'R$ 400,00',
   },
 ]
 

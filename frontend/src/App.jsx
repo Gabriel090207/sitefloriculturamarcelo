@@ -23,7 +23,7 @@ import ScrollToTop from './components/ScrollToTop'
 
 
 
-
+import Totem from './totem/Totem'
 
 
 function App() {
@@ -38,6 +38,7 @@ function App() {
   const previousPath = useRef(routerLocation.pathname)
 
   const isLoja = routerLocation.pathname === '/loja'
+const isTotem = routerLocation.pathname === '/totem'
 
   useEffect(() => {
     const fromLoja = previousPath.current === '/loja'
@@ -56,12 +57,19 @@ function App() {
     <>
 
      <ScrollToTop />
-      <Header />
+      {!isTotem && <Header />}
       <CartToast />
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/loja" element={<Loja />} />
+        <Route
+  path="/loja"
+  element={
+    <Loja
+      cartOpen={cartOpen}
+    />
+  }
+/>
         <Route path="/sobre" element={<Sobre />} />
         <Route path="/contato" element={<Contato />} />
         <Route path="/pagamento" element={<Pagamento />} />
@@ -69,10 +77,14 @@ function App() {
         <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
         <Route path="/troca-e-devolucao" element={<PoliticaTrocaDevolucao />} />
 
+
+        <Route path="/totem" element={<Totem />} />
+
       </Routes>
 
       {/* BOTÃO FLUTUANTE */}
-      {isLoja ? (
+      {!isTotem && (
+  isLoja ? (
         <button
           className="cart-float"
           onClick={() => setCartOpen(true)}
@@ -92,14 +104,15 @@ function App() {
         >
           <i className="fab fa-whatsapp"></i>
         </a>
-      )}
+      )
+)}
 
       <CartDrawer
         open={cartOpen}
         onClose={() => setCartOpen(false)}
       />
 
-      <Footer />
+      {!isTotem && <Footer />}
     </>
   )
 }

@@ -242,6 +242,7 @@ const formatCVV = (value) => {
 }
 
 
+
 const mp = new window.MercadoPago(
   import.meta.env.VITE_MP_PUBLIC_KEY,
   { locale: 'pt-BR' }
@@ -282,15 +283,10 @@ const hasCoroa = cartItems.some(
 const [customerData, setCustomerData] = useState({
   name: '',
   phone: '',
-  cpf: '',          // 👈 ADICIONADO
-  date: '',
-  street: '',
-  neighborhood: '',
-  number: '',
-  cep: '',
-  tribute: ''
+  cpf: '',
+  tribute: '',
+  hall: ''
 })
-
 
 const handleCustomerChange = (field, value) => {
   setCustomerData(prev => ({
@@ -300,17 +296,13 @@ const handleCustomerChange = (field, value) => {
 }
 
 const resetCustomerForm = () => {
-  setCustomerData({
-    name: '',
-    phone: '',
-    cpf: '',        // 👈 ADICIONADO
-    date: '',
-    street: '',
-    neighborhood: '',
-    number: '',
-    cep: '',
-    tribute: ''
-  })
+ setCustomerData({
+  name: '',
+  phone: '',
+  cpf: '',
+  tribute: '',
+  hall: ''
+})
 }
 
 
@@ -648,33 +640,28 @@ const gerarPix = async () => {
   try {
     setPixLoading(true)
 
-    const payload = {
-      items: cartItems.map(item => ({
-        id: String(item.id),
-        name: String(item.name),
-        quantity: Number(item.quantity),
-        price: parsePrice(item.price)
-      })),
-    
-      delivery_period: deliveryPeriod,
-      payment_method: 'pix',
-      total: finalTotal,
-    
-      // 🔽 DADOS DO CLIENTE (OBRIGATÓRIOS)
-      customer_name: customerData.name,
-      customer_phone: customerData.phone,
-      customer_date: customerData.date,
-      customer_street: customerData.street,
-      customer_number: customerData.number,
-      customer_neighborhood: customerData.neighborhood,
-      customer_cep: customerData.cep,
-      tribute: customerData.tribute || ''
-    }
+     const payload = {
+  items: cartItems.map(item => ({
+    id: String(item.id),
+    name: String(item.name),
+    quantity: Number(item.quantity),
+    price: parsePrice(item.price)
+  })),
+
+  payment_method: 'pix',
+  total: finalTotal,
+
+  customer_name: customerData.name,
+  customer_phone: customerData.phone,
+  cpf: customerData.cpf,
+  hall: customerData.hall,
+  tribute: customerData.tribute || ''
+}
     
 
     console.log('Payload checkout:', payload)
 
-    const response = await api.post('/checkout', payload)
+    const response = await api.post('/checkout-totem', payload)
 
     setPixData(response.data.payment)
  } catch (err) {
@@ -1015,84 +1002,15 @@ const gerarPix = async () => {
 </div>
 
 
-      <div className="form-group">
-        <label>Data que precisa estar pronto</label>
-        <input
-  type="text"
-  inputMode="numeric"
-  placeholder="DD/MM/AAAA"
-  value={customerData.date}
-  onChange={(e) => handleCustomerChange('date', formatDate(e.target.value))}
-  maxLength={10}
-/>
+      
 
-      </div>
-
-      <div className="form-group">
-  <label>Rua</label>
-  <input
-    type="text"
-    value={customerData.street}
-    onChange={(e) => handleCustomerChange('street', e.target.value)}
-    placeholder="Ex: Rua Major Gabriel"
-  />
-</div>
-
-<div className="form-group">
-  <label>Bairro</label>
-  <input
-    type="text"
-    value={customerData.neighborhood}
-    onChange={(e) => handleCustomerChange('neighborhood', e.target.value)}
-    placeholder="Ex: Centro"
-  />
-</div>
-
-<div className="form-row">
-  <div className="form-group">
-    <label>Número</label>
-    <input
-      type="text"
-      value={customerData.number}
-      onChange={(e) => handleCustomerChange('number', e.target.value)}
-      placeholder="Ex: 1833"
-    />
-  </div>
-
-  <div className="form-group">
-    <label>CEP</label>
-    <input
-  type="text"
-  inputMode="numeric"
-  value={customerData.cep}
-  onChange={(e) =>
-    handleCustomerChange('cep', formatCEP(e.target.value))
-  }
-  placeholder="00000-000"
-  maxLength={9}
-/>
-
-{isFetchingCEP && (
-  <small style={{ color: '#999' }}>
-    Buscando endereço...
-  </small>
-)}
-
-{cepInvalid && !isFetchingCEP && (
-  <small style={{ color: '#c0392b' }}>
-    CEP inválido
-  </small>
-)}
-
-
-  </div>
-</div>
+     
 
 
       {/* FRASE SOMENTE SE TIVER COROA */}
       {hasCoroa && (
         <div className="form-group">
-          <label>Mensagem para a coroa</label>
+          <label>Frase para a faixa de sua homenagem</label>
           <textarea
             rows="3"
             value={customerData.tribute}
@@ -1102,56 +1020,27 @@ const gerarPix = async () => {
         </div>
       )}
 
-<button
-  className="delivery-confirm"
-  disabled={
-    !customerData.name ||
-    !customerData.phone ||
-    !customerData.cpf ||        // 👈 ADICIONADO
-    !customerData.date ||
-    !customerData.street ||
-    !customerData.neighborhood ||
-    !customerData.number ||
-    !customerData.cep
-  }
 
 
-        onClick={() => {
-          setShowCustomerModal(false)
-          setShowDeliveryModal(true)
-        }}
-      >
-        Continuar
-      </button>
-    </div>
-  </div>
-)}
+     <div className="form-group">
+  <label>Salão</label>
+
+  <select
+    value={customerData.hall}
+    onChange={(e) => handleCustomerChange('hall', e.target.value)}
+  >
+    <option value="">Selecione o salão</option>
+    <option value="1">Salão 1</option>
+    <option value="2">Salão 2</option>
+    <option value="3">Salão 3</option>
+    <option value="4">Salão 4</option>
+    <option value="5">Salão 5</option>
+    <option value="6">Salão 6</option>
+  </select>
+</div>
 
 
-
-{showDeliveryModal && (
-  <div
-  className="delivery-overlay"
-  onClick={() => setShowDeliveryModal(false)}
->
-
-
-  <div
-  className="delivery-card"
-  onClick={(e) => e.stopPropagation()}
->
-
-      <button
-        className="modal-close"
-        onClick={() => setShowDeliveryModal(false)}
-        aria-label="Fechar"
-      >
-        <i className="fa-solid fa-xmark"></i>
-      </button>
-
-      <h4>Em qual período vamos entregar?</h4>
-
-      <div className="delivery-warning">
+ <div className="delivery-warning">
   <strong>AVISO IMPORTANTE:</strong>
   <p>
     Certifique-se de que a pessoa estará no local durante o período de entrega
@@ -1160,73 +1049,29 @@ const gerarPix = async () => {
   </p>
 </div>
 
+<button
+  className="delivery-confirm"
+  disabled={
+  !customerData.name ||
+  !customerData.phone ||
+  !customerData.cpf ||
+  !customerData.hall
+}
 
 
-      {[
-  { id: 'retiradanaloja', label: 'Retirada na Loja', time: '08h às 19h', price: 0 },
-  { id: 'manha', label: 'Manhã', time: '08h às 13h', price: 0 },
-  { id: 'tarde', label: 'Tarde', time: '13h às 19h', price: 0 },
-  { id: 'noite', label: 'Noite', time: 'A combinar por WhatsApp', price: 0 }
-].map(option => (
-
-        <div
-          key={option.id}
-          className={`delivery-option ${
-            deliveryPeriod === option.id ? 'selected' : ''
-          }`}
-         onClick={() => {
-  setDeliveryPeriod(option.id)
-}}
-
-
-
-        >
-          <div className="delivery-left">
-            <span className="delivery-icon">
-              <i
-                className={`fa-solid ${
-                  option.id === 'manha'
-                    ? 'fa-sun'
-                    : option.id === 'tarde'
-                    ? 'fa-cloud-sun'
-                    : option.id === 'noite'
-                    ? 'fa-moon'
-                    : 'fa-briefcase'
-                }`}
-              />
-            </span>
-
-            <div className="delivery-text">
-              <strong>{option.label}</strong>
-              <span>{option.time}</span>
-            </div>
-          </div>
-
-          <div className="delivery-price">
-  {option.id === 'retiradanaloja'
-    ? 'Grátis'
-    : deliveryFee > 0
-      ? `R$ ${deliveryFee.toFixed(2).replace('.', ',')}`
-      : '—'}
-</div>
-
-        </div>
-      ))}
-
-      <button
-        className="delivery-confirm"
-        disabled={!deliveryPeriod}
         onClick={() => {
-  setShowDeliveryModal(false)
+  setShowCustomerModal(false)
   setShowPaymentChoiceModal(true)
 }}
-
       >
         Continuar
       </button>
     </div>
   </div>
 )}
+
+
+
 
 {showPaymentChoiceModal && (
   <div className="delivery-overlay">

@@ -1,0 +1,67 @@
+.totem-header {
+  height: 90px;
+  background: var(--marrom-madeira);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 40px;
+}
+
+.totem-header-logo {
+  display: flex;
+  align-items: center;
+}
+
+.totem-logo {
+    margin-top: 30px;
+  height: 120px;
+  width: auto;
+  
+}
+
+.totem-header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.totem-whatsapp {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  text-decoration: none;
+
+  background: var(--rosa-suave);
+  color: #fff;
+
+  padding: 12px 28px;
+
+  border-radius: 999px;
+
+  font-weight: 600;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.totem-whatsapp:hover {
+  transform: translateY(2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.totem-whatsapp i {
+  font-size: 30px;
+}
+
+.totem-whatsapp-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.totem-whatsapp-text span {
+  font-size: 14px;
+}
+

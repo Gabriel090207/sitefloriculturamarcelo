@@ -481,3 +481,72 @@
   margin-right: 40px;
 }
 }
+
+/* ===================================== */
+/* MODO TOTEM */
+/* ===================================== */
+
+.totem-mode {
+  padding: 40px 24px;
+}
+
+.totem-mode .loja-layout {
+  grid-template-columns: 180px 1fr;
+  gap: 20px;
+}
+
+.totem-mode .loja-sidebar {
+  padding: 18px;
+  border-radius: 14px;
+}
+
+.totem-mode .loja-sidebar li {
+  font-size: 13px;
+  padding: 6px 8px;
+}
+
+.totem-mode .produtos-grid {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.totem-mode .produto-card {
+  padding: 16px;
+  border-radius: 14px;
+}
+
+.totem-mode .produto-card img {
+  max-height: 240px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.totem-mode .produto-card h3 {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.totem-mode .produto-card p {
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.totem-mode .produto-card strong {
+  font-size: 16px;
+  margin-bottom: 14px;
+}
+
+.totem-mode .produto-actions {
+  gap: 6px;
+}
+
+.totem-mode .btn-comprar,
+.totem-mode .btn-detalhes {
+  font-size: 12px;
+  padding: 8px 12px;
+}
+
+.totem-mode .logo-nome {
+  font-size: 42px;
+  margin-top: 20px;
+}

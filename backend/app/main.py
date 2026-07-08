@@ -90,7 +90,16 @@ class CheckoutRequest(BaseModel):
     customer_cep: str
     tribute: Optional[str] = None
 
+class TotemCheckoutRequest(BaseModel):
+    items: List[Item]
+    payment_method: str
+    total: float
 
+    customer_name: str
+    customer_phone: str
+    cpf: str
+    hall: str
+    tribute: Optional[str] = None
 # =====================================================
 # CHECKOUT PIX
 # =====================================================
@@ -295,3 +304,28 @@ def get_payment_status(payment_id: str):
         "status": "approved",
         "order": data
     }
+
+
+
+@app.post("/checkout-totem")
+def checkout_totem(data: TotemCheckoutRequest):
+    if data.payment_method == "pix":
+        pix = create_pix_payment(
+            amount=data.total,
+            description="Pedido Totem Valle das Flores",
+            items=data.items,
+            metadata={
+                "customer_name": data.customer_name,
+                "customer_phone": data.customer_phone,
+                "cpf": data.cpf,
+                "hall": data.hall,
+                "tribute": data.tribute or ""
+            }
+        )
+
+        return {
+            "payment_method": "pix",
+            "payment": pix
+        }
+
+    return {"message": "Método de pagamento não implementado"}
