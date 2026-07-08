@@ -17,3 +17,6 @@ __pycache__/
 
 # Build
 dist/
+
+
+frontend/dist.zip
