@@ -255,6 +255,13 @@ const mp = new window.MercadoPago(
 function CartDrawer({ open, onClose }) {
 
 
+const whatsappPhone = '559281230907'
+const whatsappDisplayPhone = '(92) 98123-0907'
+const whatsappUrl = `https://wa.me/${whatsappPhone}`
+const whatsappQrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(whatsappUrl)}`
+const serviceHours = 'Atendimento 24 Horas'
+
+
 
 
 const [confirmedOrder, setConfirmedOrder] = useState(null)
@@ -319,6 +326,11 @@ const [installments, setInstallments] = useState([])
 
 
 const [cardBrand, setCardBrand] = useState('')
+const [cardProcessing, setCardProcessing] = useState(false)
+const [cardPaymentId, setCardPaymentId] = useState(null)
+const [cardPaymentStatus, setCardPaymentStatus] = useState(null)
+const cardProcessingRef = useRef(false)
+const cardOrderSnapshotRef = useRef(null)
 
 const [showCustomerModal, setShowCustomerModal] = useState(false)
 
@@ -515,6 +527,78 @@ useEffect(() => {
     requestController?.abort()
   }
 }, [pixPaymentId])
+
+
+useEffect(() => {
+  if (!cardPaymentId) return
+
+  let cancelled = false
+  let timeoutId = null
+  let requestController = null
+
+  const checkCardPaymentStatus = async () => {
+    if (cancelled) return
+
+    requestController = new AbortController()
+
+    try {
+      const response = await api.get(`/payment/status/${cardPaymentId}`, {
+        signal: requestController.signal
+      })
+
+      if (cancelled) return
+
+      const paymentStatus = response.data?.payment_status
+      const orderReady = response.data?.order_ready === true
+
+      if (typeof paymentStatus === 'string') {
+        setCardPaymentStatus(paymentStatus)
+      }
+
+      if (paymentStatus === 'approved' && orderReady) {
+        setConfirmedOrder(cardOrderSnapshotRef.current)
+        setCardPaymentId(null)
+        setCardPaymentStatus(null)
+        cardProcessingRef.current = false
+        setCardProcessing(false)
+        setShowCardFormModal(null)
+        setShowSuccessModal(true)
+        return
+      }
+
+      if (paymentStatus === 'rejected' || paymentStatus === 'cancelled') {
+        setCardPaymentId(null)
+        setCardPaymentStatus(null)
+        cardProcessingRef.current = false
+        setCardProcessing(false)
+        alert(
+          paymentStatus === 'rejected'
+            ? 'Pagamento recusado pelo emissor'
+            : 'Pagamento cancelado'
+        )
+        return
+      }
+    } catch {
+      if (cancelled) return
+    }
+
+    if (!cancelled) {
+      timeoutId = window.setTimeout(checkCardPaymentStatus, 5000)
+    }
+  }
+
+  checkCardPaymentStatus()
+
+  return () => {
+    cancelled = true
+
+    if (timeoutId) {
+      window.clearTimeout(timeoutId)
+    }
+
+    requestController?.abort()
+  }
+}, [cardPaymentId])
 
 
 const handleCheckoutWhatsApp = async (customPhrase = '') => {
@@ -956,7 +1040,7 @@ const gerarPix = async () => {
       ) : pixPaymentStatus === 'approved' ? (
         <div className="pix-loading">
           <i className="fa-solid fa-spinner fa-spin"></i>
-          <p>Pagamento reconhecido. Processando confirmação...</p>
+          <p>Pagamento reconhecido. Finalizando seu pedido...</p>
           <span>Aguarde enquanto finalizamos o pedido.</span>
         </div>
       ) : (
@@ -1176,7 +1260,14 @@ const gerarPix = async () => {
     <div className="delivery-card">
       <button
         className="modal-close"
-        onClick={() => setShowCardFormModal(null)}
+        onClick={() => {
+          setCardPaymentId(null)
+          setCardPaymentStatus(null)
+          cardProcessingRef.current = false
+          setCardProcessing(false)
+          setShowCardFormModal(null)
+        }}
+        disabled={cardProcessing && !cardPaymentId}
         aria-label="Fechar"
       >
         <i className="fa-solid fa-xmark"></i>
@@ -1345,12 +1436,21 @@ const gerarPix = async () => {
 
 <button
   className="delivery-confirm"
+  disabled={cardProcessing}
   onClick={async () => {
+    if (cardProcessingRef.current) return
+
+    cardProcessingRef.current = true
+    setCardProcessing(true)
+    setCardPaymentStatus(null)
+
     try {
       // 1️⃣ limpar e separar validade
       const expiry = cardData.expiry.replace(/\s/g, '')
 
       if (!expiry || !expiry.includes('/')) {
+        cardProcessingRef.current = false
+        setCardProcessing(false)
         alert('Validade do cartão inválida')
         return
       }
@@ -1358,6 +1458,8 @@ const gerarPix = async () => {
       const [month, year] = expiry.split('/')
 
       if (!month || !year || month.length !== 2 || year.length !== 2) {
+        cardProcessingRef.current = false
+        setCardProcessing(false)
         alert('Validade do cartão inválida')
         return
       }
@@ -1376,6 +1478,8 @@ const gerarPix = async () => {
         console.error('[CARD_DIAGNOSTIC] Falha ao criar token', {
           token_created: false
         })
+        cardProcessingRef.current = false
+        setCardProcessing(false)
         alert('Dados do cartão inválidos')
         return
       }
@@ -1425,21 +1529,49 @@ const paymentMethod = paymentMethods.results[0]
 
       // 5️⃣ tratar resposta
       const payment = response.data.response
+      const paymentId = payment?.id
+      const paymentStatus = payment?.status
+      const paymentStatusDetail = payment?.status_detail
 
-      if (payment && payment.status === 'approved') {
-        setShowCardFormModal(null)
-        setShowSuccessModal(true)
-      
-        // ✅ LIMPA O CARRINHO
-        clearCart()
+      if (typeof paymentStatus === 'string') {
+        setCardPaymentStatus(paymentStatus)
       }
-      else {
+
+      if (paymentStatus === 'rejected' || paymentStatus === 'cancelled') {
+        cardProcessingRef.current = false
+        setCardProcessing(false)
+        setCardPaymentStatus(null)
         alert(
-          payment?.status_detail
-            ? `Pagamento recusado: ${payment.status_detail}`
-            : 'Pagamento recusado pelo emissor'
+          paymentStatusDetail
+            ? `Pagamento recusado: ${paymentStatusDetail}`
+            : paymentStatus === 'cancelled'
+              ? 'Pagamento cancelado'
+              : 'Pagamento recusado pelo emissor'
         )
+        return
       }
+
+      if (!paymentId || payment?.error) {
+        cardProcessingRef.current = false
+        setCardProcessing(false)
+        setCardPaymentStatus(null)
+        alert(
+          paymentStatusDetail
+            ? `Pagamento recusado: ${paymentStatusDetail}`
+            : payment?.message || 'Erro ao processar pagamento'
+        )
+        return
+      }
+
+      cardOrderSnapshotRef.current = {
+        cartItems,
+        customerData,
+        deliveryPeriod,
+        deliveryFee,
+        finalTotal
+      }
+
+      setCardPaymentId(String(paymentId))
     } catch (err) {
   const backendData = err.response?.data
   const backendResponse = backendData?.response
@@ -1463,12 +1595,24 @@ const paymentMethod = paymentMethods.results[0]
       : null
   })
 
+  cardProcessingRef.current = false
+  setCardProcessing(false)
+  setCardPaymentStatus(null)
   alert('Erro ao processar pagamento')
 }
   }}
 >
 
-  Pagar
+  {cardProcessing ? (
+    <>
+      <i className="fa-solid fa-spinner fa-spin"></i>
+      {' '}{cardPaymentStatus === 'approved'
+        ? 'Pagamento aprovado. Finalizando seu pedido...'
+        : 'Processando pagamento...'}
+    </>
+  ) : (
+    'Pagar'
+  )}
 </button>
 
 
@@ -1489,9 +1633,23 @@ const paymentMethod = paymentMethods.results[0]
       <h4>Pedido recebido!</h4>
 
       <p>
-        Recebemos seu pedido com sucesso.
+        Pagamento aprovado e pedido recebido com sucesso.
         <br />
-        Em breve entraremos em contato.
+        A floricultura entrará em contato pelo WhatsApp para confirmar os detalhes do pedido.
+      </p>
+
+      <img
+        src={whatsappQrCodeUrl}
+        alt="QR Code para abrir o WhatsApp da floricultura"
+        style={{ width: 220, margin: '0 auto 16px', display: 'block' }}
+      />
+
+      <p>
+        Escaneie o QR Code com seu celular para abrir o WhatsApp da floricultura.
+        <br />
+        Se não souber usar o QR Code, utilize o número <strong>{whatsappDisplayPhone}</strong>.
+        <br />
+        {serviceHours}
       </p>
       <button
   className="success-whatsapp"
