@@ -231,10 +231,11 @@ const formatCardNumber = (value) => {
 }
 
 const formatExpiry = (value) => {
-  return value
-    .replace(/\D/g, '')
-    .replace(/^(\d{2})(\d)/, '$1/$2')
-    .slice(0, 5)
+  const digits = value.replace(/\D/g, '').slice(0, 6)
+
+  if (digits.length <= 2) return digits
+
+  return `${digits.slice(0, 2)}/${digits.slice(2)}`
 }
 
 const formatCVV = (value) => {
@@ -1469,6 +1470,8 @@ const gerarPix = async () => {
   onClick={async () => {
     if (cardProcessingRef.current) return
 
+    const cardDataSnapshot = { ...cardData }
+
     cardPaymentModeRef.current = showCardFormModal
     cardProcessingRef.current = true
     setCardProcessing(true)
@@ -1477,33 +1480,63 @@ const gerarPix = async () => {
 
     try {
       // 1️⃣ limpar e separar validade
-      const expiry = cardData.expiry.replace(/\s/g, '')
+      const expiry = cardDataSnapshot.expiry.replace(/\s/g, '')
 
       if (!expiry || !expiry.includes('/')) {
         cardProcessingRef.current = false
         setCardProcessing(false)
         setShowCardFormModal(cardPaymentModeRef.current)
-        alert('Validade do cartão inválida')
+        alert('Confira a validade do cartão')
         return
       }
 
-      const [month, year] = expiry.split('/')
+      const expiryParts = expiry.split('/')
+      const month = expiryParts[0]
+      const expirationYearInput = expiryParts[1]
+      const normalizedExpirationYear = expirationYearInput?.length === 2
+        ? `20${expirationYearInput}`
+        : expirationYearInput
+      const expirationMonth = Number(month)
+      const expirationYear = Number(normalizedExpirationYear)
+      const currentDate = new Date()
+      const currentMonth = currentDate.getMonth() + 1
+      const currentYear = currentDate.getFullYear()
+      const expirationIsValid =
+        expiryParts.length === 2 &&
+        /^\d{2}$/.test(month) &&
+        expirationMonth >= 1 &&
+        expirationMonth <= 12 &&
+        /^\d{4}$/.test(normalizedExpirationYear || '') &&
+        (
+          expirationYear > currentYear ||
+          (expirationYear === currentYear && expirationMonth >= currentMonth)
+        )
 
-      if (!month || !year || month.length !== 2 || year.length !== 2) {
+      if (!expirationIsValid) {
         cardProcessingRef.current = false
         setCardProcessing(false)
         setShowCardFormModal(cardPaymentModeRef.current)
-        alert('Validade do cartão inválida')
+        alert('Confira a validade do cartão')
         return
       }
 
+      console.log('[CARD_DIAGNOSTIC] Validade sanitizada', {
+        expiry_raw_length: cardDataSnapshot.expiry.length,
+        expiry_has_slash: cardDataSnapshot.expiry.includes('/'),
+        expiration_month_length: month.length,
+        expiration_year_input_length: expirationYearInput.length,
+        normalized_expiration_year_length: normalizedExpirationYear.length,
+        normalized_expiration_year_is_future:
+          expirationYear > currentYear
+      })
+
       // 2️⃣ criar token do cartão (CAMPOS CORRETOS)
       const tokenResponse = await mp.createCardToken({
-        cardNumber: cardData.number.replace(/\s/g, ''),
-        cardholderName: cardData.name,
+        cardNumber: cardDataSnapshot.number.replace(/\s/g, ''),
+        cardholderName: cardDataSnapshot.name,
         cardExpirationMonth: month,
-        cardExpirationYear: `20${year}`,
-        securityCode: cardData.cvv,
+        cardExpirationYear: normalizedExpirationYear,
+        securityCode: cardDataSnapshot.cvv,
       })
 
       // 3️⃣ validar token
