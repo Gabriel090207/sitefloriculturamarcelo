@@ -69,7 +69,30 @@ def create_card_payment(
         }
     }
 
-    return sdk.payment().create(payment_data)
+    payment_response = sdk.payment().create(payment_data)
+    response_data = payment_response.get("response")
+
+    if not isinstance(response_data, dict):
+        response_data = {}
+
+    diagnostic_data = {
+        "sdk_http_status": payment_response.get("status"),
+        "id": response_data.get("id"),
+        "status": response_data.get("status"),
+        "status_detail": response_data.get("status_detail"),
+        "payment_method_id": response_data.get("payment_method_id"),
+        "payment_type_id": response_data.get("payment_type_id"),
+        "installments": response_data.get("installments"),
+        "error": response_data.get("error"),
+        "message": response_data.get("message"),
+        "cause": response_data.get("cause"),
+        "request_id": response_data.get("request_id")
+            or payment_response.get("request_id"),
+    }
+
+    print("[CARD_DIAGNOSTIC] Mercado Pago:", diagnostic_data)
+
+    return payment_response
 
 
 def get_payment_by_id(payment_id: str):

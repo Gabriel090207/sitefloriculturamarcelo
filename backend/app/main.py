@@ -294,16 +294,27 @@ async def update_order_status(order_id: str, payload: dict = Body(...)):
 
 @app.get("/payment/status/{payment_id}")
 def get_payment_status(payment_id: str):
+    try:
+        payment = get_payment_by_id(payment_id)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=502,
+            detail="Não foi possível consultar o status do pagamento"
+        ) from exc
+
+    payment_status = payment.get("status")
+    if not isinstance(payment_status, str):
+        raise HTTPException(
+            status_code=502,
+            detail="Resposta inválida ao consultar o status do pagamento"
+        )
+
     db = get_firestore()
     doc = db.collection("orders").document(payment_id).get()
 
-    if not doc.exists:
-        return {"status": "pending"}
-
-    data = doc.to_dict()
     return {
-        "status": "approved",
-        "order": data
+        "payment_status": payment_status,
+        "order_ready": doc.exists
     }
 
 

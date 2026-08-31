@@ -1,5 +1,5 @@
 import { useCart } from '../context/CartContext'
-import { useEffect, useState,} from 'react'
+import { useEffect, useRef, useState,} from 'react'
 import './CartDrawer.css'
 import { db } from '../firebase/firebase'
 import { doc, updateDoc, increment } from 'firebase/firestore'
@@ -328,6 +328,9 @@ const [phrase, setPhrase] = useState('')
 
 const [pixData, setPixData] = useState(null)
 const [pixLoading, setPixLoading] = useState(false)
+const [pixConfirmationTimedOut, setPixConfirmationTimedOut] = useState(false)
+const [pixPaymentStatus, setPixPaymentStatus] = useState(null)
+const pixOrderSnapshotRef = useRef(null)
 
 const [deliveryPeriod, setDeliveryPeriod] = useState(null)
 const [showPaymentModal, setShowPaymentModal] = useState(false)
@@ -445,79 +448,73 @@ useEffect(() => {
 }, [])
 
 
-useEffect(() => {
-  const run = async () => {
-    if (
-      customerData.cep.length === 9 &&
-      deliveryPeriod !== 'retiradanaloja'
-    ) {
-      try {
-        setIsFetchingCEP(true)
-
-        const data = await fetchCEPData(customerData.cep)
-
-if (!data) {
-  setCepInvalid(true)
-  setCepLocation(null)
-  return
-}
-
-// ✅ CEP válido
-setCepInvalid(false)
-setCepLocation(data)
-
-setCustomerData(prev => ({
-  ...prev,
-  street: prev.street || data.logradouro || '',
-  neighborhood: prev.neighborhood || data.bairro || ''
-}))
-
-      } catch (err) {
-        console.error('Erro ao buscar CEP:', err)
-        setCepLocation(null)
-      } finally {
-        setIsFetchingCEP(false)
-      }
-    } else {
-      setCepLocation(null)
-      setCepInvalid(false)
-    }
-    
-  }
-
-  run()
-}, [customerData.cep, deliveryPeriod])
-
+const pixPaymentId = pixData?.id
 
 useEffect(() => {
-  const run = async () => {
-    if (
-      customerData.cep.length !== 9 ||
-      deliveryPeriod === 'retiradanaloja'
-    ) {
-      setDeliveryFee(0)
+  if (!pixPaymentId) return
+
+  let cancelled = false
+  let timeoutId = null
+  let requestController = null
+  const pollingDeadline = Date.now() + 15 * 60 * 1000
+
+  setPixConfirmationTimedOut(false)
+
+  const checkPaymentStatus = async () => {
+    if (cancelled) return
+
+    if (Date.now() >= pollingDeadline) {
+      setPixConfirmationTimedOut(true)
       return
     }
 
+    requestController = new AbortController()
+
     try {
-      const cepData = await fetchCEPData(customerData.cep)
-      if (!cepData || !cepData.bairro) {
-        setDeliveryFee(40)
+      const response = await api.get(`/payment/status/${pixPaymentId}`, {
+        signal: requestController.signal
+      })
+
+      if (cancelled) return
+
+      const paymentStatus = response.data?.payment_status
+      const orderReady = response.data?.order_ready === true
+
+      if (typeof paymentStatus === 'string') {
+        setPixPaymentStatus(paymentStatus)
+      }
+
+      if (paymentStatus === 'approved' && orderReady) {
+        setConfirmedOrder(pixOrderSnapshotRef.current)
+        setPixData(null)
+        setShowSuccessModal(true)
         return
       }
 
-      const fee = calculateDeliveryFeeByZone(cepData.bairro)
-      setDeliveryFee(fee)
+      if (paymentStatus === 'rejected' || paymentStatus === 'cancelled') {
+        return
+      }
+    } catch {
+      if (cancelled) return
+    }
 
-      console.log('Bairro:', cepData.bairro)
-      console.log('Frete por zona: R$', fee)
-    } catch (err) {
-      console.error('Erro ao calcular frete por zona:', err)
+    if (!cancelled) {
+      timeoutId = window.setTimeout(checkPaymentStatus, 5000)
     }
   }
 
-  run()
-}, [customerData.cep, deliveryPeriod])
+  checkPaymentStatus()
+
+  return () => {
+    cancelled = true
+
+    if (timeoutId) {
+      window.clearTimeout(timeoutId)
+    }
+
+    requestController?.abort()
+  }
+}, [pixPaymentId])
 
 
 const handleCheckoutWhatsApp = async (customPhrase = '') => {
@@ -667,6 +664,16 @@ const gerarPix = async () => {
 
     const response = await api.post('/checkout-totem', payload)
 
+    pixOrderSnapshotRef.current = {
+      cartItems,
+      customerData,
+      deliveryPeriod,
+      deliveryFee,
+      finalTotal
+    }
+
+    setPixConfirmationTimedOut(false)
+    setPixPaymentStatus(null)
     setPixData(response.data.payment)
  } catch (err) {
   console.error('Erro completo:', err)
@@ -920,26 +927,43 @@ const gerarPix = async () => {
         style={{ width: '100%', height: 120 }}
       />
 
-     <button
-  className="phrase-confirm"
-  onClick={() => {
-    // ✅ salva tudo
-    setConfirmedOrder({
-      cartItems,
-      customerData,
-      deliveryPeriod,
-      deliveryFee,
-      finalTotal
-    })
-
-    setPixData(null)
-    setShowSuccessModal(true)
-
-    // ❌ ainda NÃO limpa
-  }}
->
-  Já realizei o pagamento
-</button>
+      {pixConfirmationTimedOut ? (
+        <div className="pix-loading">
+          <p>Não recebemos a confirmação do pagamento.</p>
+          <span>Feche esta tela para tentar novamente.</span>
+          <button
+            className="phrase-confirm"
+            onClick={() => setPixData(null)}
+          >
+            Fechar e tentar novamente
+          </button>
+        </div>
+      ) : pixPaymentStatus === 'rejected' || pixPaymentStatus === 'cancelled' ? (
+        <div className="pix-loading">
+          <p>
+            {pixPaymentStatus === 'rejected'
+              ? 'O pagamento não foi aprovado.'
+              : 'O pagamento foi cancelado.'}
+          </p>
+          <span>Feche esta tela para tentar novamente.</span>
+          <button
+            className="phrase-confirm"
+            onClick={() => setPixData(null)}
+          >
+            Fechar e tentar novamente
+          </button>
+        </div>
+      ) : pixPaymentStatus === 'approved' ? (
+        <div className="pix-loading">
+          <i className="fa-solid fa-spinner fa-spin"></i>
+          <p>Pagamento reconhecido. Processando confirmação...</p>
+          <span>Aguarde enquanto finalizamos o pedido.</span>
+        </div>
+      ) : (
+        <p className="phrase-subtitle">
+          Após realizar o pagamento, a confirmação será feita automaticamente.
+        </p>
+      )}
 
     </div>
   </div>
@@ -1349,7 +1373,9 @@ const gerarPix = async () => {
 
       // 3️⃣ validar token
       if (tokenResponse.error) {
-        console.error(tokenResponse.error)
+        console.error('[CARD_DIAGNOSTIC] Falha ao criar token', {
+          token_created: false
+        })
         alert('Dados do cartão inválidos')
         return
       }
@@ -1361,6 +1387,24 @@ const gerarPix = async () => {
 })
 
 const paymentMethod = paymentMethods.results[0]
+
+      console.log('[CARD_DIAGNOSTIC] Payload sanitizado', {
+        mode: showCardFormModal,
+        payment_methods_count: paymentMethods.results.length,
+        payment_methods: paymentMethods.results.map((method) => ({
+          id: method.id,
+          payment_type_id: method.payment_type_id,
+          status: method.status,
+          processing_mode: method.processing_mode,
+          additional_info_needed: method.additional_info_needed,
+          issuer_id: method.issuer?.id ?? 'ausente'
+        })),
+        payment_method_id: paymentMethod.id,
+        issuer_id: paymentMethod.issuer?.id ?? 'ausente',
+        installments: Number(cardData.installments),
+        total: finalTotal,
+        token_created: Boolean(token)
+      })
 
       // 4️⃣ enviar token pro backend
       const response = await api.post('/pay/card', {
@@ -1397,13 +1441,27 @@ const paymentMethod = paymentMethods.results[0]
         )
       }
     } catch (err) {
-  console.error('ERRO COMPLETO:', err)
+  const backendData = err.response?.data
+  const backendResponse = backendData?.response
 
-  console.log('Resposta:', err.response)
-
-  console.log('Dados:', err.response?.data)
-
-  console.log('Backend:', err.response?.data?.response)
+  console.error('[CARD_DIAGNOSTIC] Falha na requisição', {
+    http_status: err.response?.status,
+    sdk_http_status: backendData?.status,
+    response: backendResponse
+      ? {
+          id: backendResponse.id,
+          status: backendResponse.status,
+          status_detail: backendResponse.status_detail,
+          payment_method_id: backendResponse.payment_method_id,
+          payment_type_id: backendResponse.payment_type_id,
+          installments: backendResponse.installments,
+          error: backendResponse.error,
+          message: backendResponse.message,
+          cause: backendResponse.cause,
+          request_id: backendResponse.request_id
+        }
+      : null
+  })
 
   alert('Erro ao processar pagamento')
 }
