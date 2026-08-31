@@ -331,6 +331,7 @@ const [cardPaymentId, setCardPaymentId] = useState(null)
 const [cardPaymentStatus, setCardPaymentStatus] = useState(null)
 const cardProcessingRef = useRef(false)
 const cardOrderSnapshotRef = useRef(null)
+const cardPaymentModeRef = useRef(null)
 
 const [showCustomerModal, setShowCustomerModal] = useState(false)
 
@@ -358,6 +359,14 @@ const [deliveryFee, setDeliveryFee] = useState(0)
 
 
 const [showSuccessModal, setShowSuccessModal] = useState(false)
+
+const paymentProcessingStage = cardProcessing
+  ? cardPaymentStatus === 'approved'
+    ? 'card-approved'
+    : 'card-processing'
+  : pixData && pixPaymentStatus === 'approved'
+    ? 'pix-approved'
+    : null
 
 
 const safeDeliveryFee = Number(deliveryFee) || 0
@@ -390,6 +399,7 @@ const [distanceKm, setDistanceKm] = useState(null)
   showPaymentChoiceModal ||
   showPaymentModal ||
   showCardFormModal ||
+  cardProcessing ||
   showSuccessModal ||
   pixLoading ||
   pixData
@@ -562,6 +572,7 @@ useEffect(() => {
         cardProcessingRef.current = false
         setCardProcessing(false)
         setShowCardFormModal(null)
+        cardPaymentModeRef.current = null
         setShowSuccessModal(true)
         return
       }
@@ -571,6 +582,7 @@ useEffect(() => {
         setCardPaymentStatus(null)
         cardProcessingRef.current = false
         setCardProcessing(false)
+        setShowCardFormModal(cardPaymentModeRef.current)
         alert(
           paymentStatus === 'rejected'
             ? 'Pagamento recusado pelo emissor'
@@ -985,7 +997,7 @@ const gerarPix = async () => {
 )}
 
 
-{pixData && (
+{pixData && pixPaymentStatus !== 'approved' && (
   <div className="phrase-overlay">
     <div className="phrase-card">
       <button
@@ -1037,18 +1049,34 @@ const gerarPix = async () => {
             Fechar e tentar novamente
           </button>
         </div>
-      ) : pixPaymentStatus === 'approved' ? (
-        <div className="pix-loading">
-          <i className="fa-solid fa-spinner fa-spin"></i>
-          <p>Pagamento reconhecido. Finalizando seu pedido...</p>
-          <span>Aguarde enquanto finalizamos o pedido.</span>
-        </div>
       ) : (
         <p className="phrase-subtitle">
           Após realizar o pagamento, a confirmação será feita automaticamente.
         </p>
       )}
 
+    </div>
+  </div>
+)}
+
+{paymentProcessingStage && (
+  <div className="delivery-overlay">
+    <div className="delivery-card pix-loading">
+      <i className="fa-solid fa-spinner fa-spin"></i>
+
+      <p>
+        {paymentProcessingStage === 'pix-approved'
+          ? 'Pagamento reconhecido!'
+          : paymentProcessingStage === 'card-approved'
+            ? 'Pagamento aprovado!'
+            : 'Processando pagamento...'}
+      </p>
+
+      <span>
+        {paymentProcessingStage === 'card-processing'
+          ? 'Por favor, aguarde. Não feche esta tela.'
+          : 'Estamos finalizando seu pedido...'}
+      </span>
     </div>
   </div>
 )}
@@ -1265,6 +1293,7 @@ const gerarPix = async () => {
           setCardPaymentStatus(null)
           cardProcessingRef.current = false
           setCardProcessing(false)
+          cardPaymentModeRef.current = null
           setShowCardFormModal(null)
         }}
         disabled={cardProcessing && !cardPaymentId}
@@ -1440,9 +1469,11 @@ const gerarPix = async () => {
   onClick={async () => {
     if (cardProcessingRef.current) return
 
+    cardPaymentModeRef.current = showCardFormModal
     cardProcessingRef.current = true
     setCardProcessing(true)
     setCardPaymentStatus(null)
+    setShowCardFormModal(null)
 
     try {
       // 1️⃣ limpar e separar validade
@@ -1451,6 +1482,7 @@ const gerarPix = async () => {
       if (!expiry || !expiry.includes('/')) {
         cardProcessingRef.current = false
         setCardProcessing(false)
+        setShowCardFormModal(cardPaymentModeRef.current)
         alert('Validade do cartão inválida')
         return
       }
@@ -1460,6 +1492,7 @@ const gerarPix = async () => {
       if (!month || !year || month.length !== 2 || year.length !== 2) {
         cardProcessingRef.current = false
         setCardProcessing(false)
+        setShowCardFormModal(cardPaymentModeRef.current)
         alert('Validade do cartão inválida')
         return
       }
@@ -1480,6 +1513,7 @@ const gerarPix = async () => {
         })
         cardProcessingRef.current = false
         setCardProcessing(false)
+        setShowCardFormModal(cardPaymentModeRef.current)
         alert('Dados do cartão inválidos')
         return
       }
@@ -1541,6 +1575,7 @@ const paymentMethod = paymentMethods.results[0]
         cardProcessingRef.current = false
         setCardProcessing(false)
         setCardPaymentStatus(null)
+        setShowCardFormModal(cardPaymentModeRef.current)
         alert(
           paymentStatusDetail
             ? `Pagamento recusado: ${paymentStatusDetail}`
@@ -1555,6 +1590,7 @@ const paymentMethod = paymentMethods.results[0]
         cardProcessingRef.current = false
         setCardProcessing(false)
         setCardPaymentStatus(null)
+        setShowCardFormModal(cardPaymentModeRef.current)
         alert(
           paymentStatusDetail
             ? `Pagamento recusado: ${paymentStatusDetail}`
@@ -1598,21 +1634,13 @@ const paymentMethod = paymentMethods.results[0]
   cardProcessingRef.current = false
   setCardProcessing(false)
   setCardPaymentStatus(null)
+  setShowCardFormModal(cardPaymentModeRef.current)
   alert('Erro ao processar pagamento')
 }
   }}
 >
 
-  {cardProcessing ? (
-    <>
-      <i className="fa-solid fa-spinner fa-spin"></i>
-      {' '}{cardPaymentStatus === 'approved'
-        ? 'Pagamento aprovado. Finalizando seu pedido...'
-        : 'Processando pagamento...'}
-    </>
-  ) : (
-    'Pagar'
-  )}
+  Pagar
 </button>
 
 
