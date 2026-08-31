@@ -1,7 +1,44 @@
 import os
+from datetime import datetime, timezone
+
 import mercadopago
 
-sdk = mercadopago.SDK(os.getenv("MP_ACCESS_TOKEN"))
+
+# Diagnóstico temporário de configuração — remover após validar o ambiente.
+mp_access_token = os.getenv("MP_ACCESS_TOKEN")
+normalized_token = mp_access_token.strip() if mp_access_token is not None else ""
+has_surrounding_quotes = (
+    len(normalized_token) >= 2
+    and normalized_token[0] == normalized_token[-1]
+    and normalized_token[0] in {"'", '"'}
+)
+token_for_classification = (
+    normalized_token[1:-1] if has_surrounding_quotes else normalized_token
+)
+
+if token_for_classification.startswith("APP_USR-"):
+    environment_hint = "production"
+elif token_for_classification.startswith("TEST-"):
+    environment_hint = "test"
+else:
+    environment_hint = "unknown"
+
+print("[MP_CONFIG_DIAGNOSTIC]", {
+    "exists": mp_access_token is not None,
+    "length": len(mp_access_token) if mp_access_token is not None else 0,
+    "environment_hint": environment_hint,
+    "has_edge_whitespace": (
+        mp_access_token != normalized_token
+        if mp_access_token is not None
+        else False
+    ),
+    "has_surrounding_quotes": has_surrounding_quotes,
+    "loaded_on_module_import": True,
+    "loaded_at_utc": datetime.now(timezone.utc).isoformat(),
+})
+# Fim do diagnóstico temporário.
+
+sdk = mercadopago.SDK(mp_access_token)
 
 
 def create_pix_payment(
