@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './Totem.css'
 import TotemHeader from './components/TotemHeader'
+import hero from '../assets/hero.png'
 
 import ProductCard from '../components/ProductCard'
 import { produtos } from '../data/produtos'
@@ -17,8 +18,14 @@ const produtosFiltrados = produtos.filter(
 
 const {
   totalItems,
-  addToCart
+  addToCart,
+  clearCart
 } = useCart()
+
+const [isSessionStarted, setIsSessionStarted] = useState(false)
+const [hasActivePayment, setHasActivePayment] = useState(false)
+const [sessionMessage, setSessionMessage] = useState('')
+const sessionMessageTimeoutRef = useRef(null)
 
 const [cartOpen, setCartOpen] = useState(false)
 
@@ -38,10 +45,111 @@ useEffect(() => {
   }
 }, [])
 
+useEffect(() => {
+  return () => {
+    if (sessionMessageTimeoutRef.current) {
+      clearTimeout(sessionMessageTimeoutRef.current)
+    }
+  }
+}, [])
+
+const resetSessionView = () => {
+  setCartOpen(false)
+  setProdutoSelecionado(null)
+  setCategoriaAtiva('Buquês')
+  setShowScrollTop(false)
+  window.scrollTo({ top: 0, behavior: 'auto' })
+}
+
+const handleStartSession = () => {
+  clearCart()
+  resetSessionView()
+  setHasActivePayment(false)
+  setSessionMessage('')
+  setIsSessionStarted(true)
+}
+
+const showSessionMessage = (message) => {
+  if (sessionMessageTimeoutRef.current) {
+    clearTimeout(sessionMessageTimeoutRef.current)
+  }
+
+  setSessionMessage(message)
+  sessionMessageTimeoutRef.current = setTimeout(() => {
+    setSessionMessage('')
+    sessionMessageTimeoutRef.current = null
+  }, 4000)
+}
+
+const handleCancelSession = () => {
+  if (hasActivePayment) {
+    showSessionMessage(
+      'Há um pagamento em processamento. Aguarde a confirmação antes de cancelar o pedido.'
+    )
+    return
+  }
+
+  clearCart()
+  resetSessionView()
+  setIsSessionStarted(false)
+}
+
+const handleSessionComplete = () => {
+  resetSessionView()
+  setHasActivePayment(false)
+  setIsSessionStarted(false)
+}
+
   return (
     <main className="totem-page">
 
-      <TotemHeader />
+      {isSessionStarted && <TotemHeader />}
+
+      {sessionMessage && (
+        <div className="totem-session-message" role="status" aria-live="polite">
+          {sessionMessage}
+        </div>
+      )}
+
+      {!isSessionStarted ? (
+        <section className="totem-start-screen">
+          <img
+            src={hero}
+            alt=""
+            className="totem-start-background"
+            aria-hidden="true"
+          />
+
+          <div className="totem-start-content">
+            <img
+              src="/logo.png"
+              alt="Valle das Flores"
+              className="totem-start-logo"
+            />
+            <h1>Bem-vindo à Valle das Flores</h1>
+            <p>
+              Encontre flores para transformar sentimentos em momentos especiais.
+              Escolha seu buquê ou sua coroa, personalize seu pedido e finalize tudo por aqui
+              de forma simples e rápida.
+            </p>
+            <div className="hero-buttons">
+              <button
+                type="button"
+                className="btn-primary totem-start-button"
+                onClick={handleStartSession}
+              >
+                Iniciar pedido
+              </button>
+            </div>
+          </div>
+        </section>
+      ) : (
+        <>
+          <div className="totem-session-actions">
+            <button type="button" onClick={handleCancelSession}>
+              Cancelar pedido
+            </button>
+          </div>
 
       <section className="totem-categorias">
 
@@ -143,6 +251,8 @@ useEffect(() => {
 <TotemCartDrawer
   open={cartOpen}
   onClose={() => setCartOpen(false)}
+  onPaymentActivityChange={setHasActivePayment}
+  onSessionComplete={handleSessionComplete}
 />
 
 
@@ -186,6 +296,9 @@ useEffect(() => {
     </div>
   </div>
 )}
+
+        </>
+      )}
 
     </main>
   )

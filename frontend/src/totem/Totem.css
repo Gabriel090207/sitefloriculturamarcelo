@@ -3,6 +3,178 @@
   background: #fffdf9;
 }
 
+.totem-start-screen {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  isolation: isolate;
+}
+
+.totem-start-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    rgba(32, 22, 17, 0.5),
+    rgba(16, 11, 9, 0.58)
+  );
+}
+
+.totem-start-background {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.totem-start-content {
+  width: min(88vw, 900px);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--bege-claro);
+}
+
+.totem-start-logo {
+  width: clamp(340px, 40vw, 500px);
+  max-width: 100%;
+  aspect-ratio: 1.55 / 1;
+  height: auto;
+  margin-bottom: 14px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  flex-shrink: 0;
+}
+
+.totem-start-content h1 {
+  max-width: 680px;
+  margin: 0 0 10px;
+  color: var(--bege-claro);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 3.2vw, 46px);
+  font-weight: 700;
+  line-height: 1.12;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.totem-start-content p {
+  max-width: 520px;
+  margin-bottom: 22px;
+  color: var(--bege-claro);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.totem-start-content .hero-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.totem-start-content .totem-start-button {
+  min-width: 240px;
+  min-height: 56px;
+  padding: 13px 34px;
+  margin: 0;
+  font-size: 20px;
+}
+
+.totem-start-button:focus-visible,
+.totem-session-actions button:focus-visible {
+  outline: 3px solid var(--rosa-suave);
+  outline-offset: 3px;
+}
+
+.totem-session-actions {
+  width: 100%;
+  max-width: 2100px;
+  margin: 28px auto 0;
+  padding: 0 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.totem-session-actions button {
+  min-height: 48px;
+  padding: 11px 24px;
+  border: none;
+  border-radius: 999px;
+  background: var(--marrom-escuro);
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.totem-session-actions button:hover {
+  opacity: 0.85;
+}
+
+.totem-session-actions + .totem-categorias {
+  margin-top: 20px;
+}
+
+.totem-session-message {
+  position: fixed;
+  top: 112px;
+  left: 50%;
+  z-index: 13000;
+  width: min(90vw, 620px);
+  padding: 15px 22px;
+  border-radius: 32px;
+  background: var(--marrom-escuro);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  transform: translateX(-50%);
+}
+
+@media (max-width: 760px) {
+  .totem-start-content {
+    width: 92vw;
+    padding: 14px;
+  }
+
+  .totem-start-logo {
+    width: clamp(300px, 72vw, 420px);
+    margin-bottom: 12px;
+  }
+
+  .totem-start-content p {
+    max-width: 480px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  .totem-start-content h1 {
+    font-size: clamp(30px, 7vw, 38px);
+  }
+
+  .totem-session-actions {
+    padding: 0 24px;
+  }
+}
+
 .totem-categorias {
   display: flex;
   justify-content: center;

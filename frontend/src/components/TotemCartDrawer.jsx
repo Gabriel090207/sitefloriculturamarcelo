@@ -1,5 +1,5 @@
 import { useCart } from '../context/CartContext'
-import { useEffect, useRef, useState,} from 'react'
+import { useCallback, useEffect, useRef, useState,} from 'react'
 import './CartDrawer.css'
 import { db } from '../firebase/firebase'
 import { doc, updateDoc, increment } from 'firebase/firestore'
@@ -119,6 +119,28 @@ const formatCPF = (value) => {
     .replace(/(\d{3})(\d)/, '$1.$2')
     .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
     .slice(0, 14)
+}
+
+const isValidCPF = (value) => {
+  const digits = value.replace(/\D/g, '')
+
+  if (digits.length !== 11 || /^(\d)\1{10}$/.test(digits)) return false
+
+  const calculateCheckDigit = (length) => {
+    let sum = 0
+
+    for (let index = 0; index < length; index += 1) {
+      sum += Number(digits[index]) * (length + 1 - index)
+    }
+
+    const remainder = (sum * 10) % 11
+    return remainder === 10 ? 0 : remainder
+  }
+
+  return (
+    calculateCheckDigit(9) === Number(digits[9]) &&
+    calculateCheckDigit(10) === Number(digits[10])
+  )
 }
 
 
@@ -253,7 +275,12 @@ const mp = new window.MercadoPago(
 
 
 
-function CartDrawer({ open, onClose }) {
+function CartDrawer({
+  open,
+  onClose,
+  onPaymentActivityChange,
+  onSessionComplete
+}) {
 
 
 const whatsappPhone = '559281230907'
@@ -294,11 +321,40 @@ const [customerData, setCustomerData] = useState({
   hall: ''
 })
 
+const [customerErrors, setCustomerErrors] = useState({
+  name: '',
+  phone: '',
+  cpf: '',
+  hall: ''
+})
+
+const [toast, setToast] = useState(null)
+const toastTimeoutRef = useRef(null)
+
+const showToast = useCallback((message, type = 'info') => {
+  if (toastTimeoutRef.current) {
+    clearTimeout(toastTimeoutRef.current)
+  }
+
+  setToast({ message, type })
+  toastTimeoutRef.current = setTimeout(() => {
+    setToast(null)
+    toastTimeoutRef.current = null
+  }, 4000)
+}, [])
+
 const handleCustomerChange = (field, value) => {
   setCustomerData(prev => ({
     ...prev,
     [field]: value
   }))
+
+  if (customerErrors[field]) {
+    setCustomerErrors(prev => ({
+      ...prev,
+      [field]: ''
+    }))
+  }
 }
 
 const resetCustomerForm = () => {
@@ -309,6 +365,49 @@ const resetCustomerForm = () => {
   tribute: '',
   hall: ''
 })
+ setCustomerErrors({
+  name: '',
+  phone: '',
+  cpf: '',
+  hall: ''
+ })
+}
+
+const validateCustomerData = () => {
+  const errors = {
+    name: '',
+    phone: '',
+    cpf: '',
+    hall: ''
+  }
+  const trimmedName = customerData.name.trim()
+  const phoneDigits = customerData.phone.replace(/\D/g, '')
+
+  if (trimmedName.length < 2) {
+    errors.name = 'Informe um nome válido.'
+  }
+
+  if (phoneDigits.length !== 11) {
+    errors.phone = 'Informe um telefone válido.'
+  }
+
+  if (!isValidCPF(customerData.cpf)) {
+    errors.cpf = 'Informe um CPF válido.'
+  }
+
+  if (!customerData.hall) {
+    errors.hall = 'Selecione o salão.'
+  }
+
+  setCustomerErrors(errors)
+
+  if (Object.values(errors).some(Boolean)) {
+    showToast('Confira os dados destacados antes de continuar.', 'warning')
+    return false
+  }
+
+  setCustomerData(prev => ({ ...prev, name: trimmedName }))
+  return true
 }
 
 
@@ -361,6 +460,12 @@ const [deliveryFee, setDeliveryFee] = useState(0)
 
 const [showSuccessModal, setShowSuccessModal] = useState(false)
 
+const hasActivePayment =
+  cardProcessing ||
+  Boolean(cardPaymentId) ||
+  pixLoading ||
+  Boolean(pixData?.id)
+
 const paymentProcessingStage = cardProcessing
   ? cardPaymentStatus === 'approved'
     ? 'card-approved'
@@ -384,6 +489,64 @@ const [cepInvalid, setCepInvalid] = useState(false)
 // exemplo: { bairro: 'Centro', cidade: 'Manaus' }
 
 const [distanceKm, setDistanceKm] = useState(null)
+
+
+const resetCardState = useCallback(() => {
+  setCardData({
+    number: '',
+    name: '',
+    expiry: '',
+    cvv: '',
+    installments: '1'
+  })
+  setInstallments([])
+  setCardBrand('')
+  setCardProcessing(false)
+  setCardPaymentId(null)
+  setCardPaymentStatus(null)
+  setShowCardFormModal(null)
+  cardProcessingRef.current = false
+  cardOrderSnapshotRef.current = null
+  cardPaymentModeRef.current = null
+}, [])
+
+
+const resetPaymentState = useCallback(() => {
+  resetCardState()
+  setPixData(null)
+  setPixLoading(false)
+  setPixPaymentStatus(null)
+  setPixConfirmationTimedOut(false)
+  pixOrderSnapshotRef.current = null
+  setShowPaymentModal(false)
+  setShowPaymentChoiceModal(false)
+}, [resetCardState])
+
+
+const resetCheckoutState = () => {
+  resetPaymentState()
+  resetCustomerForm()
+  setConfirmedOrder(null)
+  setShowCustomerModal(false)
+  setShowPhraseModal(false)
+  setPhrase('')
+  setShowDeliveryModal(false)
+  setDeliveryPeriod(null)
+  setDeliveryFee(0)
+  setCepLocation(null)
+  setIsFetchingCEP(false)
+  setCepInvalid(false)
+  setDistanceKm(null)
+  setShowSuccessModal(false)
+}
+
+
+const handleCloseDrawer = () => {
+  if (hasActivePayment) return
+
+  resetCheckoutState()
+  onClose()
+}
 
 
 
@@ -470,6 +633,22 @@ useEffect(() => {
     })
 }, [])
 
+useEffect(() => {
+  return () => {
+    if (toastTimeoutRef.current) {
+      clearTimeout(toastTimeoutRef.current)
+    }
+  }
+}, [])
+
+useEffect(() => {
+  onPaymentActivityChange?.(hasActivePayment)
+}, [hasActivePayment, onPaymentActivityChange])
+
+useEffect(() => {
+  return () => onPaymentActivityChange?.(false)
+}, [onPaymentActivityChange])
+
 
 const pixPaymentId = pixData?.id
 
@@ -508,8 +687,10 @@ useEffect(() => {
       }
 
       if (paymentStatus === 'approved' && orderReady) {
-        setConfirmedOrder(pixOrderSnapshotRef.current)
-        setPixData(null)
+        const confirmedOrderSnapshot = pixOrderSnapshotRef.current
+
+        setConfirmedOrder(confirmedOrderSnapshot)
+        resetPaymentState()
         setShowSuccessModal(true)
         return
       }
@@ -537,7 +718,7 @@ useEffect(() => {
 
     requestController?.abort()
   }
-}, [pixPaymentId])
+}, [pixPaymentId, resetPaymentState])
 
 
 useEffect(() => {
@@ -567,13 +748,10 @@ useEffect(() => {
       }
 
       if (paymentStatus === 'approved' && orderReady) {
-        setConfirmedOrder(cardOrderSnapshotRef.current)
-        setCardPaymentId(null)
-        setCardPaymentStatus(null)
-        cardProcessingRef.current = false
-        setCardProcessing(false)
-        setShowCardFormModal(null)
-        cardPaymentModeRef.current = null
+        const confirmedOrderSnapshot = cardOrderSnapshotRef.current
+
+        setConfirmedOrder(confirmedOrderSnapshot)
+        resetPaymentState()
         setShowSuccessModal(true)
         return
       }
@@ -611,7 +789,7 @@ useEffect(() => {
 
     requestController?.abort()
   }
-}, [cardPaymentId])
+}, [cardPaymentId, resetPaymentState])
 
 
 const handleCheckoutWhatsApp = async (customPhrase = '') => {
@@ -677,7 +855,8 @@ registerSale(cartItems)
   })
   .finally(() => {
     clearCart()
-    resetCustomerForm()
+    resetCheckoutState()
+    onClose()
   })
 
 
@@ -730,7 +909,8 @@ const handleCheckoutWhatsAppConfirmed = () => {
 
   // ✅ AGORA SIM limpa tudo
   clearCart()
-  setConfirmedOrder(null)
+  resetCheckoutState()
+  onClose()
 }
 
 
@@ -787,7 +967,16 @@ const gerarPix = async () => {
 
   return (
     <>
-      <div className="cart-overlay" onClick={onClose} />
+{toast && (
+  <div
+    className={`totem-toast totem-toast-${toast.type}`}
+    role={toast.type === 'error' ? 'alert' : 'status'}
+    aria-live={toast.type === 'error' ? 'assertive' : 'polite'}
+  >
+    {toast.message}
+  </div>
+)}
+      <div className="cart-overlay" onClick={handleCloseDrawer} />
 
       <aside
   className={`cart-drawer ${animate ? 'open' : 'close'} ${
@@ -797,7 +986,7 @@ const gerarPix = async () => {
 
         <header className="cart-drawer-header">
           <h3>Seu carrinho</h3>
-          <button onClick={onClose}>✕</button>
+          <button onClick={handleCloseDrawer}>✕</button>
         </header>
 
         <div className="cart-drawer-content">
@@ -982,6 +1171,19 @@ const gerarPix = async () => {
 
         <i className="fa-solid fa-chevron-right"></i>
       </div>
+
+      <div className="phrase-actions">
+        <button
+          className="phrase-cancel"
+          onClick={() => {
+            setShowPaymentModal(false)
+            setShowPaymentChoiceModal(true)
+          }}
+        >
+          <i className="fa-solid fa-chevron-left"></i>
+          {' '}Voltar
+        </button>
+      </div>
     </div>
   </div>
 )}
@@ -1003,7 +1205,7 @@ const gerarPix = async () => {
     <div className="phrase-card">
       <button
         className="modal-close"
-        onClick={() => setPixData(null)}
+        onClick={resetPaymentState}
         aria-label="Fechar"
       >
         <i className="fa-solid fa-xmark"></i>
@@ -1030,7 +1232,7 @@ const gerarPix = async () => {
           <span>Feche esta tela para tentar novamente.</span>
           <button
             className="phrase-confirm"
-            onClick={() => setPixData(null)}
+            onClick={resetPaymentState}
           >
             Fechar e tentar novamente
           </button>
@@ -1045,7 +1247,7 @@ const gerarPix = async () => {
           <span>Feche esta tela para tentar novamente.</span>
           <button
             className="phrase-confirm"
-            onClick={() => setPixData(null)}
+            onClick={resetPaymentState}
           >
             Fechar e tentar novamente
           </button>
@@ -1062,7 +1264,7 @@ const gerarPix = async () => {
 
 {paymentProcessingStage && (
   <div className="delivery-overlay">
-    <div className="delivery-card pix-loading">
+    <div className="delivery-card pix-loading totem-processing-card">
       <i className="fa-solid fa-spinner fa-spin"></i>
 
       <p>
@@ -1101,8 +1303,9 @@ const gerarPix = async () => {
 
 
       <div className="form-group">
-        <label>Nome do responsável</label>
+        <label htmlFor="totem-customer-name">Nome do responsável</label>
          <input
+  id="totem-customer-name"
   type="text"
   value={customerData.name}
   onChange={(e) => {
@@ -1110,12 +1313,21 @@ const gerarPix = async () => {
     handleCustomerChange('name', onlyLetters)
   }}
   placeholder="Ex: Maria Silva"
+  className={customerErrors.name ? 'input-invalid' : ''}
+  aria-invalid={Boolean(customerErrors.name)}
+  aria-describedby={customerErrors.name ? 'totem-customer-name-error' : undefined}
 />
+        {customerErrors.name && (
+          <span className="form-error" id="totem-customer-name-error">
+            {customerErrors.name}
+          </span>
+        )}
       </div>
 
       <div className="form-group">
-        <label>Telefone / WhatsApp</label>
+        <label htmlFor="totem-customer-phone">Telefone / WhatsApp</label>
         <input
+  id="totem-customer-phone"
   type="tel"
   inputMode="numeric"
   placeholder="(DD) 9XXXX-XXXX"
@@ -1124,13 +1336,21 @@ const gerarPix = async () => {
     handleCustomerChange('phone', formatPhone(e.target.value))
   }
   maxLength={15}
+  className={customerErrors.phone ? 'input-invalid' : ''}
+  aria-invalid={Boolean(customerErrors.phone)}
+  aria-describedby={customerErrors.phone ? 'totem-customer-phone-error' : undefined}
 />
-
+        {customerErrors.phone && (
+          <span className="form-error" id="totem-customer-phone-error">
+            {customerErrors.phone}
+          </span>
+        )}
       </div>
 
       <div className="form-group">
-  <label>CPF do pagador</label>
+  <label htmlFor="totem-customer-cpf">CPF do pagador</label>
   <input
+    id="totem-customer-cpf"
     type="text"
     inputMode="numeric"
     placeholder="000.000.000-00"
@@ -1139,7 +1359,15 @@ const gerarPix = async () => {
       handleCustomerChange('cpf', formatCPF(e.target.value))
     }
     maxLength={14}
+    className={customerErrors.cpf ? 'input-invalid' : ''}
+    aria-invalid={Boolean(customerErrors.cpf)}
+    aria-describedby={customerErrors.cpf ? 'totem-customer-cpf-error' : undefined}
   />
+  {customerErrors.cpf && (
+    <span className="form-error" id="totem-customer-cpf-error">
+      {customerErrors.cpf}
+    </span>
+  )}
 </div>
 
 
@@ -1164,11 +1392,15 @@ const gerarPix = async () => {
 
 
      <div className="form-group">
-  <label>Salão</label>
+  <label htmlFor="totem-customer-hall">Salão</label>
 
   <select
+    id="totem-customer-hall"
     value={customerData.hall}
     onChange={(e) => handleCustomerChange('hall', e.target.value)}
+    className={customerErrors.hall ? 'input-invalid' : ''}
+    aria-invalid={Boolean(customerErrors.hall)}
+    aria-describedby={customerErrors.hall ? 'totem-customer-hall-error' : undefined}
   >
     <option value="">Selecione o salão</option>
     <option value="1">Salão 1</option>
@@ -1178,6 +1410,11 @@ const gerarPix = async () => {
     <option value="5">Salão 5</option>
     <option value="6">Salão 6</option>
   </select>
+  {customerErrors.hall && (
+    <span className="form-error" id="totem-customer-hall-error">
+      {customerErrors.hall}
+    </span>
+  )}
 </div>
 
 
@@ -1192,15 +1429,8 @@ const gerarPix = async () => {
 
 <button
   className="delivery-confirm"
-  disabled={
-  !customerData.name ||
-  !customerData.phone ||
-  !customerData.cpf ||
-  !customerData.hall
-}
-
-
-        onClick={() => {
+  onClick={() => {
+  if (!validateCustomerData()) return
   setShowCustomerModal(false)
   setShowPaymentChoiceModal(true)
 }}
@@ -1279,6 +1509,20 @@ const gerarPix = async () => {
 </div>
 
 
+      <div className="phrase-actions">
+        <button
+          className="phrase-cancel"
+          onClick={() => {
+            setShowPaymentChoiceModal(false)
+            setShowCustomerModal(true)
+          }}
+        >
+          <i className="fa-solid fa-chevron-left"></i>
+          {' '}Voltar
+        </button>
+      </div>
+
+
     </div>
   </div>
 )}
@@ -1289,14 +1533,7 @@ const gerarPix = async () => {
     <div className="delivery-card">
       <button
         className="modal-close"
-        onClick={() => {
-          setCardPaymentId(null)
-          setCardPaymentStatus(null)
-          cardProcessingRef.current = false
-          setCardProcessing(false)
-          cardPaymentModeRef.current = null
-          setShowCardFormModal(null)
-        }}
+        onClick={resetCardState}
         disabled={cardProcessing && !cardPaymentId}
         aria-label="Fechar"
       >
@@ -1461,6 +1698,21 @@ const gerarPix = async () => {
   )}
 
 </select>
+  </div>
+)}
+
+{!cardProcessing && !cardPaymentId && (
+  <div className="phrase-actions">
+    <button
+      className="phrase-cancel"
+      onClick={() => {
+        resetCardState()
+        setShowPaymentModal(true)
+      }}
+    >
+      <i className="fa-solid fa-chevron-left"></i>
+      {' '}Voltar
+    </button>
   </div>
 )}
 
@@ -1683,7 +1935,7 @@ const paymentMethod = paymentMethods.results[0]
 
 {showSuccessModal && (
   <div className="delivery-overlay">
-    <div className="success-card">
+    <div className="success-card totem-success-card">
       <div className="success-check">
         <svg viewBox="0 0 52 52">
           <circle cx="26" cy="26" r="25" fill="none" />
@@ -1693,35 +1945,35 @@ const paymentMethod = paymentMethods.results[0]
 
       <h4>Pedido recebido!</h4>
 
-      <p>
-        Pagamento aprovado e pedido recebido com sucesso.
-        <br />
+      <p className="success-message">
         A floricultura entrará em contato pelo WhatsApp para confirmar os detalhes do pedido.
       </p>
 
-      <img
-        src={whatsappQrCodeUrl}
-        alt="QR Code para abrir o WhatsApp da floricultura"
-        style={{ width: 220, margin: '0 auto 16px', display: 'block' }}
-      />
+      <div className="success-whatsapp-card">
+        <img
+          src={whatsappQrCodeUrl}
+          alt="QR Code para abrir o WhatsApp da floricultura"
+          className="success-whatsapp-qr-code"
+        />
 
-      <p>
-        Escaneie o QR Code com seu celular para abrir o WhatsApp da floricultura.
-        <br />
-        Se não souber usar o QR Code, utilize o número <strong>{whatsappDisplayPhone}</strong>.
-        <br />
-        {serviceHours}
-      </p>
+        <p className="success-qr-instruction">
+          Escaneie o QR Code com seu celular para abrir o WhatsApp da floricultura.
+        </p>
+
+        <div className="success-contact-details">
+          <span>
+            Se não souber usar o QR Code, utilize o número <strong>{whatsappDisplayPhone}</strong>.
+          </span>
+          <strong>{serviceHours}</strong>
+        </div>
+      </div>
       <button
   className="success-whatsapp"
   onClick={() => {
-    clearCart();  // Limpar o carrinho
-    setShowSuccessModal(false);  // Fechar o modal de sucesso
-
-    // Redireciona o usuário para a loja
-    history.push('/loja');  // Para versões mais antigas do react-router
-    // Ou para versões mais novas (v6+)
-    // navigate('/loja');
+    clearCart()
+    resetCheckoutState()
+    onClose()
+    onSessionComplete?.()
   }}
 >
   Fechar
