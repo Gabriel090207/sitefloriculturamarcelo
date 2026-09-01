@@ -6,8 +6,8 @@ function TotemHeader() {
   const [showServiceModal, setShowServiceModal] = useState(false)
   const [isServiceModalClosing, setIsServiceModalClosing] = useState(false)
   const closeTimeoutRef = useRef(null)
-  const whatsappPhone = '559281230907'
-  const whatsappDisplayPhone = '(92) 98123-0907'
+  const whatsappPhone = '92995131313'
+  const whatsappDisplayPhone = '(92) 99513-1313'
   const whatsappUrl = `https://wa.me/${whatsappPhone}`
   const whatsappQrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(whatsappUrl)}`
   const serviceHours = 'Atendimento 24 Horas'

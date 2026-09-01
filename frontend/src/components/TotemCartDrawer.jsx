@@ -283,8 +283,8 @@ function CartDrawer({
 }) {
 
 
-const whatsappPhone = '559281230907'
-const whatsappDisplayPhone = '(92) 98123-0907'
+const whatsappPhone = '5592995131313'
+const whatsappDisplayPhone = '(92) 99513-1313'
 const whatsappUrl = `https://wa.me/${whatsappPhone}`
 const whatsappQrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(whatsappUrl)}`
 const serviceHours = 'Atendimento 24 Horas'
@@ -794,7 +794,7 @@ useEffect(() => {
 
 const handleCheckoutWhatsApp = async (customPhrase = '') => {
 
-  const phoneNumber = '559281230907'
+  const phoneNumber = '5592995131313'
 
   let message = `Olá! Gostaria de fazer um pedido.\n\n`
   message += `Pedido via site – Valle das Flores\n\n`
@@ -905,7 +905,7 @@ const handleCheckoutWhatsAppConfirmed = () => {
   message += `Obrigado(a)!`
 
   const encoded = encodeURIComponent(message)
-  window.location.href = `https://wa.me/559281230907?text=${encoded}`
+  window.location.href = `https://wa.me/5592995131313?text=${encoded}`
 
   // ✅ AGORA SIM limpa tudo
   clearCart()
